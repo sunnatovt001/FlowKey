@@ -1,0 +1,17 @@
+CREATE TABLE "TelegramConnection" ("id" TEXT NOT NULL, "userId" TEXT NOT NULL, "chatId" TEXT NOT NULL, "linkedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "TelegramConnection_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "TelegramConnection_userId_key" ON "TelegramConnection"("userId");
+CREATE UNIQUE INDEX "TelegramConnection_chatId_key" ON "TelegramConnection"("chatId");
+ALTER TABLE "TelegramConnection" ADD CONSTRAINT "TelegramConnection_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE "TelegramLink" ("userId" TEXT NOT NULL, "codeHash" TEXT NOT NULL, "expiresAt" TIMESTAMP(3) NOT NULL, CONSTRAINT "TelegramLink_pkey" PRIMARY KEY ("userId"));
+CREATE UNIQUE INDEX "TelegramLink_codeHash_key" ON "TelegramLink"("codeHash");
+ALTER TABLE "TelegramLink" ADD CONSTRAINT "TelegramLink_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE "TelegramMessage" ("id" TEXT NOT NULL, "connectionId" TEXT NOT NULL, "externalId" TEXT NOT NULL, "role" TEXT NOT NULL, "content" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "TelegramMessage_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "TelegramMessage_connectionId_externalId_key" ON "TelegramMessage"("connectionId", "externalId");
+CREATE INDEX "TelegramMessage_connectionId_createdAt_idx" ON "TelegramMessage"("connectionId", "createdAt");
+ALTER TABLE "TelegramMessage" ADD CONSTRAINT "TelegramMessage_connectionId_fkey" FOREIGN KEY ("connectionId") REFERENCES "TelegramConnection"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE "SupportTicket" ("id" TEXT NOT NULL, "userId" TEXT NOT NULL, "requestKey" TEXT NOT NULL, "summary" TEXT NOT NULL, "diagnostics" JSONB NOT NULL, "status" TEXT NOT NULL DEFAULT 'queued', "attempts" INTEGER NOT NULL DEFAULT 0, "retryAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "deliveredAt" TIMESTAMP(3), "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "SupportTicket_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "SupportTicket_requestKey_key" ON "SupportTicket"("requestKey");
+CREATE INDEX "SupportTicket_status_retryAt_idx" ON "SupportTicket"("status", "retryAt");
+CREATE INDEX "SupportTicket_userId_createdAt_idx" ON "SupportTicket"("userId", "createdAt");
+ALTER TABLE "SupportTicket" ADD CONSTRAINT "SupportTicket_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE "SupportBotState" ("id" TEXT NOT NULL, "offset" INTEGER NOT NULL DEFAULT 0, "leaseOwner" TEXT, "leaseUntil" TIMESTAMP(3), CONSTRAINT "SupportBotState_pkey" PRIMARY KEY ("id"));

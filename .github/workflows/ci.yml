@@ -1,0 +1,38 @@
+name: Sandbox checks
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: flowza
+          POSTGRES_PASSWORD: ci_only_password
+          POSTGRES_DB: flowza_mvp_test
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://flowza:ci_only_password@127.0.0.1:5432/flowza_mvp_test
+      APP_URL: http://127.0.0.1:3100
+      BETTER_AUTH_SECRET: ci-only-fixture-secret-never-use-for-hosting-0000000
+      WEBHOOK_ENCRYPTION_KEY: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      MAIL_TRANSPORT: file
+      FLOWZA_TEST_URL: http://127.0.0.1:3100
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate && npx prisma migrate deploy
+      - run: npx next typegen && npm run lint && npm run typecheck
+      - run: npm run build
+      - run: npm audit --audit-level=high
+      - run: node scripts/check-secrets.mjs
+      - run: npx next dev --webpack --hostname 127.0.0.1 --port 3100 > /tmp/flowza.log 2>&1 &
+      - run: node --input-type=module -e 'for(let i=0;i<60;i++){try{if((await fetch(process.env.APP_URL)).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,1000))}process.exit(1)'
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
