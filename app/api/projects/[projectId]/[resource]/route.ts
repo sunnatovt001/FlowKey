@@ -19,7 +19,7 @@ export async function POST(req: Request, { params }: Context) {
           "webhook-deliveries": "deliveries",
         } as Record<string, string>
       )[requested] || requested;
-    await requireProject(projectId, user.id);
+    await requireProject(projectId, user.id, true, "technical");
     await limit(`write:${user.id}`, 60);
     const data = await body(req);
     if (resource === "keys") {
@@ -81,7 +81,7 @@ export async function GET(req: Request, { params }: Context) {
   return handle(async () => {
     const user = await requireUser();
     const { projectId, resource } = await params;
-    await requireProject(projectId, user.id, false);
+    await requireProject(projectId, user.id, false, resource === "transactions" ? "read" : "technical");
     if (resource === "api-keys")
       return db.apiKey.findMany({
         where: { projectId },
@@ -194,7 +194,7 @@ export async function DELETE(req: Request, { params }: Context) {
     sameOrigin(req);
     const user = await requireUser();
     const { projectId, resource } = await params;
-    await requireProject(projectId, user.id);
+    await requireProject(projectId, user.id, true, "technical");
     await limit(`write:${user.id}`, 60);
     const data = resourceId.parse(await body(req));
     let count = 0;

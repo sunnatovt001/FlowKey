@@ -10,9 +10,7 @@ export async function workspace(search: Search, allowArchivedHistory = false) {
   const memberships = await db.membership.findMany({
     where: {
       userId: user.id,
-      role: "owner",
       project: {
-        business: { ownerId: user.id },
         ...(allowArchivedHistory && requested
           ? { OR: [{ archivedAt: null }, { id: requested }] }
           : { archivedAt: null }),
@@ -32,5 +30,10 @@ export async function workspace(search: Search, allowArchivedHistory = false) {
   const selected = requested || projects[0]?.id;
   const project = available.find((p) => p.id === selected);
   if (!project) notFound();
-  return { user, projects, project };
+  return {
+    user,
+    projects,
+    project,
+    role: memberships.find((m) => m.projectId === project.id)!.role,
+  };
 }

@@ -21,3 +21,14 @@ GET `/api/v1/payments/{id}` retrieves only the key's project. Responses include 
 Prototype aliases `/keys`, `/payments`, `/webhooks` and `/deliveries` remain for the incumbent UI. Management mutations require same-origin checks. History pagination defaults to 20 and caps at 100. Status/ID/from/to filters are server-side; dates mean Asia/Tashkent days.
 
 Application errors carry code/message/request_id. Statuses: 400 invalid, 401 unauthenticated, 403 forbidden, 404 missing/unauthorized resource, 409 conflict/archive, 429 limit with Retry-After, 500 safe internal error, 503 unavailable. Better Auth retains its documented message/code errors.
+
+## Sandbox operations and team extension (30 October 2026)
+
+See OPERATIONS.md for action payloads and exact permission/idempotency rules.
+
+- GET/POST `/api/projects/:projectId/operations`: financial overview and simulated refunds/payouts/subscriptions. Financial reads and requests: owner/accountant; approval and refunds: owner; subscription management: owner/developer.
+- GET `/api/projects/:projectId/report`: up to 10,000 newest journal rows as CSV; owner/accountant.
+- POST `/api/projects/:projectId/team`: owner-managed invites, revocation and member removal.
+- POST `/api/invitations`: verified recipient accepts/declines their own unexpired invitation.
+
+All writes require same-origin verified sessions. Operation writes require Idempotency-Key. All payment operations remain simulated; these routes do not process real funds or card credentials.

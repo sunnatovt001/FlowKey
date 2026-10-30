@@ -4,6 +4,8 @@ import { workspace, Search } from "@/server/workspace";
 import { DeveloperTools } from "@/components/developer-tools";
 import { IntegrationChooser } from "@/components/integration-chooser";
 import { checkoutUrl } from "@/server/checkout";
+import { roleAllows } from "@/shared/project-role";
+import { notFound } from "next/navigation";
 export const metadata = { title: "Dasturchilar" };
 export default async function Developers({
   searchParams,
@@ -11,7 +13,8 @@ export default async function Developers({
   searchParams: Promise<Search>;
 }) {
   const search = await searchParams;
-  const { project } = await workspace(search);
+  const { project, role } = await workspace(search);
+  if (!roleAllows(role, "technical")) notFound();
   const links = await db.paymentLink.findMany({
     where: { projectId: project.id },
     orderBy: { createdAt: "desc" },

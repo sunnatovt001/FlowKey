@@ -68,6 +68,11 @@ model Project {
   audits       AuditLog[]
   paymentLinks PaymentLink[]
   checkoutSessions CheckoutSession[]
+  ledgerEntries LedgerEntry[]
+  refunds Refund[]
+  payouts Payout[]
+  subscriptions Subscription[]
+  invites ProjectInvite[]
 }
 
 model PaymentLink {
@@ -139,6 +144,7 @@ model Transaction {
   createdAt         DateTime          @default(now())
   deliveries        WebhookDelivery[]
   paymentEvent      PaymentEvent?
+  refunds Refund[]
 
   @@unique([projectId, idempotencyKey])
   @@index([projectId, createdAt])
@@ -315,5 +321,80 @@ model SupportBotState {
   offset Int @default(0)
   leaseOwner String?
   leaseUntil DateTime?
+}
+
+model LedgerEntry {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  operationId String
+  account String
+  currency String
+  amountMinor BigInt
+  createdAt DateTime @default(now())
+  @@unique([operationId, account])
+  @@index([projectId, currency, createdAt])
+}
+
+model Refund {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  paymentId String
+  payment Transaction @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  requestKey String
+  amountMinor BigInt
+  feeMinor BigInt
+  actorId String
+  createdAt DateTime @default(now())
+  @@unique([projectId, requestKey])
+  @@index([paymentId])
+}
+
+model Payout {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  requestKey String
+  amountMinor BigInt
+  currency String @default("UZS")
+  status String @default("requested")
+  actorId String
+  approvedBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([projectId, requestKey])
+  @@index([projectId, createdAt])
+}
+
+model Subscription {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  requestKey String
+  title String
+  amountMinor BigInt
+  currency String @default("UZS")
+  interval String
+  status String @default("active")
+  consentAt DateTime
+  nextBillingAt DateTime
+  period Int @default(0)
+  createdAt DateTime @default(now())
+  @@unique([projectId, requestKey])
+  @@index([projectId, createdAt])
+}
+
+model ProjectInvite {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  email String
+  role String
+  status String @default("pending")
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@unique([projectId, email])
+  @@index([email, status])
 }
 

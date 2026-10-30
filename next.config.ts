@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 const config: NextConfig = {
-  distDir: process.env.FLOWZA_TEST_INSTANCE === "1" ? ".next-test" : ".next",
+  distDir:
+    process.env.FLOWZA_BUILD_DIR ||
+    (process.env.FLOWZA_TEST_INSTANCE === "1" ? ".next-test" : ".next"),
   poweredByHeader: false,
   logging: { incomingRequests: { ignore: [/\/api\/auth\//, /\/login\?/] } },
   async headers() {

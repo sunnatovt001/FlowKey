@@ -11,7 +11,7 @@ export default async function Settings({
 }: {
   searchParams: Promise<Search>;
 }) {
-  await searchParams;
+  const search = await searchParams;
   const user = await pageUser();
   const business = await db.business.findUnique({
     where: { ownerId: user.id },
@@ -22,7 +22,10 @@ export default async function Settings({
     orderBy: { createdAt: "asc" },
   });
   const projects = allProjects.filter((project) => !project.archivedAt);
-  const project = projects[0] || allProjects[0];
+  const project =
+    allProjects.find((p) => p.id === search.project) ||
+    projects[0] ||
+    allProjects[0];
   return (
     <>
       <div className="page-heading">

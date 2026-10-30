@@ -79,3 +79,19 @@ Internal visual critique: design 7/10, usability 8/10, creativity 6/10, content 
 - Public deployment still needs TLS, edge abuse controls, production database credentials, backups, monitoring, and periodic expired-session/rate-bucket cleanup. No hosting deployment was performed.
 
 All local test data is clearly sandbox data. New accounts start empty. See README.md for setup, every route/API endpoint, and the complete user journey.
+
+## Operations extension - 30 October 2026
+
+The Next.js/PostgreSQL application now has finance, subscriptions, team, invitations and audit-history screens. This is a sandbox extension and not a live payment release.
+
+Verified on a new isolated PostgreSQL cluster at loopback port 55439 (`flowza_mvp_test`): schema migration, integer commission/refund rules, leap-year/month-end billing, role permissions, concurrent idempotent payment creation, competing payout reservations, payout state transitions and one-time reserve release, partial refund replay/conflicts/limits, one charge per subscription period, cancellation and balanced per-operation journal entries. All four finance tests passed with the DB integration test enabled.
+
+A real Chromium browser test passed the owner journey (create/approve/complete a payout; create/bill/cancel a subscription; invite a developer), recipient acceptance, developer access to integration tools, and server denial of developer payout/invite actions. It inspected finance, subscriptions, team and activity at 1440, 768 and 390 px with no document overflow, captured 12 screenshots in ignored output/e2e/, and observed no page JavaScript errors. Reduced-motion preference was exercised. A Playwright CLI session separately opened and inspected the local login page and was closed afterward.
+
+Initial browser test failures were test issues: a five-second expectation expired during a cold route compilation, and an exact text locator included the adjacent period label. The final test uses bounded 30-second waits and a cell locator.
+
+The independent default suite passed 32 tests, zero failed, seven environment-dependent cases skipped before integration checks. TypeScript and ESLint passed. A production Webpack build compiled all new routes and finished successfully using `.next-operations`. A normal restricted build hit Windows EPERM on build directories; an isolated elevated local build succeeded. No remote deployment was performed. The original database has not been migrated: automatic review required explicit user approval for that persistent primary-data change; all executable verification used the isolated test database.
+
+Final integrated regression run (isolated database at 55439): 39 tests, 38 passed, zero failed, one Telegram database test skipped. This enabled HTTP authentication lifecycle, checkout/database tests, the full account/project/payment HTTP journey, queue restart, outbound webhook limits and all new financial database tests. The new Chromium operations journey passed; 12 responsive captures were inspected. Final TypeScript and lint checks passed after feature work.
+
+After explicit user approval, the primary local database was snapshotted as `flowza_before_ops_1793335312625`, then both operations migrations were applied successfully. Read-only row digests matched the snapshot for all 11 User rows, 11 Project rows and 10 Transaction rows. No unbalanced journal operations were found. The primary app was started on port 3000 and opened in Codex. This supersedes the earlier primary-migration approval blocker. No remote deployment or live payment processing occurred.

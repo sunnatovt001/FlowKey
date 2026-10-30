@@ -1,9 +1,13 @@
 node_modules/
 .next/
 .next-test/
+.next-operations/
+.next-opsdev/
+.next-local/
 .env*
 !.env.example
 *.tsbuildinfo
 output/
 .playwright-cli/
 local-data/
+tmp/

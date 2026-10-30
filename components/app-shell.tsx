@@ -13,12 +13,21 @@ import {
   ChevronDown,
   LogOut,
   ArrowUpRight,
+  Wallet,
+  Users,
+  Repeat,
+  History,
 } from "lucide-react";
 import { Logo } from "./ui";
+import { roleAllows } from "@/shared/project-role";
 const navigation = [
   ["/dashboard", "Umumiy ko‘rinish", LayoutDashboard],
   ["/transactions", "Tranzaksiyalar", ArrowLeftRight],
   ["/developers", "Ulash", Code2],
+  ["/finance", "Moliya", Wallet],
+  ["/subscriptions", "Obunalar", Repeat],
+  ["/team", "Jamoa", Users],
+  ["/activity", "Faoliyat", History],
   ["/guide", "Qo‘llanma", BookOpen],
   ["/settings", "Hisob sozlamalari", Settings],
 ] as const;
@@ -27,7 +36,7 @@ export function AppShell({
   email,
   children,
 }: {
-  projects: { id: string; name: string }[];
+  projects: { id: string; name: string; role?: string }[];
   email: string;
   children: React.ReactNode;
 }) {
@@ -36,22 +45,33 @@ export function AppShell({
   const query = useSearchParams();
   const selected = query.get("project") || projects[0]?.id || "";
   const [error, setError] = useState("");
+  const role = projects.find((p) => p.id === selected)?.role || "owner";
   return (
     <div className="app-shell">
       <aside className="sidebar">
         <Logo />
         <p className="sidebar-caption">Kabinet</p>
         <nav aria-label="Kabinet menyusi">
-          {navigation.map(([href, label, Icon]) => (
-            <Link
-              className={path === href ? "active" : ""}
-              href={href + (selected ? `?project=${selected}` : "")}
-              key={href}
-            >
-              <Icon size={18} />
-              {label}
-            </Link>
-          ))}
+          {navigation
+            .filter(([href]) =>
+              href === "/finance"
+                ? roleAllows(role, "finance")
+                : ["/developers", "/subscriptions"].includes(href)
+                  ? roleAllows(role, "technical")
+                  : ["/team", "/activity"].includes(href)
+                    ? role === "owner"
+                    : true,
+            )
+            .map(([href, label, Icon]) => (
+              <Link
+                className={path === href ? "active" : ""}
+                href={href + (selected ? `?project=${selected}` : "")}
+                key={href}
+              >
+                <Icon size={18} />
+                {label}
+              </Link>
+            ))}
         </nav>
         <div className="sidebar-bottom">
           <div className="sandbox-info">
@@ -109,6 +129,7 @@ export function AppShell({
               <ChevronDown size={14} />
             </summary>
             <div>
+              <Link href="/invitations">Loyiha takliflari</Link>
               <Link href={`/settings?project=${selected}`}>
                 Hisob sozlamalari
               </Link>

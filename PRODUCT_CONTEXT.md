@@ -53,3 +53,7 @@ Recommended dependency order for future work: confirm scope and partner responsi
 ## Unresolved launch decisions
 
 Partner identity, merchant eligibility and verification responsibilities, contractual/legal operating model, actual processing/payout costs, supported settlement currencies, recurring-charge capabilities, and commercial launch date remain unconfirmed in the source. Security review, recovery tests, monitoring, reconciliation, operating procedures, and an accepted pilot are launch gates. This document records those source uncertainties; it is not a legal or regulatory determination.
+
+## Implementation update - 30 October 2026
+
+The historical scope list above predates checkout, automatic outgoing webhook delivery, project creation, and the operations extension. Current standalone app behavior is documented in README.md, CHECKOUT.md and OPERATIONS.md. Added: invitations and role enforcement; 3% balanced sandbox ledger; partial refunds; atomic payout reserves and owner approval; manual monthly/yearly sandbox subscription billing/cancellation; CSV and activity pages. The separate Sites/D1 app has not received this extension. Real partner/KYC, card billing, FX and live execution remain unavailable.

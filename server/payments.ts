@@ -4,6 +4,7 @@ import { ApiError, hash } from "./security";
 import { payment } from "./validators";
 import { randomUUID } from "node:crypto";
 import { sandboxProvider } from "./providers/sandbox";
+import { lockFinance, postPayment } from "./finance";
 export function serializePayment(t: {
   id: string;
   amountMinor: number | bigint;
@@ -26,6 +27,7 @@ export async function createPayment(
   projectId: string,
   input: unknown,
   idempotencyKey: string | null,
+  transaction?: Prisma.TransactionClient,
 ) {
   if (input && typeof input === "object" && "simulated_result" in input) {
     const value = input as Record<string, unknown>;
@@ -40,7 +42,7 @@ export async function createPayment(
       "Idempotency-Key 8–128 ta harf, raqam, pastki chiziq yoki chiziqchadan iborat bo‘lsin.",
     );
   const requestHash = hash(JSON.stringify(data));
-  const existing = await db.transaction.findUnique({
+  const existing = await (transaction || db).transaction.findUnique({
     where: { projectId_idempotencyKey: { projectId, idempotencyKey } },
   });
   if (existing) {
@@ -53,7 +55,8 @@ export async function createPayment(
     return { ...serializePayment(existing), replayed: true };
   }
   try {
-    const t = await db.$transaction(async (tx) => {
+    const execute = async (tx: Prisma.TransactionClient) => {
+      if (!transaction) await lockFinance(tx, projectId);
       const project = await tx.project.findUnique({ where: { id: projectId } });
       if (!project || project.archivedAt)
         throw new ApiError(409, "Loyiha arxivlangan yoki mavjud emas.");
@@ -76,6 +79,7 @@ export async function createPayment(
           requestHash,
         },
       });
+      await postPayment(tx, t);
       const endpoints = await tx.webhookEndpoint.findMany({
         where: {
           projectId,
@@ -111,9 +115,13 @@ export async function createPayment(
         data: { projectId, action: "payment.created", resourceId: t.id },
       });
       return t;
-    });
+    };
+    const t = transaction
+      ? await execute(transaction)
+      : await db.$transaction(execute);
     return { ...serializePayment(t), replayed: false };
   } catch (e) {
+    if (transaction) throw e;
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
       e.code === "P2002"

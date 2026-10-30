@@ -1,0 +1,12 @@
+ALTER TABLE "LedgerEntry" ADD CONSTRAINT "LedgerEntry_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Refund" ADD CONSTRAINT "Refund_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Refund" ADD CONSTRAINT "Refund_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Transaction"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Payout" ADD CONSTRAINT "Payout_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Subscription" ADD CONSTRAINT "Subscription_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProjectInvite" ADD CONSTRAINT "ProjectInvite_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "LedgerEntry" ADD CONSTRAINT "LedgerEntry_account_check" CHECK (account IN ('provider','fees','available','reserved','paid'));
+ALTER TABLE "Refund" ADD CONSTRAINT "Refund_amount_check" CHECK ("amountMinor" > 0 AND "feeMinor" >= 0 AND "feeMinor" <= "amountMinor");
+ALTER TABLE "Payout" ADD CONSTRAINT "Payout_amount_check" CHECK ("amountMinor" >= 2000000 AND currency = 'UZS');
+ALTER TABLE "Payout" ADD CONSTRAINT "Payout_status_check" CHECK (status IN ('requested','approved','rejected','completed','failed'));
+ALTER TABLE "Subscription" ADD CONSTRAINT "Subscription_values_check" CHECK ("amountMinor" > 0 AND currency = 'UZS' AND interval IN ('monthly','yearly') AND status IN ('active','cancelled') AND period >= 0);
+ALTER TABLE "ProjectInvite" ADD CONSTRAINT "ProjectInvite_role_check" CHECK (role IN ('developer','accountant'));

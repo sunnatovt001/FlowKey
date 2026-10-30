@@ -13,7 +13,12 @@ export async function GET(_req: Request, { params }: Context) {
   return handle(async () => {
     const user = await requireUser();
     const { projectId, resource, action } = await params;
-    await requireProject(projectId, user.id, false);
+    await requireProject(
+      projectId,
+      user.id,
+      false,
+      resource === "transactions" ? "read" : "technical",
+    );
     if (action.length !== 1) throw new ApiError(404, "Topilmadi.");
     if (resource === "transactions") {
       const payment = await db.transaction.findFirst({
@@ -45,7 +50,7 @@ export async function POST(req: Request, { params }: Context) {
     sameOrigin(req);
     const user = await requireUser();
     const { projectId, resource, action } = await params;
-    await requireProject(projectId, user.id);
+    await requireProject(projectId, user.id, true, "technical");
     await limit(`write:${user.id}`);
     if (resource === "sandbox" && action.join("/") === "payments") {
       const { replayed, ...payment } = await createPayment(
@@ -103,7 +108,7 @@ export async function PATCH(req: Request, { params }: Context) {
     sameOrigin(req);
     const user = await requireUser();
     const { projectId, resource, action } = await params;
-    await requireProject(projectId, user.id);
+    await requireProject(projectId, user.id, true, "technical");
     await limit(`write:${user.id}`);
     if (resource !== "webhook-endpoints" || action.length !== 1)
       throw new ApiError(404, "Topilmadi.");

@@ -115,7 +115,9 @@ Unit tests cover password handling, cryptographic secret handling, monetary vali
 
 ## Intentionally out of scope
 
-Live money processing, bank/payment partners, legal/KYC approval, team invitations, balances, payouts, refunds, subscriptions, email-address changes and settlement transitions. Pending payments remain pending. Final Figma, production SMTP, hosting/region, monitoring vendor, privacy/retention approval and independent security review remain external release gates.
+Live money processing, bank/payment partners, legal/KYC approval, live payout execution, automated card renewals, FX conversion, email-address changes and provider settlement transitions. Pending payments remain pending. Final Figma, production SMTP, hosting/region, monitoring vendor, privacy/retention approval and independent security review remain external release gates.
+
+The standalone application now includes project invitations and server-enforced roles, a 3% sandbox ledger, partial refunds, reserved payout requests and owner approval, manual monthly/yearly subscription rehearsal, CSV reports and activity history. See [OPERATIONS.md](OPERATIONS.md) for installation, permission rules, accounting, and remaining roadmap work. These modules have not been ported or deployed to the separate Sites/D1 app.
 
 ## Legacy accounts and migration safety
 

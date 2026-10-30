@@ -18,7 +18,7 @@ export default async function Dashboard({
 }: {
   searchParams: Promise<Search>;
 }) {
-  const { project } = await workspace(await searchParams);
+  const { project, role } = await workspace(await searchParams);
   const [groups, recent, keyCount, endpointCount, activity] = await Promise.all(
     [
       db.transaction.groupBy({
@@ -82,12 +82,14 @@ export default async function Dashboard({
             tariqasida.
           </p>
         </div>
-        <Link
-          className="button primary"
-          href={`/developers?project=${project.id}&tab=sandbox`}
-        >
-          Sinov to‘lovi yaratish <ArrowUpRight size={16} />
-        </Link>
+        {role !== "accountant" && (
+          <Link
+            className="button primary"
+            href={`/developers?project=${project.id}&tab=sandbox`}
+          >
+            Sinov to‘lovi yaratish <ArrowUpRight size={16} />
+          </Link>
+        )}
       </div>
       <div className="notice">
         <Activity size={17} />

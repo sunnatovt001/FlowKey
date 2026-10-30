@@ -9,15 +9,25 @@ export default async function WorkspaceLayout({
   const user = await pageUser();
   const projects = await db.project.findMany({
     where: {
-      business: { ownerId: user.id },
       archivedAt: null,
-      memberships: { some: { userId: user.id, role: "owner" } },
+      memberships: { some: { userId: user.id } },
     },
-    select: { id: true, name: true },
+    select: {
+      id: true,
+      name: true,
+      memberships: { where: { userId: user.id }, select: { role: true } },
+    },
     orderBy: { createdAt: "asc" },
   });
   return (
-    <AppShell projects={projects} email={user.email}>
+    <AppShell
+      projects={projects.map((p) => ({
+        id: p.id,
+        name: p.name,
+        role: p.memberships[0]?.role || "",
+      }))}
+      email={user.email}
+    >
       {children}
     </AppShell>
   );

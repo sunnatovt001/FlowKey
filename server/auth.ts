@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { db } from "./db";
 import { auth } from "./auth-instance";
 import { ApiError, hash } from "./security";
+import { roleAllows } from "../shared/project-role";
 export async function currentUser() {
   const session = await auth.api.getSession({ headers: await headers() });
   return session
@@ -13,7 +14,10 @@ export async function requireUser() {
   const user = await currentUser();
   if (!user) throw new ApiError(401, "Hisobga kiring.");
   if (!user.emailVerified)
-    throw new ApiError(403, "Davom etishdan oldin elektron pochtangizni tasdiqlang.");
+    throw new ApiError(
+      403,
+      "Davom etishdan oldin elektron pochtangizni tasdiqlang.",
+    );
   return user;
 }
 export async function pageUser() {
@@ -26,6 +30,7 @@ export async function requireProject(
   projectId: string,
   userId: string,
   active = true,
+  scope: "read" | "technical" | "finance" | "owner" = "owner",
 ) {
   const member = await db.membership.findUnique({
     where: { userId_projectId: { userId, projectId } },
@@ -33,8 +38,8 @@ export async function requireProject(
   });
   if (
     !member ||
-    member.role !== "owner" ||
-    member.project.business.ownerId !== userId
+    !roleAllows(member.role, scope) ||
+    (member.role === "owner" && member.project.business.ownerId !== userId)
   )
     throw new ApiError(404, "Loyiha topilmadi.");
   if (active && member.project.archivedAt)
@@ -57,7 +62,10 @@ export async function apiProject(req: Request) {
     key.project.archivedAt ||
     !key.project.business.owner.emailVerified
   )
-    throw new ApiError(401, "Sinov kaliti noto‘g‘ri, bekor qilingan yoki loyiha arxivlangan.");
+    throw new ApiError(
+      401,
+      "Sinov kaliti noto‘g‘ri, bekor qilingan yoki loyiha arxivlangan.",
+    );
   await db.apiKey.update({
     where: { id: key.id },
     data: { lastUsedAt: new Date() },
