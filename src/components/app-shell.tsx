@@ -14,14 +14,7 @@ import {
   LogOut,
   ArrowUpRight,
 } from "lucide-react";
-import { Logo } from "./ui";
-const navigation = [
-  ["/dashboard", "Umumiy ko‘rinish", LayoutDashboard],
-  ["/transactions", "Tranzaksiyalar", ArrowLeftRight],
-  ["/developers", "Ulash", Code2],
-  ["/guide", "Qo‘llanma", BookOpen],
-  ["/settings", "Hisob sozlamalari", Settings],
-] as const;
+import { WorkspaceSidebar } from "./layout/workspace-sidebar";
 export function AppShell({
   projects,
   email,
@@ -38,35 +31,7 @@ export function AppShell({
   const [error, setError] = useState("");
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <Logo />
-        <p className="sidebar-caption">Kabinet</p>
-        <nav aria-label="Kabinet menyusi">
-          {navigation.map(([href, label, Icon]) => (
-            <Link
-              className={path === href ? "active" : ""}
-              href={href + (selected ? `?project=${selected}` : "")}
-              key={href}
-            >
-              <Icon size={18} />
-              {label}
-            </Link>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="sandbox-info">
-            <span className="sandbox-label">Unit muhiti</span>
-            <p>
-              Yaratish uchun xavfsiz muhit.
-              <br />
-              Haqiqiy pul ishlatilmaydi.
-            </p>
-          </div>
-          <Link href={`/guide?project=${selected}#quick-start`}>
-            Yordam kerakmi? <ArrowUpRight size={14} />
-          </Link>
-        </div>
-      </aside>
+      <WorkspaceSidebar path={path} selected={selected}/>
       <div className="app-main">
         <header className="app-header">
           <div className="project-picker">

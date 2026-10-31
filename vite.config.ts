@@ -48,7 +48,7 @@ export default defineConfig(async ({ command }) => {
     // Vinext loads navigation by its public export names at runtime.
     // Keep those names stable in production chunks as well as in dev.
     build: { rolldownOptions: { output: { minifyInternalExports: false } } },
-    resolve:{alias:[{find:'@prisma/client/wasm',replacement:fileURLToPath(new URL('./node_modules/.prisma/client/wasm.js',import.meta.url))}]},
+    resolve:{alias:[{find:'@/components',replacement:fileURLToPath(new URL('./src/components',import.meta.url))},{find:'@/features',replacement:fileURLToPath(new URL('./src/features',import.meta.url))},{find:'@prisma/client/wasm',replacement:fileURLToPath(new URL('./node_modules/.prisma/client/wasm.js',import.meta.url))}]},
     server: {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }
