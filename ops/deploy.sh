@@ -24,11 +24,14 @@ ln -s "$ROOT/shared/local-data" "$release/local-data"
 cd "$release"
 npm ci --no-audit --no-fund
 npx prisma generate
+npx next typegen
 npm run typecheck
 npm test
 npm run build
 port=4051
 [[ ! -f "$ROOT/current-port" || "$(cat "$ROOT/current-port")" != 4051 ]] || port=4052
+# Stop only an obsolete FlowKey release occupying the inactive slot.
+for stale in $(pm2 jlist | node -e 'let s="";process.stdin.on("data",x=>s+=x);process.stdin.on("end",()=>{for(const p of JSON.parse(s))if(p.name.startsWith("flowkey-release-")&&p.name.endsWith("-"+process.argv[1]))console.log(p.name)})' "$port"); do pm2 delete "$stale"; done
 name="flowkey-release-${sha:0:12}-$port"
 cleanup() { pm2 delete "$name" >/dev/null 2>&1 || true; }
 trap cleanup ERR
@@ -44,7 +47,7 @@ curl -fsS "http://127.0.0.1:$port/api/openapi" >/dev/null
 oldport=$(cat "$ROOT/current-port" 2>/dev/null || echo 4050)
 printf 'set $flowkey_backend http://127.0.0.1:%s;\n' "$port" > "$ROOT/upstream.new"
 sudo /usr/local/sbin/flowkey-switch "$ROOT/upstream.new"
-if ! curl -fsS -H 'Host: flowkey.173.212.216.216.sslip.io' http://127.0.0.1/api/health >/dev/null; then
+if ! curl -fsS --resolve flowkey.173.212.216.216.sslip.io:443:127.0.0.1 https://flowkey.173.212.216.216.sslip.io/api/health >/dev/null; then
  printf 'set $flowkey_backend http://127.0.0.1:%s;\n' "$oldport" > "$ROOT/upstream.new"
  sudo /usr/local/sbin/flowkey-switch "$ROOT/upstream.new"
  exit 1
@@ -55,7 +58,8 @@ trap - ERR
 echo "$port" > "$ROOT/current-port"
 echo "$sha" > "$ROOT/current-sha"
 ln -sfn "$release" "$ROOT/current"
-# Keep one worker; run it only after traffic has switched.
+# Keep one worker; stop the original combined web/worker after switching.
+pm2 stop FlowKey >/dev/null 2>&1 || true
 pm2 delete FlowKey-worker >/dev/null 2>&1 || true
 pm2 start node --name FlowKey-worker --cwd "$release" -- --env-file=.env --import tsx scripts/worker.ts
 pm2 save
