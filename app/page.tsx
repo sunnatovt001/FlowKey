@@ -2,9 +2,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
-  Braces,
-  Webhook,
-  ShieldCheck,
   Check,
 } from "lucide-react";
 import { Logo, PublicNav } from "@/components/ui";
@@ -37,56 +34,6 @@ export default function Home() {
             </p>
           </div>
           <ProductPreview />
-        </section>
-        <section id="features" className="benefits section">
-          <div className="section-heading">
-            <h2>
-              To‘lov tashvishi kamroq.
-              <br />
-              Mahsulotga ko‘proq vaqt.
-            </h2>
-            <p>
-              Birinchi API so‘rovidan tekshirilgan integratsiyagacha olib boradigan yagona kabinet.
-            </p>
-          </div>
-          <div className="benefit-rows">
-            <article>
-              <Braces />
-              <div>
-                <h3>Ishingizni yengillashtiradigan API.</h3>
-                <p>
-                  Sodda JSON so‘rovlari, tushunarli to‘lov holatlari va takroriy so‘rov himoyasi. Muvaffaqiyat, xato va kutish holatlarini sinang.
-                </p>
-                <Link href="/docs#create-payment">
-                  To‘lov API’sini ko‘rish <ArrowRight size={14} />
-                </Link>
-              </div>
-            </article>
-            <article>
-              <Webhook />
-              <div>
-                <h3>Nima bo‘lganini va sababini biling.</h3>
-                <p>
-                  Har bir sinov to‘lovini kabinetdan kuzating. Webhook urinishlari, javob kodlari va imzolangan hodisalarni tekshiring.
-                </p>
-                <Link href="/docs#webhooks">
-                  Webhooklar haqida <ArrowRight size={14} />
-                </Link>
-              </div>
-            </article>
-            <article>
-              <ShieldCheck />
-              <div>
-                <h3>Ishonchli sinov maydoni.</h3>
-                <p>
-                  Sinov kalitlari, ajratilgan loyihalar va namunaviy tranzaksiyalar. Karta ham, haqiqiy pul ham kerak emas.
-                </p>
-                <Link href="/signup">
-                  Kabinet yaratish <ArrowRight size={14} />
-                </Link>
-              </div>
-            </article>
-          </div>
         </section>
         <section id="how-it-works" className="section how">
           <div>
