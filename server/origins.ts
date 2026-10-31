@@ -18,14 +18,18 @@ export function matchesAppOrigin(
   requestURL: string,
   configuredURL: string | undefined,
   development: boolean,
+  requestHost?: string | null,
 ) {
   if (!origin) return false;
   const expected = new URL(configuredURL || requestURL).origin;
   if (origin === expected) return true;
-  // Loopback alias support must still be same-origin to the actual request.
-  return (
-    development &&
-    origin === new URL(requestURL).origin &&
-    authTrustedOrigins(expected, true).includes(origin)
-  );
+  if (!development) return false;
+  const allowed = authTrustedOrigins(expected, true);
+  const request = new URL(requestURL);
+  if (!allowed.includes(origin) || !allowed.includes(request.origin))
+    return false;
+  // Next.js can build req.url using its listening hostname (localhost), even
+  // when the browser requested 127.0.0.1. Host retains that request authority.
+  // Do not trust forwarded hosts or permit other hosts/ports.
+  return (requestHost ?? request.host).toLowerCase() === new URL(origin).host;
 }

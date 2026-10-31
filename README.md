@@ -15,7 +15,11 @@ npm run setup
 
 The setup helper creates an ignored `.env`, generates webhook encryption and Better Auth secrets, and adds missing auth settings while preserving existing configuration. Losing WEBHOOK_ENCRYPTION_KEY makes existing signing secrets unreadable. API keys are hash-only; Better Auth manages database session tokens, which are never exposed in browser JSON. Production requires a real SMTP sender and secret manager. Local MAIL_TRANSPORT=file writes verification/reset messages to ignored `local-data/mail/*.json`; open the requested message's URL locally. Do not share these files.
 
-Start PostgreSQL with **one** of these options:
+`npm run dev` now checks the configured database first. For the default bundled
+local database it starts PostgreSQL automatically and waits until it accepts
+queries before starting Next.js. A custom database must already be running.
+
+You can also start PostgreSQL separately with **one** of these options:
 
 ```powershell
 # Bundled local development PostgreSQL (Windows supported):
@@ -39,6 +43,21 @@ npm run dev
 Open [FLOWZA locally](http://localhost:3000). `APP_URL` must match the exact origin used in the browser; use `http://localhost:3000` consistently. Missing database configuration produces an explicit error; it never switches to mock persistence.
 
 For a local production build, use HTTPS when exercising login: production session cookies are Secure. Use development mode for the HTTP localhost journey.
+
+## Gmail delivery for password reset and verification
+
+Run `npm run mail:setup` in an interactive terminal. Enter the sender's Gmail
+address and a Google App Password (not the normal account password). Google
+requires 2-Step Verification for App Passwords:
+https://support.google.com/accounts/answer/185833.
+
+The setup verifies Gmail over TLS before enabling `MAIL_TRANSPORT=smtp` and
+saving the credentials in the ignored local `.env`. Password input is hidden;
+no reset tokens or credentials are printed. Failed verification preserves the
+previous configuration. Restart `npm run dev` after setup. `npm run mail:check`
+verifies connectivity without sending an email. Then request a fresh password
+reset from `/login`; check the recipient's inbox and Spam folder. This configures
+the local app only; Sites retains its separate ChatGPT sign-in.
 
 ## Complete sandbox journey
 

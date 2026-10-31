@@ -1,9 +1,7 @@
 import EmbeddedPostgres from "embedded-postgres";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-const exec = promisify(execFile);
+import { spawn } from "node:child_process";
 const databaseDir = resolve(process.env.FLOWZA_PG_DIR || "local-data/postgres");
 const port = Number(process.env.FLOWZA_PG_PORT || 5432);
 const pg = new EmbeddedPostgres({
@@ -23,32 +21,39 @@ try {
   let stop;
   if (process.platform === "win32") {
     const { pg_ctl } = await import("@embedded-postgres/windows-x64");
+    // Wait for pg_ctl itself, not pipes inherited by the background server.
+    const control = (args) =>
+      new Promise((resolve, reject) => {
+        const child = spawn(pg_ctl, args, {
+          windowsHide: true,
+          stdio: "ignore",
+        });
+        child.once("error", reject);
+        child.once("exit", (code) =>
+          code === 0 ? resolve() : reject(new Error(`pg_ctl exited (${code})`)),
+        );
+      });
     let running = false;
     try {
-      await exec(pg_ctl, ["status", "-D", databaseDir], { windowsHide: true });
+      await control(["status", "-D", databaseDir]);
       running = true;
     } catch {
       /* No local server yet. */
     }
     if (!running)
-      await exec(
-        pg_ctl,
-        [
-          "start",
-          "-D",
-          databaseDir,
-          "-l",
-          resolve(databaseDir, "server.log"),
-          "-o",
-          `-h 127.0.0.1 -p ${port}`,
-          "-w",
-        ],
-        { windowsHide: true },
-      );
-    stop = () =>
-      exec(pg_ctl, ["stop", "-D", databaseDir, "-m", "fast", "-w"], {
-        windowsHide: true,
-      });
+      await control([
+        "start",
+        "-D",
+        databaseDir,
+        "-l",
+        `${databaseDir}.log`,
+        "-o",
+        `-h 127.0.0.1 -p ${port}`,
+        "-w",
+        "-t",
+        "120",
+      ]);
+    stop = () => control(["stop", "-D", databaseDir, "-m", "fast", "-w"]);
   } else {
     await pg.start();
     stop = () => pg.stop();
@@ -63,7 +68,7 @@ try {
     await client.end();
   }
   console.log(
-    "Local PostgreSQL is ready at 127.0.0.1:5432. Keep this terminal open. Ctrl+C stops it; data persists in local-data/.",
+    `Local PostgreSQL is ready at 127.0.0.1:${port}. Keep this terminal open. Ctrl+C stops it; data persists in local-data/.`,
   );
   for (const signal of ["SIGINT", "SIGTERM"])
     process.on(signal, async () => {

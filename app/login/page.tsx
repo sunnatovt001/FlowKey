@@ -28,7 +28,13 @@ export default function Login() {
         <div>
           <h1>Qaytganingizdan xursandmiz.</h1>
           <p className="muted">Dasturchi kabinetingizga kiring.</p>
-          <AuthForm signup={false} />
+          <AuthForm
+            signup={false}
+            localMail={
+              process.env.NODE_ENV === "development" &&
+              process.env.MAIL_TRANSPORT === "file"
+            }
+          />
         </div>
       </div>
     </main>

@@ -5,7 +5,13 @@ import { useState } from "react";
 import { ArrowRight, LoaderCircle } from "lucide-react";
 import { RecoveryForm } from "./recovery-form";
 import { useRouter } from "next/navigation";
-export function AuthForm({ signup }: { signup: boolean }) {
+export function AuthForm({
+  signup,
+  localMail = false,
+}: {
+  signup: boolean;
+  localMail?: boolean;
+}) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -117,7 +123,7 @@ export function AuthForm({ signup }: { signup: boolean }) {
           </Link>
         </p>
       </form>
-      <RecoveryForm />
+      <RecoveryForm localMail={localMail} />
     </>
   );
 }

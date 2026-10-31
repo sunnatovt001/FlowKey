@@ -2,7 +2,7 @@
 import { authError } from "@/shared/locale";
 import { useSyncExternalStore, useState } from "react";
 const subscribe = () => () => {};
-export function RecoveryForm() {
+export function RecoveryForm({ localMail = false }: { localMail?: boolean }) {
   const [selectedMode, setMode] = useState("");
   const search = useSyncExternalStore(
     subscribe,
@@ -38,6 +38,7 @@ export function RecoveryForm() {
           Pochtani tasdiqlash
         </button>
       </p>
+      {!mode && message && <p role="status">{message}</p>}
       {mode && (
         <fieldset disabled={busy}>
           <legend>
@@ -57,6 +58,11 @@ export function RecoveryForm() {
               autoComplete={mode === "reset" ? "new-password" : "email"}
             />
           </label>
+          {mode === "reset" && (
+            <p className="form-hint">
+              Yangi parol kamida 12 ta belgidan iborat bo‘lsin.
+            </p>
+          )}
           <button
             type="button"
             className="button secondary"
@@ -117,6 +123,13 @@ export function RecoveryForm() {
             {busy ? "Kuting…" : "Davom etish"}
           </button>
           <p role="status">{message}</p>
+          {localMail && mode !== "reset" && (
+            <p className="form-hint">
+              Local rejim: xat Gmail’ga yuborilmaydi. Tiklash yoki tasdiqlash
+              havolasi kompyuteringizdagi <code>local-data/mail</code> papkasiga
+              saqlanadi.
+            </p>
+          )}
         </fieldset>
       )}
     </section>

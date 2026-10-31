@@ -12,9 +12,7 @@ export default function Signup() {
             <br />
             Unit muhitidan boshlang.
           </h2>
-          <p>
-            Loyiha yarating, kalit oling va birinchi to‘lovingizni sinang.
-          </p>
+          <p>Loyiha yarating, kalit oling va birinchi to‘lovingizni sinang.</p>
           <ul className="auth-benefits">
             <li>Bir-biridan ajratilgan sinov loyihalari</li>
             <li>Oldindan belgilangan to‘lov natijalari</li>
@@ -26,8 +24,16 @@ export default function Signup() {
       <div className="auth-content">
         <div>
           <h1>Ishni boshlang.</h1>
-          <p className="muted">To‘lov Unit muhitingizga bir necha qadam qoldi.</p>
-          <AuthForm signup />
+          <p className="muted">
+            To‘lov Unit muhitingizga bir necha qadam qoldi.
+          </p>
+          <AuthForm
+            signup
+            localMail={
+              process.env.NODE_ENV === "development" &&
+              process.env.MAIL_TRANSPORT === "file"
+            }
+          />
         </div>
       </div>
     </main>

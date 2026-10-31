@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "next dev --webpack --hostname 127.0.0.1",
+    "dev": "node scripts/dev.mjs",
     "build": "next build --webpack",
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint .",
@@ -13,6 +13,8 @@
     "db:migrate": "prisma migrate deploy",
     "db:local": "node scripts/local-db.mjs",
     "setup": "node scripts/setup-env.mjs",
+    "mail:setup": "node scripts/setup-gmail.mjs",
+    "mail:check": "node scripts/check-mail.mjs",
     "worker": "tsx scripts/worker.ts",
     "test:e2e": "playwright test",
     "bot:telegram": "tsx scripts/telegram-bot.ts",

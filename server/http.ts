@@ -38,6 +38,7 @@ export function sameOrigin(req: Request) {
       req.url,
       process.env.APP_URL,
       process.env.NODE_ENV === "development",
+      req.headers.get("host"),
     )
   )
     throw new ApiError(403, "So‘rov manbasiga ruxsat yo‘q.");
