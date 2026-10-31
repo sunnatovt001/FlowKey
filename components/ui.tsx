@@ -16,7 +16,6 @@ export function PublicNav() {
     <header className="public-nav">
       <Logo />
       <nav aria-label="Asosiy menyu">
-        <Link href="/#how-it-works">Qanday ishlaydi</Link>
         <Link href="/#pricing">Narxlar</Link>
         <Link href="/docs">Qo‘llanma</Link>
       </nav>
