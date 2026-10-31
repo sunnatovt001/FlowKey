@@ -35,47 +35,6 @@ export default function Home() {
           </div>
           <ProductPreview />
         </section>
-        <section id="how-it-works" className="section how">
-          <div>
-            <h2>
-              G‘oyadan birinchi
-              <br />
-              sinov to‘lovigacha.
-            </h2>
-            <p>Aniq yo‘l. Har bir qadam sizning qo‘lingizda.</p>
-            <Link href="/signup" className="button primary">
-              Integratsiyani boshlash <ArrowRight size={16} />
-            </Link>
-          </div>
-          <ol>
-            {[
-              ["Hisob yarating", "Dasturchi kabinetingiz shu yerdan boshlanadi."],
-              [
-                "Loyihangizni yarating",
-                "Nima yaratayotganingizni ayting. Bu sinov sozlamasi, KYC emas.",
-              ],
-              [
-                "API’ni ulang",
-                "Sinov kaliti yarating va birinchi so‘rovingizni yuboring.",
-              ],
-              ["To‘lovlarni sinang", "Turli natijalarni yarating va tekshiring."],
-              [
-                "Haqiqiy to‘lovlarga kirish so‘rovi",
-                "Tez kunda, litsenziyalangan hamkor tasdig‘iga bog‘liq.",
-              ],
-            ].map(([title, text]) => (
-              <li key={title}>
-                <span className="step-dot">
-                  <Check size={14} />
-                </span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
         <section className="section developer-band">
           <div>
             <h2>
