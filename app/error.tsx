@@ -10,13 +10,13 @@ export default function ErrorPage({
     <main className="error-page">
       <h1>Sahifani yuklab bo‘lmadi.</h1>
       <p>
-        Qayta urinib ko‘ring. Lokal muhitda baza ishga tushganini, muhit o‘zgaruvchilari va migratsiyalar sozlanganini tekshiring.
+        Sahifa vaqtincha ochilmadi. Qayta urinib ko‘ring yoki ChatGPT orqali kirish sahifasiga o‘ting.
       </p>
       <button className="button primary" onClick={reset}>
         Qayta urinish
       </button>
-      <Link className="button secondary" href="/">
-        FlowKey’ga qaytish
+      <Link className="button secondary" href="/login">
+        ChatGPT orqali kirish
       </Link>
     </main>
   );

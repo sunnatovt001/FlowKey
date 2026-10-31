@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { pageUser } from "@/server/auth";
 import { db } from "@/server/db";
 import { AppShell } from "@/components/app-shell";
@@ -16,6 +17,10 @@ export default async function WorkspaceLayout({
     select: { id: true, name: true },
     orderBy: { createdAt: "asc" },
   });
+  if (!projects.length) {
+    const business = await db.business.findUnique({ where: { ownerId: user.id } });
+    if (!business) redirect("/onboarding");
+  }
   return (
     <AppShell projects={projects} email={user.email}>
       {children}
