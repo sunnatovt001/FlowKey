@@ -35,7 +35,7 @@ port=4051
 for stale in $(pm2 jlist | node -e 'let s="";process.stdin.on("data",x=>s+=x);process.stdin.on("end",()=>{for(const p of JSON.parse(s))if(p.name.startsWith("flowkey-release-")&&p.name.endsWith("-"+process.argv[1]))console.log(p.name)})' "$port"); do pm2 delete "$stale"; done
 name="flowkey-release-${sha:0:12}-$port"
 cleanup() { pm2 delete "$name" >/dev/null 2>&1 || true; }
-trap cleanup ERR
+trap cleanup ERR EXIT
 PORT="$port" pm2 start "$release/node_modules/next/dist/bin/next" --name "$name" --cwd "$release" -- start --hostname 127.0.0.1
 healthy=0
 for attempt in $(seq 1 60); do
@@ -58,7 +58,7 @@ if [[ "$proxyhealthy" != 1 ]]; then
  sudo /usr/local/sbin/flowkey-switch "$ROOT/upstream.new"
  exit 1
 fi
-trap - ERR
+trap - ERR EXIT
 [[ ! -f "$ROOT/current-port" ]] || cp "$ROOT/current-port" "$ROOT/previous-port"
 [[ ! -f "$ROOT/current-sha" ]] || cp "$ROOT/current-sha" "$ROOT/previous-sha"
 echo "$port" > "$ROOT/current-port"
