@@ -28,6 +28,7 @@ npx next typegen
 npm run typecheck
 npm test
 npm run build
+chmod 600 "$ROOT"/*.log 2>/dev/null || true
 port=4051
 [[ ! -f "$ROOT/current-port" || "$(cat "$ROOT/current-port")" != 4051 ]] || port=4052
 # Stop only an obsolete FlowKey release occupying the inactive slot.
