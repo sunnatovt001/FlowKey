@@ -48,7 +48,12 @@ curl -fsS "http://127.0.0.1:$port/api/openapi" >/dev/null
 oldport=$(cat "$ROOT/current-port" 2>/dev/null || echo 4050)
 printf 'set $flowkey_backend http://127.0.0.1:%s;\n' "$port" > "$ROOT/upstream.new"
 sudo /usr/local/sbin/flowkey-switch "$ROOT/upstream.new"
-if ! curl -fsS --resolve flowkey.173.212.216.216.sslip.io:443:127.0.0.1 https://flowkey.173.212.216.216.sslip.io/api/health >/dev/null; then
+proxyhealthy=0
+for attempt in $(seq 1 15); do
+ if curl -fsS --resolve flowkey.173.212.216.216.sslip.io:443:127.0.0.1 https://flowkey.173.212.216.216.sslip.io/api/health >/dev/null; then proxyhealthy=1; break; fi
+ sleep 1
+done
+if [[ "$proxyhealthy" != 1 ]]; then
  printf 'set $flowkey_backend http://127.0.0.1:%s;\n' "$oldport" > "$ROOT/upstream.new"
  sudo /usr/local/sbin/flowkey-switch "$ROOT/upstream.new"
  exit 1
