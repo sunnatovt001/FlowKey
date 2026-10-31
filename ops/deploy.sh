@@ -35,7 +35,7 @@ for stale in $(pm2 jlist | node -e 'let s="";process.stdin.on("data",x=>s+=x);pr
 name="flowkey-release-${sha:0:12}-$port"
 cleanup() { pm2 delete "$name" >/dev/null 2>&1 || true; }
 trap cleanup ERR
-PORT="$port" pm2 start npm --name "$name" --cwd "$release" -- start --port "$port"
+PORT="$port" pm2 start "$release/node_modules/next/dist/bin/next" --name "$name" --cwd "$release" -- start --hostname 127.0.0.1
 healthy=0
 for attempt in $(seq 1 60); do
  if curl -fsS "http://127.0.0.1:$port/api/health" >/dev/null; then healthy=1; break; fi
@@ -61,6 +61,6 @@ ln -sfn "$release" "$ROOT/current"
 # Keep one worker; stop the original combined web/worker after switching.
 pm2 stop FlowKey >/dev/null 2>&1 || true
 pm2 delete FlowKey-worker >/dev/null 2>&1 || true
-pm2 start node --name FlowKey-worker --cwd "$release" -- --env-file=.env --import tsx scripts/worker.ts
+pm2 start "$release/scripts/worker.ts" --name FlowKey-worker --cwd "$release" --interpreter node --interpreter-args="--env-file=.env --import tsx"
 pm2 save
 printf 'Release active: %s port %s\n' "$sha" "$port"
