@@ -1,0 +1,2 @@
+import {handle,sameOrigin} from '@/server/http';import {ApiError} from '@/server/security';
+export async function POST(req:Request,{params}:{params:Promise<{action:string}>}){return handle(async()=>{sameOrigin(req);const {action}=await params;if(action==='logout')return {redirect:'/signout-with-chatgpt?return_to=%2F'};throw new ApiError(400,"Bu yerdagi hisoblar ChatGPT orqali kiradi. /login sahifasini oching.");});}
