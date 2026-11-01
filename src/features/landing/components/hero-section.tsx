@@ -1,3 +1,4 @@
+import { PaymentSculpture } from "./payment-sculpture";
 import { T } from "@/components/i18n/language-provider";
 import Link from "@/components/site-link";
 import {
@@ -31,7 +32,8 @@ export function HeroSection() {
         </div>
         <p className="hero-disclaimer"><T>Unit muhiti · Haqiqiy pul ishlatilmaydi</T></p>
       </div>
-      <div className="hero-stage">
+      <div className="hero-stage hero-stage-sculpture">
+        <PaymentSculpture />
         <div className="stage-orb orange" aria-hidden="true" />
         <div className="stage-orb purple" aria-hidden="true" />
         <div className="stage-orbit" aria-hidden="true" />
