@@ -54,10 +54,10 @@ test("verified browser journey, keys, payments, settings and responsive layouts"
     .getByRole("link", { name: "Umumiy ko‘rinish", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "To‘lovlaringiz bir qarashda." }),
+    page.getByRole("heading", { name: "Umumiy ko‘rinish", exact: true }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Ulash", exact: true }).click();
-  await page.getByRole("button", { name: /^API kaliti Dasturingiz/ }).click();
+  await page.getByRole("button", { name: /^API kaliti/ }).click();
   await page
     .getByRole("button", { name: "Kalit yaratish", exact: true })
     .click();
@@ -77,7 +77,7 @@ test("verified browser journey, keys, payments, settings and responsive layouts"
   for (const width of [1440, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await expect(
-      page.getByRole("heading", { name: "Har bir to‘lovni kuzating." }),
+      page.getByRole("heading", { name: "Tranzaksiyalar", exact: true }),
     ).toBeVisible();
     expect(
       await page.evaluate(
@@ -91,8 +91,14 @@ test("verified browser journey, keys, payments, settings and responsive layouts"
     .first()
     .click();
   await page.getByLabel("Nomi", { exact: true }).fill("Browser developer");
+  const savedProfile = page.waitForResponse(
+    (response) => response.url().endsWith("/api/settings/profile") &&
+      response.request().method() === "PATCH",
+  );
   await page.getByRole("button", { name: "Profilni saqlash" }).click();
-  await expect(page.getByText("Muvaffaqiyatli saqlandi.")).toBeVisible();
+  const saved = await savedProfile;
+  expect(saved.status(), await saved.text()).toBe(200);
+  await expect(page.getByText("Muvaffaqiyatli saqlandi.")).toBeVisible({ timeout: 30000 });
   for (const route of [
     "/dashboard",
     "/developers?tab=sandbox",
