@@ -1,6 +1,6 @@
 import Link from "@/components/site-link";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-export function FaqSection(){ return (<section className="section faq">
+export function FaqSection(){return (<section className="section faq">
           <h2>
             Sizni qiziqtirgan
             <br />
@@ -35,4 +35,4 @@ export function FaqSection(){ return (<section className="section faq">
               </details>
             ))}
           </div>
-        </section>); }
+        </section>);}

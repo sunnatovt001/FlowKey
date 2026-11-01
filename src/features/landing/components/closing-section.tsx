@@ -1,6 +1,6 @@
 import Link from "@/components/site-link";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-export function ClosingSection(){ return (<section className="closing">
+export function ClosingSection(){return (<section className="closing">
           <h2>
             Mahsulotingizni yarating.
             <br />
@@ -10,4 +10,4 @@ export function ClosingSection(){ return (<section className="closing">
           <Link href="/signup" className="button primary">
             Ishni boshlash <ArrowUpRight size={16} />
           </Link>
-        </section>); }
+        </section>);}

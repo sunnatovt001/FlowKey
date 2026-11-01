@@ -1,4 +1,54 @@
 import Link from "@/components/site-link";
-import { ArrowRight, Link2, Activity, ShieldCheck, ArrowUpRight } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Link2,
+  Activity,
+  ShieldCheck,
+} from "lucide-react";
 import { ProductPreview } from "@/components/preview";
-export function HeroSection(){return <section className="flow-hero"><div className="flow-hero-copy"><span className="eyebrow"><span/> O‘zbekiston dasturchilari uchun</span><h1>To‘lovlar.<br/><em>Endi sodda.</em></h1><p>G‘oyangizga ko‘proq vaqt. To‘lov integratsiyasini yarating, sinang va yagona kabinetdan boshqaring.</p><div className="hero-actions"><Link href="/signup" className="button primary">Ishni boshlash <ArrowRight size={18}/></Link><Link href="/docs" className="text-link">Qo‘llanmani o‘qish <ArrowUpRight size={16}/></Link></div><div className="hero-traits"><span><Link2/>Sodda integratsiya</span><span><Activity/>Aniq kuzatuv</span><span><ShieldCheck/>Xavfsiz sinov</span></div><p className="hero-disclaimer">Unit muhiti · Haqiqiy pul ishlatilmaydi</p></div><div className="hero-stage"><div className="stage-orb orange" aria-hidden="true"/><div className="stage-orb purple" aria-hidden="true"/><div className="stage-orbit" aria-hidden="true"/><div className="stage-label"><ShieldCheck size={18}/><span>Sinash uchun erkin.<br/><strong>Yaratish uchun tayyor.</strong></span></div><ProductPreview/></div></section>}
+
+export function HeroSection() {
+  return (
+    <section className="flow-hero">
+      <div className="flow-hero-copy">
+        <h1>
+          To‘lovlar.
+          <br />
+          <em>Endi sodda.</em>
+        </h1>
+        <div className="hero-actions">
+          <Link href="/signup" className="button primary">
+            Ishni boshlash <ArrowRight size={18} />
+          </Link>
+          <Link href="/docs" className="text-link">
+            Qo‘llanma <ArrowUpRight size={16} />
+          </Link>
+        </div>
+        <div className="hero-traits">
+          <span>
+            <Link2 />
+            Sodda ulash
+          </span>
+          <span>
+            <Activity />
+            To‘lovlar tarixi
+          </span>
+          <span>
+            <ShieldCheck />
+            Xavfsiz sinov
+          </span>
+        </div>
+        <p className="hero-disclaimer">
+          Unit muhiti · Haqiqiy pul ishlatilmaydi
+        </p>
+      </div>
+      <div className="hero-stage">
+        <div className="stage-orb orange" aria-hidden="true" />
+        <div className="stage-orb purple" aria-hidden="true" />
+        <div className="stage-orbit" aria-hidden="true" />
+        <ProductPreview />
+      </div>
+    </section>
+  );
+}

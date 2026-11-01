@@ -1,0 +1,311 @@
+/* Adapt the sites-design presentation to the complete PostgreSQL application. */
+.privacy-page {
+  max-width: 800px;
+  margin: 48px auto;
+  padding: 0 24px 48px;
+}
+.privacy-page > .logo {
+  margin-bottom: 40px;
+}
+.privacy-page section {
+  margin-top: 32px;
+}
+.privacy-page h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+.privacy-page a:not(.logo) {
+  color: var(--blue);
+  overflow-wrap: anywhere;
+}
+.social-sign-in {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.social-sign-in-button {
+  width: 100%;
+  min-height: 48px;
+  justify-content: flex-start;
+  color: var(--ink);
+  background: white;
+}
+.social-sign-in-button > span {
+  flex: 1;
+  text-align: left;
+}
+.social-sign-in-button > small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.social-sign-in-button:disabled {
+  opacity: 0.7;
+}
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+h1,
+h2,
+h3 {
+  letter-spacing: -0.035em;
+}
+.profile-menu summary {
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0;
+}
+.profile-menu .avatar {
+  width: 36px;
+  height: 36px;
+  background: #f0e7fc;
+  color: #6320b6;
+}
+.profile-menu .avatar img {
+  width: 100%;
+  height: 100%;
+}
+.sidebar nav a {
+  font-size: 14px;
+}
+.sidebar nav a.active {
+  box-shadow: none;
+}
+.sidebar .logo {
+  margin-bottom: 36px;
+}
+.project-picker select {
+  border-color: #e5d9f1;
+  border-radius: 12px;
+  background: #fff;
+  color: #351755;
+}
+.stats-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.stats-grid > div:first-child .stat-top,
+.stats-grid > div:first-child .stat-icon {
+  color: #e0c9ff;
+}
+table {
+  font-size: 14px;
+}
+th {
+  font-size: 12px;
+  color: #71607e;
+}
+.page-heading .muted,
+.empty p,
+.workspace-footer {
+  color: #71607e;
+}
+.integration-option {
+  flex-basis: 140px;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+}
+.integration-option.selected {
+  border-color: #7434c8;
+  background: #f1e7fc;
+  color: #6320b6;
+}
+.integration-result,
+.operation-panel,
+.finance-summary,
+.settings-panel {
+  border-color: #e9e0f1;
+}
+.operation-panel summary,
+.integration-prompts summary {
+  color: #54218e;
+}
+.tour-spotlight {
+  outline-color: #7434c8;
+}
+.tour-panel {
+  color: #21113f;
+}
+.tour-close {
+  color: #71607e;
+}
+.tour-panel .muted,
+.muted,
+.form-hint {
+  color: #71607e;
+}
+.auth-brand h2 {
+  letter-spacing: -0.035em;
+}
+.auth-content h1 {
+  margin-bottom: 28px;
+}
+.flow-hero h1 {
+  letter-spacing: -0.04em;
+}
+.flow-hero h1 em {
+  background: none;
+  color: #6b28df;
+}
+.hero-stage .product-preview {
+  transform: none;
+}
+.hero-stage .preview-code > div {
+  background: #35204c;
+  border-color: #513465;
+  color: #e8d6fc;
+}
+.hero-stage .preview-code pre,
+.hero-stage .preview-code code {
+  color: #ecdefb;
+  background: #261039;
+}
+.hero-stage .preview-options button[aria-pressed="true"] {
+  background: #f1e7fc;
+  color: #6320b6;
+  border-color: #b793e8;
+}
+.flow-hero .hero-actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.flow-hero .hero-actions > * {
+  width: auto;
+}
+.flow-hero .hero-actions .text-link {
+  margin: 0;
+}
+.flow-hero-copy .hero-disclaimer {
+  color: #71607e;
+  font-size: 12px;
+}
+.hero-traits > span {
+  font-size: 12px;
+}
+.workspace-footer {
+  font-size: 12px;
+}
+.onboarding-page input,
+.onboarding-page select {
+  background: white;
+}
+.financial-warning {
+  color: #8a490c;
+}
+input::placeholder,
+textarea::placeholder {
+  color: #776982;
+  opacity: 1;
+}
+summary {
+  cursor: pointer;
+}
+@media (min-width: 801px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100dvh;
+  }
+}
+@media (max-width: 1000px) {
+  .stage-orbit {
+    width: 85%;
+    left: 7.5%;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .flow-hero .hero-actions {
+    justify-content: center;
+  }
+}
+@media (max-width: 800px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 18px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar .logo {
+    margin-bottom: 18px;
+  }
+  .sidebar nav {
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    gap: 5px;
+    padding-bottom: 4px;
+  }
+  .sidebar nav a {
+    white-space: nowrap;
+    padding: 10px;
+    font-size: 13px;
+  }
+  .sidebar-bottom {
+    display: none;
+  }
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+  }
+  .app-main {
+    width: 100%;
+    margin-left: 0;
+  }
+  .workspace-content {
+    padding: 24px 18px;
+  }
+  .app-header {
+    padding: 0 18px;
+  }
+}
+@media (max-width: 600px) {
+  .auth-brand {
+    min-height: 0;
+    padding: 24px;
+    gap: 0;
+  }
+  .auth-content {
+    padding: 32px 24px;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .project-picker select {
+    max-width: 160px;
+  }
+  .flow-hero h1 {
+    font-size: 52px;
+  }
+  .hero-traits {
+    gap: 12px;
+  }
+  .hero-traits > span {
+    font-size: 11px;
+  }
+  .hero-stage .product-preview {
+    box-shadow: 0 16px 36px #5f1d9414;
+  }
+  .workspace-footer {
+    padding: 18px;
+  }
+}

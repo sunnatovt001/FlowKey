@@ -1,15 +1,12 @@
 import Link from "@/components/site-link";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-export function WorkspaceSection(){ return (<section className="section dashboard-feature">
+export function WorkspaceSection(){return (<section className="section dashboard-feature">
           <div className="section-heading">
             <h2>
               Har bir sinov.
               <br />
               Ko‘z oldingizda.
             </h2>
-            <p>
-              Kabinet to‘lov hajmi, natijalar, API kalitlari va integratsiya holatini bir joyga jamlaydi.
-            </p>
           </div>
           <div className="dashboard-sample" data-ui>
             <div>
@@ -39,4 +36,4 @@ export function WorkspaceSection(){ return (<section className="section dashboar
               </Link>
             </p>
           </div>
-        </section>); }
+        </section>);}

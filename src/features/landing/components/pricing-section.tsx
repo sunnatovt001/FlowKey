@@ -1,6 +1,6 @@
 import Link from "@/components/site-link";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
-export function PricingSection(){ return (<section id="pricing" className="section pricing">
+export function PricingSection(){return (<section id="pricing" className="section pricing">
           <div>
             <h2>
               Sinovdan boshlang.
@@ -29,10 +29,13 @@ export function PricingSection(){ return (<section id="pricing" className="secti
               Boshlash <ArrowUpRight size={16} />
             </Link>
             <div className="planned">
-              <strong>Rejalashtirilgan narx: har bir tranzaksiya uchun 3%</strong>
+              <strong>
+                Rejalashtirilgan narx: har bir tranzaksiya uchun 3%
+              </strong>
               <p>
-                Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.
+                Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar
+                litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.
               </p>
             </div>
           </div>
-        </section>); }
+        </section>);}
