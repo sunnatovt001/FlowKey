@@ -118,7 +118,7 @@ export async function createPayment(
     };
     const t = transaction
       ? await execute(transaction)
-      : await db.$transaction(execute);
+      : await db.$transaction(execute, { maxWait: 20000, timeout: 20000 });
     return { ...serializePayment(t), replayed: false };
   } catch (e) {
     if (transaction) throw e;
