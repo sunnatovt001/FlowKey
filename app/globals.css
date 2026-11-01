@@ -3133,12 +3133,20 @@ td small,
 .integration-prompts details { margin:12px 0; }
 .integration-prompts summary { cursor:pointer; padding:12px 0; font-weight:600; }
 .unit-result { margin-top:32px; padding-top:24px; border-top:1px solid #e4eaf2; }
-.tour-help { position:fixed; right:24px; bottom:20px; z-index:30; }
-.tour-panel { position:fixed; right:24px; bottom:80px; width:min(380px, calc(100vw - 32px)); z-index:40; background:white; border:1px solid #245eea; border-radius:10px; padding:24px; box-shadow:0 12px 36px #14243b24; max-height:70dvh; overflow:auto; }
+.tour-help { position:fixed; right:24px; bottom:20px; z-index:60; }
+.tour-layer { position:fixed; inset:0; z-index:10000; pointer-events:none; }
+.tour-backdrop { position:fixed; inset:0; background:rgb(20 36 59 / 48%); }
+.tour-spotlight { position:fixed; border-radius:10px; outline:2px solid #245eea; box-shadow:0 0 0 100vmax rgb(20 36 59 / 48%); }
+.tour-panel { position:fixed; right:24px; bottom:24px; width:min(380px, calc(100vw - 32px)); z-index:1; color:#14243b; background:white; border-radius:10px; padding:24px; box-shadow:0 12px 36px #14243b40; max-height:calc(100dvh - 32px); overflow:auto; pointer-events:auto; }
+.tour-panel:focus { outline:none; }
+.tour-close { position:absolute; right:12px; top:8px; width:44px; height:44px; border:0; background:white; color:#52647a; font-size:28px; cursor:pointer; }
+.tour-panel > .muted { padding-right:36px; }
+.tour-panel .button { min-height:44px; }
+.tour-panel .text-link { display:inline-block; padding:8px 0; }
 .tour-panel h2 { font-size:20px; }
 .tour-actions { display:flex; gap:12px; margin:20px 0 12px; }
 .tour-highlight { outline:2px solid #245eea; outline-offset:5px; scroll-margin:24px; }
-@media(max-width:600px) { .tour-help { right:16px; bottom:12px; } .tour-panel {right:16px;bottom:72px;padding:20px;} .integration-result {padding:16px;} }
+@media(max-width:600px) { .tour-help { right:16px; bottom:12px; } .tour-panel {right:16px;bottom:16px;padding:20px;max-height:55dvh;} .integration-result {padding:16px;} }
 
 .avatar img {display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .avatar-large {width:88px;height:88px;min-width:88px;font-size:32px;overflow:hidden;}

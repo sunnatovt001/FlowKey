@@ -212,7 +212,7 @@ export function SettingsForm({
           Boshqa sessiyalarni bekor qilish
         </button>
       </section>
-      <section className="panel settings-panel">
+      <section className="panel settings-panel" data-tour="create-project">
         <h2 id="create-project">Loyiha yaratish</h2>
         <p>Nom va sayt manzilini kiriting. API kaliti avtomatik yaratiladi.</p>
         <form
