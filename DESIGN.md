@@ -1,5 +1,13 @@
 # FlowKey design system
 
+## Integrated reference — 1 November 2026
+
+The visual reference is the repository's `sites-design` branch. The production application keeps its Next.js/PostgreSQL authentication, payment simulation, project permissions and worker. Its presentation uses the reference's purple (#6320d9 / #6b28df), orange (#ff790a), pale violet surfaces, rounded 12px controls and 18px cards. The shared CSS layers are base, theme, landing, workspace and application adaptations.
+
+The public landing uses the reference's split hero, purple/orange brand mark and payment preview. Operational screens use readable 14px labels and tables, visible focus, 44px controls and responsive single-column layouts below 800px. Purple/orange gradients are inherited from the supplied reference. Reduced motion disables animation and transitions.
+
+Keep copy short. The profile trigger shows only the avatar. The project selector includes “+ Yangi loyiha”. The sidebar has no caption or Unit information card. The welcome guide appears once per account in the current browser, without a persistent help trigger. These decisions supersede the older visual and tutorial rules below.
+
 FlowKey is a developer payment sandbox for Uzbekistan. Its interface must distinguish test activity from live processing at every payment surface. No invented adoption figures or partner claims.
 
 Typography: system sans (Inter-compatible), navy #14243b, body 15–17px with 1.6 line height. Public headline 64px desktop / 36px phone, tight tracking. Application headings 28px. Monospace only for code and secrets. Tabular numbers for amounts.

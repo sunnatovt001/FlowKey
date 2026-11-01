@@ -4,9 +4,13 @@ import { ArrowUpRight, Waves } from "lucide-react";
 export function Logo() {
   return (
     <Link href="/" className="logo" aria-label="FlowKey bosh sahifasi">
-      <Waves size={28} strokeWidth={3} />
-      <span>
-        FlowKey<span className="logo-dot">.</span>
+      <span className="brand-mark" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+      <span className="brand-word">
+        Flow<span>Key</span>
       </span>
     </Link>
   );

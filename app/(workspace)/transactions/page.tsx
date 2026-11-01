@@ -60,11 +60,7 @@ export default async function Transactions({
     <>
       <div className="page-heading">
         <div>
-          <p className="breadcrumb">Kabinet / Tranzaksiyalar</p>
-          <h1>Har bir to‘lovni kuzating.</h1>
-          <p className="muted">
-            Sinov tranzaksiyalarini qidiring, saralang va tekshiring.
-          </p>
+          <h1>Tranzaksiyalar</h1>
         </div>
         <span className="sandbox-label">Faqat sinov ma’lumotlari</span>
       </div>

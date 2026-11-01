@@ -69,10 +69,11 @@ export function SettingsForm({
     <div className="settings-grid">
       <AvatarSettings email={email} />
       <TelegramSettings />
-      <p role="status" className="notice">
-        {message ||
-          "Sinov hisobi sozlamalari. V1’da elektron pochta manzilini almashtirish mavjud emas."}
-      </p>
+      {message && (
+        <p role="status" className="notice">
+          {message}
+        </p>
+      )}
       <section className="panel settings-panel">
         <h2>Hisob</h2>
         <form
@@ -212,9 +213,9 @@ export function SettingsForm({
           Boshqa sessiyalarni bekor qilish
         </button>
       </section>
-      <section className="panel settings-panel">
+      <section className="panel settings-panel" data-tour="create-project">
         <h2 id="create-project">Loyiha yaratish</h2>
-        <p>Nom va sayt manzilini kiriting. API kaliti avtomatik yaratiladi.</p>
+
         <form
           onSubmit={async (event) => {
             const result = await send("/api/projects", values(event));

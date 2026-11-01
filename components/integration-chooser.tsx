@@ -23,13 +23,13 @@ export function IntegrationChooser({
   return (
     <section data-tour="integration">
       <h2>Qanday ulashni xohlaysiz?</h2>
-      <p>O‘zingizga qulay usulni tanlang. Keyingi qadamni birga bajaramiz.</p>
+
       <div
         className="integration-options"
         role="group"
         aria-label="Ulash usuli"
       >
-        {options.map(([name, description]) => (
+        {options.map(([name]) => (
           <button
             key={name}
             className={`button secondary integration-option ${method === name ? "selected" : ""}`}
@@ -37,19 +37,11 @@ export function IntegrationChooser({
             onClick={() => setMethod(name)}
           >
             <strong>{name}</strong>
-            <span>{description}</span>
           </button>
         ))}
       </div>
       {["API kaliti", "Token"].includes(method) ? (
-        <>
-          <p className="notice">
-            {method === "Token"
-              ? "Token — API kalitining Bearer orqali ishlatilishi. Alohida kalit yarating va uni faqat serverda saqlang."
-              : "Kalit yarating yoki loyiha yaratishda berilgan kalitdan foydalaning."}
-          </p>
-          {children}
-        </>
+        <>{children}</>
       ) : method ? (
         <PaymentLinks
           key={method}
@@ -57,11 +49,7 @@ export function IntegrationChooser({
           links={links}
           method={method}
         />
-      ) : (
-        <p className="muted">
-          Boshlash uchun yuqoridagi usullardan birini tanlang.
-        </p>
-      )}
+      ) : null}
     </section>
   );
 }

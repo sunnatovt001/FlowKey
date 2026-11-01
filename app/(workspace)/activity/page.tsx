@@ -36,10 +36,6 @@ export default async function Activity({
       <div className="page-heading">
         <div>
           <h1>Faoliyat jurnali.</h1>
-          <p className="muted">
-            {project.name} · oxirgi 200 hodisa. Maxfiy kalitlar va karta
-            ma’lumotlari yozilmaydi.
-          </p>
         </div>
       </div>
       <section className="panel operation-panel">

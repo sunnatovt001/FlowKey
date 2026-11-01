@@ -75,12 +75,7 @@ export default async function Dashboard({
     <>
       <div className="page-heading">
         <div>
-          <p className="breadcrumb">Kabinet / Umumiy ko‘rinish</p>
-          <h1>To‘lovlaringiz bir qarashda.</h1>
-          <p className="muted">
-            Loyihadagi barcha amallar: {project.name}. Barcha amallar sinov
-            tariqasida.
-          </p>
+          <h1>Umumiy ko‘rinish</h1>
         </div>
         {role !== "accountant" && (
           <Link
@@ -93,10 +88,7 @@ export default async function Dashboard({
       </div>
       <div className="notice">
         <Activity size={17} />
-        <span>
-          Siz Unit muhitidasiz. Haqiqiy pul o‘tkazmasdan integratsiyangizni
-          yarating va tekshiring.
-        </span>
+        <span>Unit muhiti · Haqiqiy pul ishlatilmaydi.</span>
         <Link href={`/guide?project=${project.id}`}>
           Batafsil <ArrowRight size={14} />
         </Link>
@@ -146,7 +138,6 @@ export default async function Dashboard({
           <div className="panel-heading">
             <div>
               <h2>To‘lovlar faolligi</h2>
-              <p>Muvaffaqiyatli sinov to‘lovlari hajmi · UZS</p>
             </div>
             <span className="subtle-label">Oxirgi 7 kun · Toshkent vaqti</span>
           </div>
@@ -182,7 +173,6 @@ export default async function Dashboard({
           <div className="panel-heading">
             <div>
               <h2>Kabinetga xush kelibsiz.</h2>
-              <p>Integratsiyangiz shu yerdan boshlanadi.</p>
             </div>
           </div>
           {[
@@ -205,7 +195,7 @@ export default async function Dashboard({
               "Ilovangizni yangiliklardan xabardor qiling.",
               `/developers?project=${project.id}&tab=webhooks`,
             ],
-          ].map(([done, title, description, href]) => (
+          ].map(([done, title, , href]) => (
             <Link
               className="checklist-item"
               href={String(href)}
@@ -216,7 +206,6 @@ export default async function Dashboard({
               </span>
               <div>
                 <strong>{String(title)}</strong>
-                <p>{String(description)}</p>
               </div>
               <ArrowUpRight size={15} />
             </Link>
@@ -227,7 +216,6 @@ export default async function Dashboard({
         <div className="panel-heading">
           <div>
             <h2>So‘nggi tranzaksiyalar</h2>
-            <p>Unit muhitingizdagi so‘nggi amallar.</p>
           </div>
           <Link href={`/transactions?project=${project.id}`}>
             Barchasini ko‘rish <ArrowRight size={15} />

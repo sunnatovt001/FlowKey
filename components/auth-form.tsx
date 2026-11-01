@@ -100,12 +100,7 @@ export function AuthForm({
             {message}
           </p>
         )}
-        {signup && (
-          <p className="form-hint">
-            Kamida 12 ta belgi ishlating. Bank yoki karta ma’lumotlari kerak
-            emas.
-          </p>
-        )}
+        {signup && <p className="form-hint">Kamida 12 ta belgi.</p>}
         {error && (
           <p className="error" role="alert">
             {error}

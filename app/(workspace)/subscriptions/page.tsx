@@ -23,9 +23,6 @@ export default async function Subscriptions({
       <div className="page-heading">
         <div>
           <h1>Davriy to‘lovlar.</h1>
-          <p className="muted">
-            {project.name} uchun oylik va yillik obunalar.
-          </p>
         </div>
       </div>
       <div className="notice">

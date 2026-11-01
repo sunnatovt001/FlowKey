@@ -143,11 +143,7 @@ export function AvatarSettings({ email }: { email: string }) {
       <div className="avatar-editor">
         <UserAvatar email={email} large />
         <div>
-          <p>Rasmingiz kabinet tepasida ko‘rinadi.</p>
-          <p className="muted">
-            JPG, PNG yoki WebP · 10 MB gacha. Rasm markazdan kvadrat shaklida
-            kesiladi.
-          </p>
+          <p className="muted">JPG, PNG, WebP · 10 MB gacha.</p>
           <input
             ref={input}
             className="sr-only"

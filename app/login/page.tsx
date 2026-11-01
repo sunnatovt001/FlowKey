@@ -12,22 +12,13 @@ export default function Login() {
             <br />
             sodda jarayondan boshlanadi.
           </h2>
-          <p>
-            To‘lov integratsiyangiz uchun yagona kabinet.
-            <br />
-            O‘zbekiston dasturchilari uchun yaratilgan.
-          </p>
-          <div className="auth-terminal">
-            <span>FlowKey Unit muhiti</span>
-            <pre>{'{ "livemode": false,\n  "possibilities": "endless" }'}</pre>
-          </div>
         </div>
         <p>Faqat sinov. Haqiqiy pul ishlatilmaydi.</p>
       </div>
       <div className="auth-content">
         <div>
-          <h1>Qaytganingizdan xursandmiz.</h1>
-          <p className="muted">Dasturchi kabinetingizga kiring.</p>
+          <h1>Kirish</h1>
+
           <AuthForm
             signup={false}
             localMail={

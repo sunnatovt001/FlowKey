@@ -1,40 +1,13 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { Logo, PublicNav } from "@/components/ui";
-import { ProductPreview } from "@/components/preview";
+import { LandingHero } from "@/components/landing-hero";
 export default function Home() {
   return (
     <>
       <PublicNav />
-      <main className="landing">
-        <section className="hero">
-          <div className="hero-copy">
-            <h1>
-              To‘lovlar endi sodda
-              <br />
-              dasturchilar uchun.
-            </h1>
-            <p>
-              To‘lovlarni ulang, tranzaksiyalarni sinang va biznesingizni yagona dasturchi kabinetidan boshqaring.
-            </p>
-            <div className="hero-actions">
-              <Link className="button primary" href="/signup">
-                Ishni boshlash <ArrowUpRight size={18} />
-              </Link>
-              <Link className="text-link" href="/docs">
-                Qo‘llanmani o‘qish <ArrowRight size={16} />
-              </Link>
-            </div>
-            <p className="hero-note">
-              O‘zbekiston uchun yaratilgan. Sinov uchun ochiq.
-            </p>
-          </div>
-          <ProductPreview />
-        </section>
+      <main className="landing flow-landing">
+        <LandingHero />
         <section className="section developer-band">
           <div>
             <h2>
@@ -42,9 +15,7 @@ export default function Home() {
               <br />
               Sizning ish usulingiz.
             </h2>
-            <p>
-              So‘rovni nusxalang. Aniq javob oling. Integratsiyani boshlash uchun zarur vositalar Unit muhitida tayyor.
-            </p>
+
             <Link href="/docs#quick-start">
               Tezkor boshlashni o‘qish <ArrowRight size={16} />
             </Link>
@@ -63,9 +34,6 @@ export default function Home() {
               <br />
               Ko‘z oldingizda.
             </h2>
-            <p>
-              Kabinet to‘lov hajmi, natijalar, API kalitlari va integratsiya holatini bir joyga jamlaydi.
-            </p>
           </div>
           <div className="dashboard-sample" data-ui>
             <div>
@@ -125,9 +93,12 @@ export default function Home() {
               Boshlash <ArrowUpRight size={16} />
             </Link>
             <div className="planned">
-              <strong>Rejalashtirilgan narx: har bir tranzaksiya uchun 3%</strong>
+              <strong>
+                Rejalashtirilgan narx: har bir tranzaksiya uchun 3%
+              </strong>
               <p>
-                Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.
+                Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar
+                litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.
               </p>
             </div>
           </div>

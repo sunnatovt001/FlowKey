@@ -21,10 +21,6 @@ export function IntegrationPrompts({
   return (
     <div className="integration-prompts">
       <h3>AI yordamida ulash</h3>
-      <p>
-        Promptni nusxalab, loyihangiz ochilgan AI suhbatiga yuboring. Maxfiy
-        kalit promptga qo‘shilmaydi.
-      </p>
       {["GPT", "Claude"].map((ai) => (
         <details key={ai}>
           <summary>{ai} uchun tayyor prompt</summary>

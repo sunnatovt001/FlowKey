@@ -35,7 +35,6 @@ export default async function Team({
       <div className="page-heading">
         <div>
           <h1>Loyiha jamoasi.</h1>
-          <p className="muted">{project.name}: rollar va kirish huquqlari.</p>
         </div>
       </div>
       <section className="panel operation-panel">

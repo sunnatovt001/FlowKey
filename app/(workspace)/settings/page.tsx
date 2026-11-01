@@ -30,11 +30,7 @@ export default async function Settings({
     <>
       <div className="page-heading">
         <div>
-          <p className="breadcrumb">Kabinet / Hisob sozlamalari</p>
-          <h1>Kabinet ma’lumotlari.</h1>
-          <p className="muted">
-            Unit muhitida kiritilgan hisob va loyiha ma’lumotlari.
-          </p>
+          <h1>Hisob sozlamalari</h1>
         </div>
       </div>
       <SettingsForm

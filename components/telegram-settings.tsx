@@ -71,13 +71,9 @@ export function TelegramSettings() {
   return (
     <section className="panel settings-panel telegram-settings">
       <h2>Telegram yordamchi</h2>
-      <p>
-        Telegram’da savol bering. Yordamchi faqat hisobingizdagi loyihalar,
-        to‘lovlar va webhook holatlarini tekshiradi.
-      </p>
+
       <p className="muted">
-        API kalitlari va parollar AI’ga yuborilmaydi. Suhbat va murojaatlar
-        hisobingizga bog‘lanib saqlanadi.
+        Suhbatlar hisobingizda saqlanadi. Maxfiy kalitlar AI’ga yuborilmaydi.
       </p>
       {state && (
         <>
@@ -95,12 +91,7 @@ export function TelegramSettings() {
               yakunlashi kerak.
             </p>
           )}
-          {!state.aiConfigured && (
-            <p className="muted">
-              AI hali sozlanmagan. Hisob tekshiruvi va murojaat saqlash
-              ishlaydi.
-            </p>
-          )}
+          {!state.aiConfigured && <p className="muted">AI hali sozlanmagan.</p>}
           <div className="avatar-actions">
             {state.linked ? (
               <button
@@ -186,10 +177,7 @@ export function TelegramSettings() {
         </div>
       )}
       <h3>Muammoni adminga yuborish</h3>
-      <p>
-        Muammoni yozing. Murojaatga hisobingizdagi tekshiruv natijalari va
-        ulangan Telegram suhbatining oxirgi xabarlari qo‘shiladi.
-      </p>
+      <p>Tekshiruv natijalari va oxirgi bot xabarlari murojaatga qo‘shiladi.</p>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -226,8 +214,7 @@ export function TelegramSettings() {
       </form>
       {state && !state.adminConfigured && (
         <p className="muted">
-          Admin ulanishi hali sozlanmagan. Murojaatlar saqlanadi va sozlash
-          tugagach bot ishlayotganida yetkaziladi.
+          Admin hali ulanmagan. Murojaat navbatda saqlanadi.
         </p>
       )}
       {error && (

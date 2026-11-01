@@ -66,11 +66,7 @@ export default async function Developers({
     <>
       <div className="page-heading">
         <div>
-          <p className="breadcrumb">Kabinet / Dasturchilar</p>
-          <h1>Integratsiya uchun barcha vositalar.</h1>
-          <p className="muted">
-            Kalitlarni boshqaring, to‘lovlarni sinang va ilovangizni ulang.
-          </p>
+          <h1>Ulash</h1>
         </div>
         <span className="sandbox-label">Unit muhiti</span>
       </div>
