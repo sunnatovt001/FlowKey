@@ -1,11 +1,8 @@
+import { T } from "@/components/i18n/language-provider";
 import Link from "@/components/site-link";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 export function FaqSection(){return (<section className="section faq">
-          <h2>
-            Sizni qiziqtirgan
-            <br />
-            savollarga javoblar.
-          </h2>
+          <h2><T>Sizni qiziqtirgan</T><br /><T>savollarga javoblar.</T></h2>
           <div>
             {[
               [
@@ -30,8 +27,8 @@ export function FaqSection(){return (<section className="section faq">
               ],
             ].map(([q, a]) => (
               <details key={q}>
-                <summary>{q}</summary>
-                <p>{a}</p>
+                <summary><T>{q}</T></summary>
+                <p><T>{a}</T></p>
               </details>
             ))}
           </div>

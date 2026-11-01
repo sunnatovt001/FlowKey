@@ -1,3 +1,4 @@
+import { T } from "@/components/i18n/language-provider";
 import Link from "@/components/site-link";
 import {
   ArrowRight,
@@ -12,36 +13,24 @@ export function HeroSection() {
   return (
     <section className="flow-hero">
       <div className="flow-hero-copy">
-        <h1>
-          To‘lovlar.
-          <br />
-          <em>Endi sodda.</em>
+        <h1><T>To‘lovlar.</T><br />
+          <em><T>Endi sodda.</T></em>
         </h1>
         <div className="hero-actions">
-          <Link href="/signup" className="button primary">
-            Ishni boshlash <ArrowRight size={18} />
+          <Link href="/signup" className="button primary"><T>Ishni boshlash</T><ArrowRight size={18} />
           </Link>
-          <Link href="/docs" className="text-link">
-            Qo‘llanma <ArrowUpRight size={16} />
+          <Link href="/docs" className="text-link"><T>Qo‘llanma</T><ArrowUpRight size={16} />
           </Link>
         </div>
         <div className="hero-traits">
           <span>
-            <Link2 />
-            Sodda ulash
-          </span>
+            <Link2 /><T>Sodda ulash</T></span>
           <span>
-            <Activity />
-            To‘lovlar tarixi
-          </span>
+            <Activity /><T>To‘lovlar tarixi</T></span>
           <span>
-            <ShieldCheck />
-            Xavfsiz sinov
-          </span>
+            <ShieldCheck /><T>Xavfsiz sinov</T></span>
         </div>
-        <p className="hero-disclaimer">
-          Unit muhiti · Haqiqiy pul ishlatilmaydi
-        </p>
+        <p className="hero-disclaimer"><T>Unit muhiti · Haqiqiy pul ishlatilmaydi</T></p>
       </div>
       <div className="hero-stage">
         <div className="stage-orb orange" aria-hidden="true" />

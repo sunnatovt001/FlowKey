@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/components/i18n/language-provider";
 import { statusLabel } from "@/shared/locale";
 import { useState } from "react";
 import {
@@ -15,14 +16,14 @@ export function ProductPreview() {
     <div className="product-preview" data-ui>
       <div className="preview-top">
         <span className="project-icon">F</span>
-        <strong>Keyingi mahsulotingiz</strong>
+        <strong><T>Keyingi mahsulotingiz</T></strong>
         <ChevronDown size={14} />
         <span className="sandbox-label">Unit</span>
       </div>
       <div className="preview-body">
         <div>
-          <p className="muted">So‘rovdan natijagacha bitta to‘lov.</p>
-          <h3>Tushunarli bo‘lishi uchun yaratilgan.</h3>
+          <p className="muted"><T>So‘rovdan natijagacha bitta to‘lov.</T></p>
+          <h3><T>Tushunarli bo‘lishi uchun yaratilgan.</T></h3>
           <div className="preview-code">
             <div>
               <Terminal size={15} /> POST /api/v1/payments
@@ -51,36 +52,32 @@ export function ProductPreview() {
           <div className="receipt-icon">
             <ArrowDownLeft size={24} />
           </div>
-          <p>Sinov tariqasidagi to‘lov</p>
+          <p><T>Sinov tariqasidagi to‘lov</T></p>
           <h3>
             125 000 <span>UZS</span>
           </h3>
           <Status status={status} />
           <dl>
             <div>
-              <dt>Muhit</dt>
-              <dd>Faqat sinov</dd>
+              <dt><T>Muhit</T></dt>
+              <dd><T>Faqat sinov</T></dd>
             </div>
             <div>
-              <dt>To‘lov usuli</dt>
-              <dd>Sinov</dd>
+              <dt><T>To‘lov usuli</T></dt>
+              <dd><T>Sinov</T></dd>
             </div>
             <div>
-              <dt>O‘tkazilgan haqiqiy pul</dt>
-              <dd>Yo‘q</dd>
+              <dt><T>O‘tkazilgan haqiqiy pul</T></dt>
+              <dd><T>Yo‘q</T></dd>
             </div>
           </dl>
-          <p className="receipt-note">
-            Bu interaktiv namuna. O‘z sinov to‘lovlaringizni saqlash uchun hisob yarating.
-          </p>
+          <p className="receipt-note"><T>Bu interaktiv namuna. O‘z sinov to‘lovlaringizni saqlash uchun hisob yarating.</T></p>
         </div>
       </div>
       <div className="preview-bottom">
         <span>
-          <span className="small-dot" /> Aniq so‘rovlar. Tushunarli javoblar.
-        </span>
-        <a href="/docs#create-payment">
-          API’ni ko‘rish <ArrowRight size={14} />
+          <span className="small-dot" /><T>Aniq so‘rovlar. Tushunarli javoblar.</T></span>
+        <a href="/docs#create-payment"><T>API’ni ko‘rish</T><ArrowRight size={14} />
         </a>
       </div>
     </div>

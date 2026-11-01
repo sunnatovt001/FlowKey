@@ -1,15 +1,11 @@
+import { T } from "@/components/i18n/language-provider";
 import Link from "@/components/site-link";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 export function DeveloperSection(){return (<section className="section developer-band">
           <div>
-            <h2>
-              Sizning terminalingiz.
-              <br />
-              Sizning ish usulingiz.
-            </h2>
+            <h2><T>Sizning terminalingiz.</T><br /><T>Sizning ish usulingiz.</T></h2>
 
-            <Link href="/docs#quick-start">
-              Tezkor boshlashni o‘qish <ArrowRight size={16} />
+            <Link href="/docs#quick-start"><T>Tezkor boshlashni o‘qish</T><ArrowRight size={16} />
             </Link>
           </div>
           <pre>
