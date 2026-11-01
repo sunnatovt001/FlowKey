@@ -7,7 +7,6 @@ import {
   Activity,
   ShieldCheck,
 } from "lucide-react";
-import { ProductPreview } from "@/components/preview";
 
 export function HeroSection() {
   return (
@@ -36,7 +35,6 @@ export function HeroSection() {
         <div className="stage-orb orange" aria-hidden="true" />
         <div className="stage-orb purple" aria-hidden="true" />
         <div className="stage-orbit" aria-hidden="true" />
-        <ProductPreview />
       </div>
     </section>
   );
