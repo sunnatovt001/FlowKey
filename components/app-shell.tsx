@@ -91,6 +91,10 @@ export function AppShell({
               id="project"
               value={selected}
               onChange={(e) => {
+                if (e.target.value === "__new_project__") {
+                  router.push(`/settings${selected ? `?project=${encodeURIComponent(selected)}` : ""}#create-project`);
+                  return;
+                }
                 const params = new URLSearchParams(query);
                 params.set("project", e.target.value);
                 params.delete("page");
@@ -109,6 +113,7 @@ export function AppShell({
                   {p.name}
                 </option>
               ))}
+              <option value="__new_project__">+ Yangi loyiha</option>
             </select>
             <span className="sandbox-label">Unit</span>
           </div>
