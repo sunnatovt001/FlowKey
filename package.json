@@ -15,6 +15,7 @@
     "setup": "node scripts/setup-env.mjs",
     "mail:setup": "node scripts/setup-gmail.mjs",
     "mail:check": "node scripts/check-mail.mjs",
+    "auth:check": "node scripts/check-oauth.mjs",
     "worker": "tsx scripts/worker.ts",
     "test:e2e": "playwright test",
     "bot:telegram": "tsx scripts/telegram-bot.ts",

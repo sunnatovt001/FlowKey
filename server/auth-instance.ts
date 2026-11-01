@@ -3,11 +3,17 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "./db";
 import { sendAuthEmail } from "./email";
+import { socialAuthConfiguration } from "./social-auth";
 
 export const auth = betterAuth({
   database: prismaAdapter(db, { provider: "postgresql" }),
   baseURL: process.env.APP_URL || "http://localhost:3000",
   secret: process.env.BETTER_AUTH_SECRET,
+  socialProviders: socialAuthConfiguration(),
+  account: {
+    encryptOAuthTokens: true,
+    accountLinking: { enabled: true, allowDifferentEmails: false },
+  },
   trustedOrigins: authTrustedOrigins(
     process.env.APP_URL || "http://localhost:3000",
     process.env.NODE_ENV === "development",

@@ -1,5 +1,7 @@
 import { Logo } from "@/components/ui";
 import { AuthForm } from "@/components/auth-form";
+import { SocialSignIn } from "@/components/social-sign-in";
+import { socialAuthAvailability } from "@/server/social-auth";
 export const metadata = { title: "Kirish" };
 export default function Login() {
   return (
@@ -18,6 +20,7 @@ export default function Login() {
       <div className="auth-content">
         <div>
           <h1>Kirish</h1>
+          <SocialSignIn available={socialAuthAvailability()} />
 
           <AuthForm
             signup={false}

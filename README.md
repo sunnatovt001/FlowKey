@@ -1,4 +1,44 @@
-# FLOWZA
+# FlowKey
+
+## Google va GitHub orqali kirish
+
+Kirish va hisob yaratish sahifalaridagi provayder tugmalari tegishli Client ID
+va Client Secret birga kiritilganda faollashadi. Maxfiy kalitlarni chat yoki
+GitHub’ga yubormang; local `.env` va serverdagi
+`/home/deploy/flowkey-ops/shared/.env` ichida saqlang.
+
+### Google
+
+1. [Google Cloud Console](https://console.cloud.google.com/) ichida loyiha oching.
+2. Google Auth Platform → Branding va Audience’ni sozlang. External / Testing holatida test foydalanuvchilarini qo‘shing.
+3. Clients → Create client → Web application.
+4. Authorized redirect URIs: local uchun `http://127.0.0.1:3000/api/auth/callback/google`;
+   server uchun `https://flowkey.173.212.216.216.sslip.io/api/auth/callback/google`.
+5. Client ID’ni `GOOGLE_CLIENT_ID`, Client Secret’ni `GOOGLE_CLIENT_SECRET` qilib saqlang.
+
+Google production tasdiqlashi uchun o‘zingiz boshqaradigan, egaligini tasdiqlay
+oladigan domenni ishlating. Domen o‘zgarsa, `APP_URL` va callback’ni ham yangilang.
+
+### GitHub
+
+1. [Developer settings → OAuth Apps](https://github.com/settings/developers) → New OAuth App.
+2. Homepage URL: `APP_URL` qiymati.
+3. Authorization callback URL: `https://flowkey.173.212.216.216.sslip.io/api/auth/callback/github`.
+4. Client ID’ni `GITHUB_CLIENT_ID`, yangi Client Secret’ni `GITHUB_CLIENT_SECRET` qilib saqlang.
+5. Local ishlatish uchun alohida OAuth App yarating; callback:
+   `http://127.0.0.1:3000/api/auth/callback/github`.
+
+Callback `APP_URL` bilan aynan mos bo‘lsin: `localhost` va `127.0.0.1` bir xil emas.
+Repo yozish huquqi yoki Gmail ruxsati so‘ralmaydi; faqat kirish uchun profil/email ishlatiladi.
+
+Local: `npm run auth:check`, so‘ng dev serverni qayta ishga tushiring.
+Serverda shared `.env` yangilangach faol `flowkey-release-…` PM2 jarayonini qayta
+ishga tushiring. Bu tekshiruv kalitlarning mavjudligini tekshiradi, ularning
+haqiqiyligini yoki provayderdagi callback sozlamasini tasdiqlamaydi.
+
+Rasmiy yo‘riqnomalar: [Google](https://better-auth.com/docs/authentication/google),
+[GitHub](https://better-auth.com/docs/authentication/github),
+[Google production talablari](https://developers.google.com/identity/protocols/oauth2/production-readiness/policy-compliance).
 
 A working developer-first **simulated payment sandbox** for Uzbekistan. No live banking integration, cards, KYC approval, or real money processing. Planned live pricing is 3%, subject to confirmation and licensed partner approval.
 
