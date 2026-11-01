@@ -1085,6 +1085,10 @@ footer > div span {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 44px;
+  min-height: 44px;
+  justify-content: center;
+  border-radius: 50%;
 }
 .avatar {
   width: 29px;

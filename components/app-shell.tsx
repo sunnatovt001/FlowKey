@@ -10,7 +10,6 @@ import {
   Code2,
   BookOpen,
   Settings,
-  ChevronDown,
   LogOut,
   ArrowUpRight,
   Wallet,
@@ -123,10 +122,8 @@ export function AppShell({
             <span className="sandbox-label">Unit</span>
           </div>
           <details className="profile-menu">
-            <summary>
+            <summary aria-label="Profil menyusi">
               <UserAvatar email={email} />
-              <span className="profile-email">{email}</span>
-              <ChevronDown size={14} />
             </summary>
             <div>
               <Link href="/invitations">Loyiha takliflari</Link>
