@@ -59,14 +59,14 @@ export function WelcomeTour({
     },
   ];
   useEffect(() => {
-    // Hydrate optional browser-only progress after the server render.
+    // Show the guide only on this account's first visit in this browser.
     /* eslint-disable react-hooks/set-state-in-effect */
     try {
       const saved = localStorage.getItem(storageKey);
-      if (saved !== "done" && saved !== "skipped")
-        setStep(
-          saved === null ? 0 : Math.min(4, Math.max(0, Number(saved) || 0)),
-        );
+      if (saved === null) {
+        localStorage.setItem(storageKey, "seen");
+        setStep(0);
+      }
     } catch {
       setStep(0);
     }
@@ -125,7 +125,7 @@ export function WelcomeTour({
     try {
       localStorage.setItem(
         storageKey,
-        next === null ? (done ? "done" : "skipped") : String(next),
+        next === null ? (done ? "done" : "skipped") : "seen",
       );
     } catch {}
   }
@@ -143,15 +143,6 @@ export function WelcomeTour({
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <>
-      {step === null && (
-        <button
-          type="button"
-          className="button secondary tour-help"
-          onClick={() => move(0)}
-        >
-          Yordam · Qanday boshlayman?
-        </button>
-      )}
       {step !== null &&
         createPortal(
           <div className="tour-layer">
