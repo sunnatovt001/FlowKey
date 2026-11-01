@@ -156,6 +156,7 @@ export default function Home() {
         <p>O‘zbekiston dasturchilari uchun to‘lov infratuzilmasi.</p>
         <div>
           <Link href="/docs">Qo‘llanma</Link>
+          <Link href="/privacy">Maxfiylik</Link>
           <Link href="/login">Kirish</Link>
           <span>Faqat sinov · Haqiqiy pul ishlatilmaydi</span>
         </div>
