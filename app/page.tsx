@@ -1,9 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Check,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { Logo, PublicNav } from "@/components/ui";
 import { ProductPreview } from "@/components/preview";
 export default function Home() {
@@ -18,9 +14,7 @@ export default function Home() {
               <br />
               dasturchilar uchun.
             </h1>
-            <p>
-              To‘lovlarni ulang, tranzaksiyalarni sinang va biznesingizni yagona dasturchi kabinetidan boshqaring.
-            </p>
+
             <div className="hero-actions">
               <Link className="button primary" href="/signup">
                 Ishni boshlash <ArrowUpRight size={18} />
@@ -29,9 +23,6 @@ export default function Home() {
                 Qo‘llanmani o‘qish <ArrowRight size={16} />
               </Link>
             </div>
-            <p className="hero-note">
-              O‘zbekiston uchun yaratilgan. Sinov uchun ochiq.
-            </p>
           </div>
           <ProductPreview />
         </section>
@@ -49,7 +40,10 @@ export default function Home() {
           </div>
           <ol>
             {[
-              ["Hisob yarating", "Dasturchi kabinetingiz shu yerdan boshlanadi."],
+              [
+                "Hisob yarating",
+                "Dasturchi kabinetingiz shu yerdan boshlanadi.",
+              ],
               [
                 "Loyihangizni yarating",
                 "Nima yaratayotganingizni ayting. Bu sinov sozlamasi, KYC emas.",
@@ -58,7 +52,10 @@ export default function Home() {
                 "API’ni ulang",
                 "Sinov kaliti yarating va birinchi so‘rovingizni yuboring.",
               ],
-              ["To‘lovlarni sinang", "Turli natijalarni yarating va tekshiring."],
+              [
+                "To‘lovlarni sinang",
+                "Turli natijalarni yarating va tekshiring.",
+              ],
               [
                 "Haqiqiy to‘lovlarga kirish so‘rovi",
                 "Tez kunda, litsenziyalangan hamkor tasdig‘iga bog‘liq.",
@@ -83,9 +80,7 @@ export default function Home() {
               <br />
               Sizning ish usulingiz.
             </h2>
-            <p>
-              So‘rovni nusxalang. Aniq javob oling. Integratsiyani boshlash uchun zarur vositalar Unit muhitida tayyor.
-            </p>
+
             <Link href="/docs#quick-start">
               Tezkor boshlashni o‘qish <ArrowRight size={16} />
             </Link>
@@ -104,9 +99,6 @@ export default function Home() {
               <br />
               Ko‘z oldingizda.
             </h2>
-            <p>
-              Kabinet to‘lov hajmi, natijalar, API kalitlari va integratsiya holatini bir joyga jamlaydi.
-            </p>
           </div>
           <div className="dashboard-sample" data-ui>
             <div>
@@ -166,9 +158,12 @@ export default function Home() {
               Boshlash <ArrowUpRight size={16} />
             </Link>
             <div className="planned">
-              <strong>Rejalashtirilgan narx: har bir tranzaksiya uchun 3%</strong>
+              <strong>
+                Rejalashtirilgan narx: har bir tranzaksiya uchun 3%
+              </strong>
               <p>
-                Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.
+                Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar
+                litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.
               </p>
             </div>
           </div>

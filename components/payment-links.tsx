@@ -37,10 +37,7 @@ export function PaymentLinks({
   return (
     <section className="panel integration-result">
       <h2>Unit yarating</h2>
-      <p>
-        Nom va summani kiriting. {method} avtomatik tayyorlanadi. Haqiqiy pul
-        ishlatilmaydi.
-      </p>
+
       <form
         className="payment-link-form"
         onSubmit={(e) => {
@@ -89,9 +86,7 @@ export function PaymentLinks({
           {error}
         </p>
       )}
-      {!links.length && (
-        <p>Yaratilgan Unit va nusxalanadigan natija shu yerda ko‘rinadi.</p>
-      )}
+      {!links.length && <p>Hozircha Unit yo‘q.</p>}
       {links.map((link) => {
         const value =
           method === "Script"

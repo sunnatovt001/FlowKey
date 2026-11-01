@@ -45,9 +45,6 @@ export default async function Finance({
       <div className="page-heading">
         <div>
           <h1>Mablag‘lar hisobi.</h1>
-          <p className="muted">
-            {project.name}: 3% komissiya, qaytarishlar va pul chiqarish.
-          </p>
         </div>
         <a
           className="button secondary"

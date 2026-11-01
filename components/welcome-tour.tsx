@@ -11,7 +11,12 @@ export function WelcomeTour({
   projectId: string;
 }) {
   const [step, setStep] = useState<number | null>(null);
-  const [spotlight, setSpotlight] = useState<{top: number; left: number; width: number; height: number} | null>(null);
+  const [spotlight, setSpotlight] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  } | null>(null);
   const panel = useRef<HTMLElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -19,35 +24,35 @@ export function WelcomeTour({
   const steps = [
     {
       title: "FlowKey’ga xush kelibsiz",
-      text: "Avval loyihangizni yarating. Uning nomi va sayt manzilini kiriting. API kaliti avtomatik beriladi.",
+      text: "Loyiha nomini kiriting — API kaliti avtomatik yaratiladi.",
       href: "/settings#create-project",
       action: "Loyiha yaratish",
       target: '[data-tour="create-project"]',
     },
     {
       title: "API kalitingizni saqlang",
-      text: "Loyiha yaratilgach kalit bir marta ko‘rsatiladi. Yo‘qolsa, Ulash bo‘limida yangi kalit yaratishingiz mumkin. Kalit faqat serverda saqlanadi.",
+      text: "Kalit bir marta ko‘rsatiladi. Uni xavfsiz saqlang.",
       href: `/developers?project=${projectId}`,
       action: "Ulash bo‘limiga o‘tish",
-      target: '.integration-options',
+      target: ".integration-options",
     },
     {
       title: "Qulay ulash usulini tanlang",
-      text: "API kaliti, token, tayyor havola, script yoki tugmani tanlang. GPT va Claude promptlari saytingizga ulashda yordam beradi.",
+      text: "Ulash usulini tanlang. Tayyor GPT va Claude promptlaridan foydalanishingiz mumkin.",
       href: `/developers?project=${projectId}`,
       action: "Ulash usullarini ko‘rish",
-      target: '.integration-options',
+      target: ".integration-options",
     },
     {
       title: "Birinchi Unit’ni sinang",
-      text: "Unit nomi va summasini kiriting. Tayyor sahifani oching va to‘lov natijasini tanlang. Haqiqiy pul ishlatilmaydi.",
+      text: "Nom va summani kiriting, so‘ng sinov to‘lovini bajaring.",
       href: `/developers?project=${projectId}`,
       action: "Unit yaratish",
-      target: '.integration-options',
+      target: ".integration-options",
     },
     {
       title: "Natijalarni kuzating",
-      text: "Tranzaksiyalar bo‘limida summa, holat va to‘lov tarixini ko‘rasiz. Qo‘llanmani Yordam tugmasidan istalgan payt qayta oching.",
+      text: "To‘lov holati va tarixini shu bo‘limda kuzating.",
       href: `/transactions?project=${projectId}`,
       action: "Tranzaksiyalarni ko‘rish",
       target: 'nav[aria-label="Kabinet menyusi"]',
@@ -71,16 +76,29 @@ export function WelcomeTour({
     if (step === null) return;
     let frame = 0;
     const route = steps[step].href.split("?")[0].split("#")[0];
-    const target = document.querySelector(steps[step].target) ||
+    const target =
+      document.querySelector(steps[step].target) ||
       document.querySelector(`nav a[href^="${route}"]`);
     const measure = () => {
       const rect = target?.getBoundingClientRect();
-      setSpotlight(rect && rect.width && rect.height ? {
-        top: Math.max(8, rect.top - 8),
-        left: Math.max(8, rect.left - 8),
-        width: Math.max(0, Math.min(innerWidth - 8, rect.right + 8) - Math.max(8, rect.left - 8)),
-        height: Math.max(0, Math.min(innerHeight - 8, rect.bottom + 8) - Math.max(8, rect.top - 8)),
-      } : null);
+      setSpotlight(
+        rect && rect.width && rect.height
+          ? {
+              top: Math.max(8, rect.top - 8),
+              left: Math.max(8, rect.left - 8),
+              width: Math.max(
+                0,
+                Math.min(innerWidth - 8, rect.right + 8) -
+                  Math.max(8, rect.left - 8),
+              ),
+              height: Math.max(
+                0,
+                Math.min(innerHeight - 8, rect.bottom + 8) -
+                  Math.max(8, rect.top - 8),
+              ),
+            }
+          : null,
+      );
     };
     const schedule = () => {
       cancelAnimationFrame(frame);
@@ -125,48 +143,76 @@ export function WelcomeTour({
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <>
-      {step === null && <button
-        type="button"
-        className="button secondary tour-help"
-        onClick={() => move(0)}
-      >
-        Yordam · Qanday boshlayman?
-      </button>}
-      {step !== null && createPortal(
-        <div className="tour-layer">
-        <div className={spotlight ? "tour-spotlight" : "tour-backdrop"} style={spotlight || undefined} aria-hidden="true" />
-        <aside ref={panel} tabIndex={-1} className="tour-panel" role="dialog" aria-labelledby="tour-title" aria-describedby="tour-description"
-          style={spotlight && spotlight.left > window.innerWidth / 2 ? { left: 16, right: "auto" } : undefined}>
-          <button type="button" className="tour-close" aria-label="Qo‘llanmani yopish" onClick={() => move(null)}>×</button>
-          <p className="muted">
-            {step + 1} / {steps.length} qadam
-          </p>
-          <h2 id="tour-title">{steps[step].title}</h2>
-          <p id="tour-description">{steps[step].text}</p>
-          <Link className="text-link" href={steps[step].href}>
-            {steps[step].action}
-          </Link>
-          <div className="tour-actions">
-            <button
-              className="button secondary"
-              disabled={step === 0}
-              onClick={() => navigate(step - 1)}
-            >
-              Orqaga
-            </button>
-            <button
-              className="button primary"
-              onClick={() => (step === 4 ? move(null, true) : navigate(step + 1))}
-            >
-              {step === 4 ? "Tugatish" : "Keyingi"}
-            </button>
-          </div>
-          <button className="text-link" onClick={() => move(null)}>
-            Hozircha o‘tkazib yuborish
-          </button>
-        </aside>
-        </div>, document.body,
+      {step === null && (
+        <button
+          type="button"
+          className="button secondary tour-help"
+          onClick={() => move(0)}
+        >
+          Yordam · Qanday boshlayman?
+        </button>
       )}
+      {step !== null &&
+        createPortal(
+          <div className="tour-layer">
+            <div
+              className={spotlight ? "tour-spotlight" : "tour-backdrop"}
+              style={spotlight || undefined}
+              aria-hidden="true"
+            />
+            <aside
+              ref={panel}
+              tabIndex={-1}
+              className="tour-panel"
+              role="dialog"
+              aria-labelledby="tour-title"
+              aria-describedby="tour-description"
+              style={
+                spotlight && spotlight.left > window.innerWidth / 2
+                  ? { left: 16, right: "auto" }
+                  : undefined
+              }
+            >
+              <button
+                type="button"
+                className="tour-close"
+                aria-label="Qo‘llanmani yopish"
+                onClick={() => move(null)}
+              >
+                ×
+              </button>
+              <p className="muted">
+                {step + 1} / {steps.length} qadam
+              </p>
+              <h2 id="tour-title">{steps[step].title}</h2>
+              <p id="tour-description">{steps[step].text}</p>
+              <Link className="text-link" href={steps[step].href}>
+                {steps[step].action}
+              </Link>
+              <div className="tour-actions">
+                <button
+                  className="button secondary"
+                  disabled={step === 0}
+                  onClick={() => navigate(step - 1)}
+                >
+                  Orqaga
+                </button>
+                <button
+                  className="button primary"
+                  onClick={() =>
+                    step === 4 ? move(null, true) : navigate(step + 1)
+                  }
+                >
+                  {step === 4 ? "Tugatish" : "Keyingi"}
+                </button>
+              </div>
+              <button className="text-link" onClick={() => move(null)}>
+                Hozircha o‘tkazib yuborish
+              </button>
+            </aside>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
