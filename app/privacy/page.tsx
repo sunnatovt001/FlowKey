@@ -43,6 +43,17 @@ export default function Privacy() {
         </p>
       </section>
       <section>
+        <h2>Saytdagi yordamchi</h2>
+        <p>
+          Qo‘llanma rejimi tayyor javoblarni brauzerda ko‘rsatadi. Chat tarixi
+          shu oynaning xotirasida saqlanadi va sahifa qayta yuklanganda o‘chadi.
+          AI xizmatiga ulangan rejimda savolingiz, oxirgi suhbat qismi va faqat
+          o‘z hisobingizning tegishli ma’lumotlari javob tayyorlash uchun
+          yuboriladi. Maxfiy kalitlar yashiriladi. Parol yoki maxfiy kalitni
+          chatga yozmang.
+        </p>
+      </section>
+      <section>
         <h2>Ruxsatlarni boshqarish</h2>
         <p>
           Google yoki GitHub hisobingiz sozlamalarida FlowKey ruxsatini bekor

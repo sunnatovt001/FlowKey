@@ -203,3 +203,12 @@ Node's --env-file cannot be inherited by Next's child process through NODE_OPTIO
 Dockerfile builds a web image. Run the same image with `npm run worker` for background work. Set runtime DATABASE_URL, APP_URL, BETTER_AUTH_SECRET, WEBHOOK_ENCRYPTION_KEY and SMTP variables. File email is intentionally forbidden in production. Run migrations once in a release job before web/worker rollout. Configure TLS, trusted reverse proxy/IP handling, DB backups, worker heartbeat alerts, API errors and queue-age alerts. Do not log auth query strings.
 
 Backup with pg_dump custom format; restore using pg_restore into a new database, validate counts/constraints and a sandbox payment, then rehearse application rollback. Schema changes are additive; do not down-migrate or overwrite an existing DB during rollback. Public deployment requires founder approval; no hosting resource is provisioned automatically.
+# In-page help chat
+
+The bottom-right assistant works in clearly labeled guide mode without an AI key.
+Set `SUPPORT_AI_API_KEY` in the private server environment to enable AI answers using
+the existing support provider and optional `SUPPORT_AI_MODEL`. Restart the web
+process after changing environment settings. AI account questions require a verified
+session, use owner-scoped read-only context, and are limited to eight requests per
+minute. Chat history stays in browser memory; no new database tables are needed.
+
