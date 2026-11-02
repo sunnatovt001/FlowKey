@@ -1,5 +1,8 @@
 # FlowKey design system
 
+## In-page assistant
+The bottom-right assistant uses a compact non-modal chat panel and the existing purple controls. It keeps conversations in memory, offers short guide suggestions, distinguishes guide answers from live AI, supports keyboard dismissal and reduced motion, and hides on public checkout/payment pages. Account questions use the signed-in owner's existing read-only support context; no secrets enter the chat.
+
 ## Integrated reference — 1 November 2026
 
 The visual reference is the repository's `sites-design` branch. The production application keeps its Next.js/PostgreSQL authentication, payment simulation, project permissions and worker. Its presentation uses the reference's purple (#6320d9 / #6b28df), orange (#ff790a), pale violet surfaces, rounded 12px controls and 18px cards. The shared CSS layers are base, theme, landing, workspace and application adaptations.
