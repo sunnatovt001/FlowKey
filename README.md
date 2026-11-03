@@ -212,3 +212,11 @@ process after changing environment settings. AI account questions require a veri
 session, use owner-scoped read-only context, and are limited to eight requests per
 minute. Chat history stays in browser memory; no new database tables are needed.
 
+# Saytdagi admin panel
+
+Admin hisob odatiy sayt sessiyasidan tashqari `/admin-login` orqali alohida parol bilan tasdiqlanadi. `FLOWKEY_ADMIN_EMAIL`, `FLOWKEY_ADMIN_PASSWORD_HASH` (Better Auth scrypt xeshi) va kamida 32 belgili tasodifiy `FLOWKEY_ADMIN_SESSION_SECRET` serverda sozlanadi. Ochiq parolni repozitoriyaga yozmang. Admin tasdig‘i asosiy login sessiyasiga bog‘langan va 15 daqiqada tugaydi; parol xeshi yoki imzolash kaliti o‘zgartirilsa avvalgi tasdiqlar bekor bo‘ladi. Har bir hisob uchun bir daqiqada ko‘pi bilan 5 urinishga ruxsat beriladi.
+
+`/admin` sahifasi foydalanuvchilar, loyihalar, yordam murojaatlari va admin amallari jurnalini ko‘rsatadi. `FLOWKEY_ADMIN_USER_IDS` server sozlamasiga ruxsat berilgan tasdiqlangan foydalanuvchilarning IDlarini vergul bilan ajratib kiriting. Sozlama bo‘sh bo‘lsa kirish yopiq. Telegram ulanishi admin huquqini avtomatik bermaydi.
+
+Yangi `202611020001_admin_support` migratsiyasini deploydan oldin qo‘llang. Murojaatlar holati: yangi, ko‘rib chiqilmoqda va hal qilindi. Telegram’ga yetkazilish holati alohida saqlanadi; o‘zgarishlar audit jurnaliga yoziladi. Panel maxfiy API kalitlari yoki parollarni ko‘rsatmaydi.
+

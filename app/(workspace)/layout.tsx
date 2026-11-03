@@ -1,6 +1,7 @@
 import { pageUser } from "@/server/auth";
 import { db } from "@/server/db";
 import { AppShell } from "@/components/app-shell";
+import { isPlatformAdmin } from "@/server/admin-access";
 export default async function WorkspaceLayout({
   children,
 }: {
@@ -27,6 +28,7 @@ export default async function WorkspaceLayout({
         role: p.memberships[0]?.role || "",
       }))}
       email={user.email}
+      isAdmin={isPlatformAdmin(user.id)}
     >
       {children}
     </AppShell>

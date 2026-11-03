@@ -312,9 +312,22 @@ model SupportTicket {
   attempts Int @default(0)
   retryAt DateTime @default(now())
   deliveredAt DateTime?
+  resolutionStatus String @default("open")
+  resolvedAt DateTime?
+  resolvedBy String?
   createdAt DateTime @default(now())
   @@index([status, retryAt])
   @@index([userId, createdAt])
+  @@index([resolutionStatus, createdAt])
+}
+model AdminAudit {
+  id String @id @default(cuid())
+  actorId String
+  action String
+  targetId String
+  details Json
+  createdAt DateTime @default(now())
+  @@index([createdAt])
 }
 model SupportBotState {
   id String @id

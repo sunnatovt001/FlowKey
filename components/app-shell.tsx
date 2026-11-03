@@ -3,7 +3,7 @@ import { WelcomeTour } from "./welcome-tour";
 import { UserAvatar } from "./avatar";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard,
   ArrowLeftRight,
@@ -16,6 +16,7 @@ import {
   Users,
   Repeat,
   History,
+  ShieldCheck,
 } from "lucide-react";
 import { Logo } from "./ui";
 import { roleAllows } from "@/shared/project-role";
@@ -34,16 +35,44 @@ export function AppShell({
   projects,
   email,
   children,
+  isAdmin = false,
 }: {
   projects: { id: string; name: string; role?: string }[];
   email: string;
   children: React.ReactNode;
+  isAdmin?: boolean;
 }) {
   const path = usePathname();
   const router = useRouter();
   const query = useSearchParams();
   const selected = query.get("project") || projects[0]?.id || "";
   const [error, setError] = useState("");
+  const profileMenu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const closeOutside = (event: Event) => {
+      const menu = profileMenu.current;
+      if (menu?.open && event.target instanceof Node && !menu.contains(event.target))
+        menu.open = false;
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      const menu = profileMenu.current;
+      if (event.key === "Escape" && menu?.open) {
+        menu.open = false;
+        menu.querySelector("summary")?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", closeOutside, true);
+    document.addEventListener("focusin", closeOutside, true);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside, true);
+      document.removeEventListener("focusin", closeOutside, true);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+  useEffect(() => {
+    if (profileMenu.current) profileMenu.current.open = false;
+  }, [path, selected]);
   const role = projects.find((p) => p.id === selected)?.role || "owner";
   return (
     <div className="app-shell">
@@ -70,6 +99,12 @@ export function AppShell({
                 {label}
               </Link>
             ))}
+          {isAdmin && (
+            <Link href="/admin" className={path.startsWith("/admin") ? "active" : ""}>
+              <ShieldCheck size={18} />
+              Admin panel
+            </Link>
+          )}
         </nav>
         <div className="sidebar-bottom">
           <Link href={`/guide?project=${selected}#quick-start`}>
@@ -117,13 +152,13 @@ export function AppShell({
             </select>
             <span className="sandbox-label">Unit</span>
           </div>
-          <details className="profile-menu">
+          <details ref={profileMenu} className="profile-menu">
             <summary aria-label="Profil menyusi">
               <UserAvatar email={email} />
             </summary>
             <div>
-              <Link href="/invitations">Loyiha takliflari</Link>
-              <Link href={`/settings?project=${selected}`}>
+              <Link href="/invitations" onClick={() => { if (profileMenu.current) profileMenu.current.open = false; }}>Loyiha takliflari</Link>
+              <Link href={`/settings?project=${selected}`} onClick={() => { if (profileMenu.current) profileMenu.current.open = false; }}>
                 Hisob sozlamalari
               </Link>
               <button
