@@ -22,3 +22,19 @@
   .flow-landing .faq .animated-faq-item summary::after,
   .flow-landing .faq .animated-faq-item .faq-answer { transition: none; }
 }
+
+/* Align the question and icon by their centres, including wrapped questions. */
+.flow-landing .faq .animated-faq-item summary {
+  align-items: center;
+  line-height: 1.5;
+  padding-right: 0;
+}
+.flow-landing .faq .animated-faq-item summary::after,
+.flow-landing .faq .animated-faq-item[open]:not([data-expanded="false"]) summary::after {
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(currentColor, currentColor) center / 14px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 2px 14px no-repeat;
+}
