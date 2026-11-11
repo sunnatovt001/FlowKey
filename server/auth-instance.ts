@@ -1,3 +1,4 @@
+import { telegramLoginPlugin } from "./telegram-login-plugin";
 import { authTrustedOrigins } from "./origins";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -6,6 +7,7 @@ import { sendAuthEmail } from "./email";
 import { socialAuthConfiguration } from "./social-auth";
 
 export const auth = betterAuth({
+  plugins: [telegramLoginPlugin()],
   database: prismaAdapter(db, { provider: "postgresql" }),
   baseURL: process.env.APP_URL || "http://localhost:3000",
   secret: process.env.BETTER_AUTH_SECRET,
@@ -45,6 +47,8 @@ export const auth = betterAuth({
     window: 60,
     max: 60,
     customRules: {
+      "/telegram/status": { window: 60, max: 1000 },
+      "/telegram/complete": { window: 60, max: 120 },
       "/sign-in/email": { window: 60, max: 10 },
       "/sign-up/email": { window: 60, max: 10 },
       "/request-password-reset": { window: 60, max: 5 },

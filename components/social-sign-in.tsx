@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { TelegramSignIn } from "./telegram-sign-in";
+import { T } from "./i18n/language-provider";
 import { LoaderCircle } from "lucide-react";
 
 function GitHubIcon() {
@@ -41,10 +43,19 @@ function GoogleIcon() {
 }
 
 export function SocialSignIn({
-  available,
+  available, compact = false,
 }: {
-  available: { google: boolean; github: boolean };
+  available?: { google: boolean; github: boolean };
+  compact?: boolean;
 }) {
+  const [providers, setProviders] = useState({ google: available?.google ?? false, github: available?.github ?? false, telegram: false });
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/auth/providers", { signal: controller.signal }).then(r => r.ok ? r.json() : null).then(data => {
+      if (data) setProviders({ google: data.google === true, github: data.github === true, telegram: data.telegram === true });
+    }).catch(() => {});
+    return () => controller.abort();
+  }, []);
   const [pending, setPending] = useState<"google" | "github" | null>(null);
   const [error, setError] = useState("");
   const query = useSearchParams();
@@ -93,9 +104,9 @@ export function SocialSignIn({
             key={provider}
             type="button"
             className="button secondary social-sign-in-button"
-            disabled={!available[provider] || pending !== null}
+            disabled={!providers[provider] || pending !== null}
             title={
-              !available[provider]
+              !providers[provider]
                 ? name + " orqali kirish hali sozlanmagan"
                 : undefined
             }
@@ -108,19 +119,20 @@ export function SocialSignIn({
             ) : (
               <GitHubIcon />
             )}
-            <span>{name} orqali kirish</span>
-            {!available[provider] && <small>Sozlanmagan</small>}
+            <span><T>{name + " orqali kirish"}</T></span>
+            {!providers[provider] && <small><T>Sozlanmagan</T></small>}
           </button>
         );
       })}
+      <TelegramSignIn available={providers.telegram} />
       {(error || callbackError) && (
         <p className="error" role="alert">
           {error || callbackError}
         </p>
       )}
-      <div className="auth-divider">
+      {!compact && <div className="auth-divider">
         <span>yoki</span>
-      </div>
+      </div>}
     </div>
   );
 }

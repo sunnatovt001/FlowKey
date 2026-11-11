@@ -34,6 +34,7 @@ export default async function Settings({
           <h1>Hisob sozlamalari</h1>
         </div>
       </div>
+      {user.email.endsWith("@telegram.flowkey.invalid") && <p className="notice">Bu hisob Telegram orqali yaratilgan. Elektron pochta ulanmagan; qayta kirish uchun Telegram tugmasidan foydalaning.</p>}
       <SettingsForm
         name={user.name}
         email={user.email}
@@ -52,7 +53,7 @@ export default async function Settings({
           <dl className="detail-list">
             <div>
               <dt>Elektron pochta</dt>
-              <dd>{user.email}</dd>
+              <dd>{user.email.endsWith("@telegram.flowkey.invalid") ? "Ulanmagan · Telegram orqali kirish" : user.email}</dd>
             </div>
             <div>
               <dt>Ro‘yxatdan o‘tgan sana</dt>

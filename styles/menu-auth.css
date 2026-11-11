@@ -1,0 +1,17 @@
+.menu-symbol { position: relative; display: block; width: 24px; height: 24px; }
+.menu-symbol > span { position: absolute; left: 1px; right: 1px; top: calc(50% - 1px); height: 2px; background: currentColor; border-radius: 2px; transform-origin: center; transition: transform 280ms cubic-bezier(.22,1,.36,1); }
+.menu-symbol > span:first-child { transform: translateY(-4px); }
+.menu-symbol > span:last-child { transform: translateY(4px); }
+[aria-expanded="true"] > .menu-symbol > span:first-child, .menu-symbol-close > span:first-child { transform: rotate(45deg); }
+[aria-expanded="true"] > .menu-symbol > span:last-child, .menu-symbol-close > span:last-child { transform: rotate(-45deg); }
+.drawer-sign-in-options { display: grid; gap: 12px; }
+.drawer-sign-in-options .social-sign-in { margin: 0; }
+.drawer-sign-in-options .social-sign-in-button { width: 100%; min-height: 48px; justify-content: flex-start; white-space: normal; text-align: left; }
+.drawer-sign-in-options .social-sign-in-button span { flex: 1; }
+.telegram-sign-in { width: 100%; }
+.telegram-login-flow { display: grid; gap: 12px; padding: 16px; margin-top: 12px; background: #f5edfc; border: 1px solid #e4d3f2; border-radius: 12px; }
+.telegram-login-flow p { margin: 0; font-size: 13px; line-height: 1.6; }
+.telegram-login-code { font-size: 28px; letter-spacing: .18em; text-align: center; font-variant-numeric: tabular-nums; }
+.telegram-login-flow .button { white-space: normal; }
+@media (prefers-reduced-motion: reduce) { .menu-symbol > span { transition: none; } }
+.drawer-close { display: grid; place-items: center; }

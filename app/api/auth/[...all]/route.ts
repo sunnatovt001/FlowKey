@@ -49,6 +49,8 @@ export async function POST(req: Request) {
   ) {
     try {
       const input = (await body(req.clone())) as { email?: unknown };
+      if (typeof input?.email === "string" && input.email.trim().toLowerCase().endsWith("@telegram.flowkey.invalid"))
+        throw new ApiError(400, "Bu hisobga Telegram orqali kiring.");
       if (typeof input?.email === "string")
         await limit(
           `auth-account:${input.email.trim().toLowerCase().slice(0, 254)}`,

@@ -5,6 +5,8 @@ import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { T } from "@/components/i18n/language-provider";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { SocialSignIn } from "../social-sign-in";
+import { Mail } from "lucide-react";
 import { Logo } from "./logo";
 export function PublicNav() {
   const header = useRef<HTMLElement>(null);
@@ -42,6 +44,7 @@ export function PublicNav() {
         <MobileDrawer id="public-mobile-menu">
           <nav className="drawer-links" aria-label="Navigation"><Link href="/#pricing"><T>Narxlar</T></Link><Link href="/docs"><T>Qo‘llanma</T></Link><Link href="/privacy"><T>Maxfiylik</T></Link></nav>
           <div className="drawer-auth"><Link className="button secondary" href="/login"><T>Kirish</T></Link><Link className="button primary" href="/signup"><T>Boshlash</T></Link></div>
+          <div className="drawer-sign-in-options"><SocialSignIn compact /><Link href="/login" className="button secondary social-sign-in-button"><Mail size={22}/><span><T>Gmail yoki email orqali kirish</T></span></Link></div>
           <div className="drawer-language"><LanguageSwitcher/></div>
         </MobileDrawer>
       </div>

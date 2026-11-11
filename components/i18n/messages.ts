@@ -266,5 +266,9 @@ export const messages: Record<string, {ru: string; en: string}> = {
   "Yo‘q. Biznes va loyiha yaratish faqat sinov sozlamasidir. Bu huquqiy, KYC yoki haqiqiy to‘lovga ruxsat bermaydi.": {
     "ru": "Нет. Создание бизнеса и проекта — только настройка тестовой среды. Это не заменяет KYC и не даёт разрешения на реальные платежи.",
     "en": "No. Creating a business and project only configures testing. It does not constitute legal or KYC approval or permission for live payments."
-  }
+  },
+  "Google orqali kirish": { ru: "Войти через Google", en: "Continue with Google" },
+  "GitHub orqali kirish": { ru: "Войти через GitHub", en: "Continue with GitHub" },
+  "Gmail yoki email orqali kirish": { ru: "Войти через Gmail или почту", en: "Gmail or email and password" },
+  "Sozlanmagan": { ru: "Не настроено", en: "Not configured" },
 };

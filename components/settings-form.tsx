@@ -93,7 +93,7 @@ export function SettingsForm({
           </label>
           <label>
             Elektron pochta
-            <input value={email} disabled />
+            <input value={email.endsWith("@telegram.flowkey.invalid") ? "Ulanmagan · Telegram orqali kirish" : email} disabled />
           </label>
           <button disabled={busy} className="button primary">
             Profilni saqlash

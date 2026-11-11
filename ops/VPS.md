@@ -22,3 +22,14 @@ Resume after reviewing main:
 
 TLS: certbot.timer handles renewal. Use certbot renew --dry-run to validate.
 DNS: apex A 173.212.216.216, www CNAME flowkey.uz. Do not repoint mail to this VPS unless mail hosting has been configured here.
+
+Telegram sign-in uses a separate login bot. Private variables:
+TELEGRAM_LOGIN_BOT_TOKEN, TELEGRAM_LOGIN_BOT_USERNAME, TELEGRAM_LOGIN_WEBHOOK_SECRET.
+Webhook: https://flowkey.uz/api/telegram-login/webhook with Telegram's secret_token header.
+Never switch the support bot to this webhook. Set allowed_updates to message and
+callback_query; retain pending updates. The browser must initiate the request, check
+the six-digit code in the bot, confirm, and return to the same browser within 10 minutes.
+Requests are single-use and browser-bound; no bot token or browser proof appears in URLs.
+Provider identity is mapped by Telegram ID, never by user-supplied email. Telegram-only
+accounts have no verified email and cannot use email/password recovery. Internal reserved
+email placeholders are not deliverable mailboxes and never grant email verification.
