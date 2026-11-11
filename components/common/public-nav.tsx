@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useRef } from "react";
 import { MobileDrawer } from "@/components/layout/mobile-drawer";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 import { T } from "@/components/i18n/language-provider";
@@ -5,8 +7,25 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Logo } from "./logo";
 export function PublicNav() {
+  const header = useRef<HTMLElement>(null);
+  useEffect(() => {
+    let frame = 0;
+    function update() {
+      header.current?.classList.toggle("is-scrolled", scrollY > 28);
+      frame = 0;
+    }
+    function schedule() { if (!frame) frame = requestAnimationFrame(update); }
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("pageshow", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("pageshow", schedule);
+    };
+  }, []);
   return (
-    <header className="public-nav">
+    <div className="public-nav-space"><header ref={header} className="public-nav">
       <Logo />
       <nav aria-label="Asosiy menyu">
         <Link href="/#pricing"><T>Narxlar</T></Link>
@@ -26,6 +45,6 @@ export function PublicNav() {
           <div className="drawer-language"><LanguageSwitcher/></div>
         </MobileDrawer>
       </div>
-    </header>
+    </header></div>
   );
 }
