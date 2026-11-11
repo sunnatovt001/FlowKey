@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { LanguageProvider } from "@/components/i18n/language-provider";
 import { HelpChat } from "@/components/help-chat";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="uz" data-scroll-behavior="smooth">
-      <body>{children}<HelpChat /></body>
+      <body><LanguageProvider>{children}<HelpChat /></LanguageProvider></body>
     </html>
   );
 }

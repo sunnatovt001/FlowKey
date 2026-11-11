@@ -1,4 +1,5 @@
 "use client";
+import { MobileDrawer } from "./layout/mobile-drawer";
 import { WelcomeTour } from "./welcome-tour";
 import { UserAvatar } from "./avatar";
 import Link from "next/link";
@@ -78,6 +79,34 @@ export function AppShell({
     <div className="app-shell">
       <aside className="sidebar">
         <Logo />
+        <MobileDrawer id="workspace-mobile-menu"><nav className="drawer-links" aria-label="Mobil kabinet menyusi">
+          {navigation
+            .filter(([href]) =>
+              href === "/finance"
+                ? roleAllows(role, "finance")
+                : ["/developers", "/subscriptions"].includes(href)
+                  ? roleAllows(role, "technical")
+                  : ["/team", "/activity"].includes(href)
+                    ? role === "owner"
+                    : true,
+            )
+            .map(([href, label, Icon]) => (
+              <Link
+                className={path === href ? "active" : ""}
+                href={href + (selected ? `?project=${selected}` : "")}
+                key={href}
+              >
+                <Icon size={18} />
+                {label}
+              </Link>
+            ))}
+          {isAdmin && (
+            <Link href="/admin" className={path.startsWith("/admin") ? "active" : ""}>
+              <ShieldCheck size={18} />
+              Admin panel
+            </Link>
+          )}
+        </nav></MobileDrawer>
         <nav aria-label="Kabinet menyusi">
           {navigation
             .filter(([href]) =>
