@@ -1,6 +1,6 @@
 import { T } from "@/components/i18n/language-provider";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 export function WorkspaceSection(){return (<section className="section dashboard-feature">
           <div className="section-heading">
             <h2><T>Har bir sinov.</T><br /><T>Ko‘z oldingizda.</T></h2>

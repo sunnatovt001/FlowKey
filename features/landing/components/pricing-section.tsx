@@ -1,6 +1,6 @@
 import { T } from "@/components/i18n/language-provider";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 export function PricingSection(){return (<section id="pricing" className="section pricing">
           <div>
             <h2><T>Sinovdan boshlang.</T><br /><T>O‘z sur’atingizda rivojlaning.</T></h2>

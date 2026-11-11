@@ -1,6 +1,4 @@
 import { T } from "@/components/i18n/language-provider";
-import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 export function FaqSection(){return (<section className="section faq">
           <div className="faq-intro"><h2><T>Sizni qiziqtirgan</T><br /><T>savollarga javoblar.</T></h2><img className="faq-illustration" src="/faq-illustration.svg" alt="" width="500" height="350" loading="lazy" decoding="async"/></div>
           <div>
