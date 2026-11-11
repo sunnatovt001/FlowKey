@@ -21,7 +21,7 @@ import {
 import { Logo } from "./ui";
 import { roleAllows } from "@/shared/project-role";
 const navigation = [
-  ["/dashboard", "Umumiy ko‘rinish", LayoutDashboard],
+  ["/dashboard", "Dashboard", LayoutDashboard],
   ["/transactions", "Tranzaksiyalar", ArrowLeftRight],
   ["/developers", "Ulash", Code2],
   ["/finance", "Moliya", Wallet],
@@ -187,7 +187,7 @@ export function AppShell({
         <WelcomeTour userKey={email} projectId={selected} />
         <div className="workspace-footer">
           FlowKey Unit muhiti{" "}
-          <span>Haqiqiy to‘lovlar tez kunda · Hamkor tasdig‘i kutilmoqda</span>
+          <span>Haqiqiy pul operatsiyalari ulanmagan</span>
         </div>
       </div>
     </div>

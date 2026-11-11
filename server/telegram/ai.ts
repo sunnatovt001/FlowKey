@@ -1,5 +1,6 @@
-import { assistantInstructions, redact } from "./policy";
+import { assistantInstructions, redact, cleanAssistantAnswer } from "./policy";
 import { accountLookupTool } from "./lookup";
+import { answerGemini } from "./gemini";
 export type Turn = { role: "user" | "assistant"; content: string };
 type Output = {
   type?: string;
@@ -15,6 +16,8 @@ export async function answerQuestion(
   fetcher: typeof fetch = fetch,
   lookup?: (args: unknown) => Promise<unknown>,
 ) {
+  if (process.env.GEMINI_API_KEY?.trim())
+    return answerGemini(snapshot, history, question, fetcher, lookup);
   if (!process.env.SUPPORT_AI_API_KEY)
     return "AI hozircha sozlanmagan. /check buyrug‘i hisob holatini tekshiradi. Muammo uchun Adminga yuborish tugmasidan foydalaning.";
   const input: unknown[] = [
@@ -64,7 +67,7 @@ export async function answerQuestion(
         .join("\n")
         .trim();
       if (!text) throw new Error("AI javobi bo‘sh.");
-      return redact(text);
+      return cleanAssistantAnswer(text);
     }
     if (!lookup || round === 2)
       throw new Error("AI qidiruv chegarasiga yetdi.");

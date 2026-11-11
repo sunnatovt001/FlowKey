@@ -23,7 +23,7 @@ export async function workspace(search: Search, allowArchivedHistory = false) {
     const business = await db.business.findUnique({
       where: { ownerId: user.id },
     });
-    redirect(business ? "/settings?empty=1" : "/onboarding");
+    redirect(business ? "/projects/new" : "/onboarding");
   }
   const available = memberships.map((m) => m.project);
   const projects = available.filter((project) => !project.archivedAt);

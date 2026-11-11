@@ -141,7 +141,7 @@ export function DeveloperTools({
         </div>
       )}
       {tab === "keys" && (
-        <section className="panel">
+        <section className="panel" id="api-keys">
           <IntegrationPrompts projectId={projectId} method="API kaliti" />
           <div className="panel-heading">
             <div>
@@ -288,7 +288,7 @@ export function DeveloperTools({
                     name="amount"
                     type="text"
                     inputMode="decimal"
-                    defaultValue="125000"
+                    placeholder="Summani kiriting"
                     required
                   />
                   <span>UZS</span>
@@ -352,7 +352,7 @@ export function DeveloperTools({
       )}
       {tab === "webhooks" && (
         <>
-          <section className="panel">
+          <section className="panel" id="webhooks">
             <div className="panel-heading">
               <div>
                 <h2>Webhook endpointlari</h2>

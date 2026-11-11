@@ -20,6 +20,7 @@ export function HelpChat() {
   const field = useRef<HTMLTextAreaElement>(null);
   const log = useRef<HTMLDivElement>(null);
   const hidden = pathname.startsWith("/pay/") || pathname.startsWith("/checkout/");
+  useEffect(()=>{const show=()=>{if(!open){setChecking(true);setOpen(true);}else field.current?.focus();};window.addEventListener("flowkey:open-help",show);return ()=>window.removeEventListener("flowkey:open-help",show);},[open]);
   useEffect(() => {
     if (!open || hidden) return;
     const controller = new AbortController();
@@ -39,7 +40,8 @@ export function HelpChat() {
     const value = text.trim();
     if (!value || value.length > 1500 || busy || checking) return;
     setQuestion(""); setError(""); setNeedsLogin(false);
-    const history = messages.slice(-4).map(({ role, content }) => ({ role, content: content.slice(0, 500) }));
+    const history = messages.slice(-8).map(({ role, content }) => ({ role, content: content.slice(0, 2000) }));
+    while(history.length && new TextEncoder().encode(JSON.stringify({question:value,history,page:pathname})).byteLength>14000)history.shift();
     setMessages(previous => [...previous.slice(-18), { role: "user", content: value }]);
     if (!available) {
       const reply = helpGuide(value);
@@ -51,7 +53,7 @@ export function HelpChat() {
     try {
       const response = await fetch("/api/support/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: value, history }), signal: AbortSignal.timeout(70000),
+        body: JSON.stringify({ question: value, history, page:pathname }), signal: AbortSignal.timeout(70000),
       });
       const data = await response.json();
       if (!response.ok) {

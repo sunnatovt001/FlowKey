@@ -13,6 +13,7 @@ model User {
   passwordHash  String           @default("")
   name          String           @default("")
   emailVerified Boolean          @default(false)
+  tourSeenAt    DateTime?
   telegramConnection TelegramConnection?
   telegramLink TelegramLink?
   supportTickets SupportTicket[]

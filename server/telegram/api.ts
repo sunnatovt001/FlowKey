@@ -39,7 +39,7 @@ export async function telegramCall<T>(
     throw new Error(`Telegram so‘rovi bajarilmadi (${r.status}).`);
   return result.result;
 }
-export async function sendText(chatId: string, text: string, keyboard = false) {
+export async function sendText(chatId: string, text: string, keyboard: boolean|{inline_keyboard:{text:string;callback_data?:string;url?:string}[][]} = false) {
   const chunks = text.match(/[\s\S]{1,3500}/gu) || ["Javob bo‘sh."];
   for (let i = 0; i < chunks.length; i++)
     await telegramCall("sendMessage", {
@@ -47,7 +47,7 @@ export async function sendText(chatId: string, text: string, keyboard = false) {
       text: chunks[i],
       link_preview_options: { is_disabled: true },
       ...(keyboard && i === chunks.length - 1
-        ? { reply_markup: supportKeyboard }
+        ? { reply_markup: keyboard===true?supportKeyboard:keyboard }
         : {}),
     });
 }

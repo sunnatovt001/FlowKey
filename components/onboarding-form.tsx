@@ -2,7 +2,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { businessLabel } from "@/shared/locale";
-export function OnboardingForm({ draftKey }: { draftKey: string }) {
+export function OnboardingForm({
+  draftKey,
+  initial,
+}: {
+  draftKey: string;
+  initial?: { name: string; type: string };
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -28,7 +34,7 @@ export function OnboardingForm({ draftKey }: { draftKey: string }) {
             try {
               sessionStorage.removeItem(draftKey);
             } catch {}
-            router.push("/settings?welcome=1#create-project");
+            router.push(result.project ? "/dashboard" : "/projects/new");
             router.refresh();
           } catch (e) {
             setError(e instanceof Error ? e.message : "Qayta urinib ko‘ring.");
@@ -39,12 +45,13 @@ export function OnboardingForm({ draftKey }: { draftKey: string }) {
       >
         <h1>Mahsulotingiz haqida ayting.</h1>
         <p className="muted">
-          Kabinetni oching. Loyihani keyin kabinet ichida yaratasiz.
+          Keyingi qadamda birinchi loyihangizni yaratasiz.
         </p>
         <label>
           Mahsulot nomi
           <input
             name="businessName"
+            defaultValue={initial?.name}
             required
             minLength={2}
             maxLength={100}
@@ -53,7 +60,7 @@ export function OnboardingForm({ draftKey }: { draftKey: string }) {
         </label>
         <label>
           Mahsulot turi
-          <select name="businessType">
+          <select name="businessType" defaultValue={initial?.type || "Startup"}>
             {["Startup", "Online platform", "Company", "Individual"].map(
               (v) => (
                 <option key={v} value={v}>
@@ -70,7 +77,7 @@ export function OnboardingForm({ draftKey }: { draftKey: string }) {
         )}
         <div className="form-actions">
           <button className="button primary" disabled={busy}>
-            {busy ? "Saqlanmoqda…" : "Kabinetga kirish"}
+            {busy ? "Saqlanmoqda…" : "Davom etish"}
           </button>
         </div>
       </form>

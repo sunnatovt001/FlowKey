@@ -82,3 +82,13 @@ Rasmiy manbalar: [Telegram Bot API](https://core.telegram.org/bots/api), [OpenAI
 ## Admin ID’sini avtomatik ulash
 
 ID’ni qo‘lda ko‘chirmasdan ulash uchun local terminalda `npm run bot:setup-admin` bajaring. Chiqqan bir martalik havolani faqat admin bo‘ladigan o‘z Telegram hisobingizda ochib Start bosing. Havola 10 daqiqada tugaydi va bir marta ishlaydi. `TELEGRAM_ADMIN_CHAT_ID` local `.env` ga avtomatik saqlanadi; poller shu zahoti yangi sozlamadan foydalanadi. Oldindan sozlangan adminni bu havola bilan almashtirib bo‘lmaydi. Yangi havola oldingi hali ishlatilmagan admin havolalarini bekor qiladi. Havola admin murojaatlarini olish huquqini beradi — uni boshqalarga bermang.
+
+## Sayt va Telegram admin boshqaruvi
+
+Saytdagi Admin panel → Telegram sahifasida admin paroli bilan kirgan foydalanuvchi Telegram boshqaruvini 15 daqiqaga yoqadi. So‘ng botga `/panel` yoziladi. Parolni Telegram xabariga yubormang.
+
+Boshqaruv uchta shartni tekshiradi: `TELEGRAM_ADMIN_CHAT_ID` mosligi, shu chatga bog‘langan tasdiqlangan foydalanuvchining `FLOWKEY_ADMIN_USER_IDS` ro‘yxatida borligi va muddati tugamagan web ruxsati. Telegram uzilsa yoki admin paroli o‘zgarsa eski ruxsat ishlamaydi. Oddiy foydalanuvchining `/admin` buyrug‘i yordam murojaati yuborish vazifasida qoladi; sozlangan admin uchun `/admin` ham boshqaruvni ochadi.
+
+Botda murojaatlarni holati bo‘yicha ko‘rish, matnini ochish, tasdiqlab holatini o‘zgartirish, foydalanuvchi/loyiha ro‘yxatini sahifalash mumkin. Moliyaviy operatsiyalar, hisob o‘chirish yoki maxfiy kalitlarni chiqarish yo‘q. Sayt va bot bir xil status xizmatidan foydalanadi; auditda `source: telegram` yoziladi. Eski tugma yoki takroriy yangilanish boshqa holat ustidan yozmaydi.
+
+Admin chatning alohida buyruqlar menyusi: `node --env-file=.env --import tsx scripts/configure-telegram-admin-menu.ts`. Bu boshqa foydalanuvchilar bot menyusini o‘zgartirmaydi.

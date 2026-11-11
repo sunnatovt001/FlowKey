@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { requireUser } from "./auth";
-import { isPlatformAdmin, type TicketState } from "./admin-access";
+import { isPlatformAdmin } from "./admin-access";
 import { ApiError } from "./security";
 import { unpackText, unpackSnapshot } from "./telegram/storage";
 import { redact } from "./telegram/policy";
@@ -14,7 +14,7 @@ export async function requireAdmin() {
     throw new ApiError(401, "Admin paroli bilan tasdiqlang.");
   return user;
 }
-async function requireAdminPage() {
+export async function requireAdminPage() {
   try {
     return await requireAdmin();
   } catch (error) {
@@ -217,42 +217,7 @@ export async function adminTicket(id: string) {
     conversation,
   };
 }
-export async function updateAdminTicket(
-  actorId: string,
-  id: string,
-  status: TicketState,
-  expectedStatus: TicketState,
-) {
-  return db.$transaction(async (tx) => {
-    const ticket = await tx.supportTicket.findUnique({
-      where: { id },
-      select: { resolutionStatus: true },
-    });
-    if (!ticket) throw new ApiError(404, "Murojaat topilmadi.");
-    if (ticket.resolutionStatus !== expectedStatus)
-      throw new ApiError(409, "Holat o‘zgargan. Sahifani yangilang.");
-    if (status === expectedStatus) return { status };
-    const changed = await tx.supportTicket.updateMany({
-      where: { id, resolutionStatus: expectedStatus },
-      data: {
-        resolutionStatus: status,
-        resolvedAt: status === "resolved" ? new Date() : null,
-        resolvedBy: status === "resolved" ? actorId : null,
-      },
-    });
-    if (!changed.count)
-      throw new ApiError(409, "Holat o‘zgargan. Sahifani yangilang.");
-    await tx.adminAudit.create({
-      data: {
-        actorId,
-        action: "support.status_changed",
-        targetId: id,
-        details: { from: expectedStatus, to: status },
-      },
-    });
-    return { status };
-  });
-}
+export { updateAdminTicket } from "./admin-ticket-workflow";
 export async function adminAudit(
   params: Record<string, string | string[] | undefined>,
 ) {

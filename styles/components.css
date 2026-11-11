@@ -309,3 +309,9 @@ summary {
     padding: 18px;
   }
 }
+.hero-stage .preview-body { grid-template-columns: minmax(0, 1fr); }
+.flow-workflow { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 24px; }
+.flow-workflow li { display: flex; gap: 14px; align-items: flex-start; }
+.flow-workflow li > svg { color: var(--blue); flex-shrink: 0; margin-top: 2px; }
+.flow-workflow strong { display: block; font-size: 15px; }
+.flow-workflow p { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.6; }

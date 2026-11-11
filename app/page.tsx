@@ -8,128 +8,61 @@ export default function Home() {
       <PublicNav />
       <main className="landing flow-landing">
         <LandingHero />
-        <section className="section developer-band">
+        <section id="features" className="section pricing">
           <div>
             <h2>
-              Sizning terminalingiz.
+              Integratsiya uchun
               <br />
-              Sizning ish usulingiz.
+              bitta platforma.
             </h2>
-
-            <Link href="/docs#quick-start">
-              Tezkor boshlashni o‘qish <ArrowRight size={16} />
-            </Link>
-          </div>
-          <pre>
-            <code>
-              <span className="code-comment"># Birinchi sinov to‘lovingiz</span>
-              {`\ncurl -X POST "$BASE_URL/api/v1/payments" \\\n  -H "Authorization: Bearer $FLOWZA_KEY" \\\n  -H "Idempotency-Key: test-payment-001" \\\n  -H "Content-Type: application/json" \\\n  -d '{"amount_minor": 12500000,\n       "currency": "UZS",\n       "result": "successful"}'`}
-            </code>
-          </pre>
-        </section>
-        <section className="section dashboard-feature">
-          <div className="section-heading">
-            <h2>
-              Har bir sinov.
-              <br />
-              Ko‘z oldingizda.
-            </h2>
-          </div>
-          <div className="dashboard-sample" data-ui>
-            <div>
-              <span>Kabinetning umumiy ko‘rinishi</span>
-              <span className="sandbox-label">Unit muhiti namunasi</span>
-            </div>
-            <div className="sample-stats">
-              <div>
-                <p>To‘lov hajmi</p>
-                <strong>
-                  0 <small>UZS</small>
-                </strong>
-              </div>
-              <div>
-                <p>Muvaffaqiyatli to‘lovlar</p>
-                <strong>0</strong>
-              </div>
-              <div>
-                <p>Jami tranzaksiyalar</p>
-                <strong>0</strong>
-              </div>
-            </div>
-            <p className="sample-empty">
-              Birinchi sinov to‘lovingizdan boshlang.
-              <Link href="/signup">
-                Loyiha yaratish <ArrowRight size={14} />
-              </Link>
-            </p>
-          </div>
-        </section>
-        <section id="pricing" className="section pricing">
-          <div>
-            <h2>
-              Sinovdan boshlang.
-              <br />
-              O‘z sur’atingizda rivojlaning.
-            </h2>
-            <p>Integratsiyangizni haqiqiy xarajatlarsiz sinang.</p>
+            <p>Loyihalar, ulanishlar va tranzaksiyalarni boshqaring.</p>
           </div>
           <div className="price-panel">
             <div>
-              <h3>Bepul Unit muhiti</h3>
-              <p>Sinov to‘lovlari. Amaliy dasturchi vositalari.</p>
+              <h3>FlowKey kabineti</h3>
             </div>
             <ul>
-              <li>
-                <Check size={16} /> Unit API kalitlari
-              </li>
-              <li>
-                <Check size={16} /> Tranzaksiyalar tarixi va kabinet
-              </li>
-              <li>
-                <Check size={16} /> Imzolangan webhooklarni sinash
-              </li>
+              {[
+                "Loyihalar va jamoa ruxsatlari",
+                "API kalitlari va ulash usullari",
+                "Tranzaksiyalar tarixi",
+                "Imzolangan webhooklar",
+                "AI yordamchi va yordam murojaatlari",
+              ].map((text) => (
+                <li key={text}>
+                  <Check size={16} />
+                  {text}
+                </li>
+              ))}
             </ul>
             <Link className="button primary" href="/signup">
-              Boshlash <ArrowUpRight size={16} />
+              Hisob yaratish <ArrowUpRight size={16} />
             </Link>
-            <div className="planned">
-              <strong>
-                Rejalashtirilgan narx: har bir tranzaksiya uchun 3%
-              </strong>
-              <p>
-                Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar
-                litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.
-              </p>
-            </div>
           </div>
         </section>
         <section className="section faq">
           <h2>
-            Sizni qiziqtirgan
+            Savollarga
             <br />
-            savollarga javoblar.
+            javoblar.
           </h2>
           <div>
             {[
               [
-                "Hozir haqiqiy to‘lov qabul qila olamanmi?",
-                "Yo‘q. FlowKey hozir faqat Unit muhitini taqdim etadi. Haqiqiy pul ishlatilmaydi. Haqiqiy to‘lovlar litsenziyalangan hamkor integratsiyasi va tasdig‘ini talab qiladi.",
+                "FlowKey orqali qanday ulayman?",
+                "Loyiha yarating va Ulash bo‘limidan API kaliti, token, havola, script yoki tugmani tanlang.",
               ],
               [
-                "FlowKey kimlar uchun?",
-                "O‘zbekistondagi dasturchilar, SaaS asoschilari, startap jamoalari va raqamli bizneslar uchun.",
+                "Hozir haqiqiy pul qabul qilinadimi?",
+                "Hozir haqiqiy pul operatsiyalari ulanmagan. Mavjud to‘lov amallari sinov muhitida bajariladi.",
               ],
               [
-                "Bank yoki karta ma’lumotlari kerakmi?",
-                "Yo‘q. Sinov uchun summa va natija kifoya. Haqiqiy karta raqami, CVV yoki bank ma’lumotlarini yubormang.",
+                "Hisobdagi ma’lumotlar qayerdan olinadi?",
+                "Kabinetdagi loyiha, tranzaksiya va webhook ko‘rsatkichlari shu hisobning bazadagi yozuvlaridan olinadi.",
               ],
               [
-                "Qaysi valyutalarni sinash mumkin?",
-                "Dastlabki Unit muhiti UZS’ni qo‘llaydi. Summa butun kichik birliklarda yuboriladi: 100 birlik = 1 so‘m.",
-              ],
-              [
-                "Bu sotuvchini tasdiqlash hisoblanadimi?",
-                "Yo‘q. Biznes va loyiha yaratish faqat sinov sozlamasidir. Bu huquqiy, KYC yoki haqiqiy to‘lovga ruxsat bermaydi.",
+                "Yordamni qayerdan olaman?",
+                "Kabinetdagi AI yordamchiga yozing yoki Hisob sozlamalaridan yordam murojaati yarating.",
               ],
             ].map(([q, a]) => (
               <details key={q}>
@@ -141,24 +74,22 @@ export default function Home() {
         </section>
         <section className="closing">
           <h2>
-            Mahsulotingizni yarating.
+            Loyihangizni
             <br />
-            To‘lovlar bizning zimmamizda.
+            FlowKey’ga ulang.
           </h2>
-          <p>Sinovdan boshlang. Ishonch bilan yarating.</p>
           <Link href="/signup" className="button primary">
-            Ishni boshlash <ArrowUpRight size={16} />
+            Ishni boshlash <ArrowRight size={16} />
           </Link>
         </section>
       </main>
       <footer>
         <Logo />
-        <p>O‘zbekiston dasturchilari uchun to‘lov infratuzilmasi.</p>
+        <p>Loyihalar va API integratsiyalari uchun kabinet.</p>
         <div>
           <Link href="/docs">Qo‘llanma</Link>
           <Link href="/privacy">Maxfiylik</Link>
           <Link href="/login">Kirish</Link>
-          <span>Faqat sinov · Haqiqiy pul ishlatilmaydi</span>
         </div>
       </footer>
     </>

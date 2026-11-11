@@ -21,6 +21,7 @@ export default async function Settings({
     where: { businessId: business.id },
     orderBy: { createdAt: "asc" },
   });
+  if (!allProjects.length) redirect("/projects/new");
   const projects = allProjects.filter((project) => !project.archivedAt);
   const project =
     allProjects.find((p) => p.id === search.project) ||
@@ -91,7 +92,7 @@ export default async function Settings({
             </div>
             <div>
               <dt>Haqiqiy to‘lovlar</dt>
-              <dd>Tez kunda · Hamkor tasdig‘i kutilmoqda</dd>
+              <dd>Ulanmagan</dd>
             </div>
           </dl>
           <p className="panel-note">

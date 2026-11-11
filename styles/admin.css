@@ -304,3 +304,4 @@
 .admin-login-card form {
   gap: 24px;
 }
+.admin-actions {display:flex;flex-wrap:wrap;gap:12px;margin:24px 0;}

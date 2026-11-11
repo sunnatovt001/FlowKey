@@ -7,6 +7,7 @@ import {
   Folder,
   LifeBuoy,
   History,
+  Send,
 } from "lucide-react";
 const items = [
   ["/admin", "Umumiy ko‘rinish", LayoutDashboard],
@@ -14,6 +15,7 @@ const items = [
   ["/admin/projects", "Loyihalar", Folder],
   ["/admin/tickets", "Murojaatlar", LifeBuoy],
   ["/admin/audit", "Amallar jurnali", History],
+  ["/admin/telegram", "Telegram", Send],
 ] as const;
 export function AdminNav() {
   const path = usePathname();

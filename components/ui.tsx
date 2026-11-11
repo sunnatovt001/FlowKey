@@ -20,7 +20,7 @@ export function PublicNav() {
     <header className="public-nav">
       <Logo />
       <nav aria-label="Asosiy menyu">
-        <Link href="/#pricing">Narxlar</Link>
+        <Link href="/#features">Imkoniyatlar</Link>
         <Link href="/docs">Qo‘llanma</Link>
       </nav>
       <div className="nav-actions">
