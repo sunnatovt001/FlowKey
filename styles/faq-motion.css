@@ -1,0 +1,24 @@
+.flow-landing .faq .animated-faq-item summary::after {
+  content: "+";
+  display: inline-block;
+  transform: rotate(0);
+  transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+.flow-landing .faq .animated-faq-item[open]:not([data-expanded="false"]) summary::after {
+  content: "+";
+  transform: rotate(45deg);
+}
+.flow-landing .faq .animated-faq-item .faq-answer {
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 240ms ease, transform 320ms ease;
+}
+.flow-landing .faq .animated-faq-item[open]:not([data-expanded="false"]) .faq-answer {
+  opacity: 1;
+  transform: translateY(0);
+  @starting-style { opacity: 0; transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-landing .faq .animated-faq-item summary::after,
+  .flow-landing .faq .animated-faq-item .faq-answer { transition: none; }
+}

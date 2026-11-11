@@ -1,3 +1,4 @@
+import { AnimatedFaqItem } from "@/components/animated-faq-item";
 import { T } from "@/components/i18n/language-provider";
 export function FaqSection(){return (<section className="section faq">
           <div className="faq-intro"><h2><T>Sizni qiziqtirgan</T><br /><T>savollarga javoblar.</T></h2><img className="faq-illustration" src="/faq-illustration.svg" alt="" width="500" height="350" loading="lazy" decoding="async"/></div>
@@ -24,10 +25,9 @@ export function FaqSection(){return (<section className="section faq">
                 "Yo‘q. Biznes va loyiha yaratish faqat sinov sozlamasidir. Bu huquqiy, KYC yoki haqiqiy to‘lovga ruxsat bermaydi.",
               ],
             ].map(([q, a]) => (
-              <details key={q}>
-                <summary><T>{q}</T></summary>
+              <AnimatedFaqItem key={q} question={<T>{q}</T>}>
                 <p><T>{a}</T></p>
-              </details>
+              </AnimatedFaqItem>
             ))}
           </div>
         </section>);}
