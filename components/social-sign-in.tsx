@@ -43,10 +43,11 @@ function GoogleIcon() {
 }
 
 export function SocialSignIn({
-  available, compact = false,
+  available, compact = false, iconOnly = false,
 }: {
   available?: { google: boolean; github: boolean };
   compact?: boolean;
+  iconOnly?: boolean;
 }) {
   const [providers, setProviders] = useState({ google: available?.google ?? false, github: available?.github ?? false, telegram: false });
   useEffect(() => {
@@ -96,7 +97,7 @@ export function SocialSignIn({
   }
 
   return (
-    <div className="social-sign-in">
+    <div className={iconOnly ? "social-sign-in social-sign-in-icons" : "social-sign-in"}>
       {(["google", "github"] as const).map((provider) => {
         const name = provider === "google" ? "Google" : "GitHub";
         return (
@@ -104,6 +105,7 @@ export function SocialSignIn({
             key={provider}
             type="button"
             className="button secondary social-sign-in-button"
+            aria-label={iconOnly ? (provider === "google" ? "Google" : "GitHub") : undefined}
             disabled={!providers[provider] || pending !== null}
             title={
               !providers[provider]
@@ -119,15 +121,15 @@ export function SocialSignIn({
             ) : (
               <GitHubIcon />
             )}
-            <span><T>{name + " orqali kirish"}</T></span>
+            <span className={iconOnly ? "sr-only" : undefined}><T>{name + " orqali kirish"}</T></span>
             {!providers[provider] && <small><T>Sozlanmagan</T></small>}
           </button>
         );
       })}
-      <TelegramSignIn available={providers.telegram} />
+      <TelegramSignIn available={providers.telegram} iconOnly={iconOnly} />
       {(error || callbackError) && (
         <p className="error" role="alert">
-          {error || callbackError}
+          <T>{error || callbackError}</T>
         </p>
       )}
       {!compact && <div className="auth-divider">

@@ -1,3 +1,4 @@
+import { oneTap } from "better-auth/plugins/one-tap";
 import { telegramLoginPlugin } from "./telegram-login-plugin";
 import { authTrustedOrigins } from "./origins";
 import { betterAuth } from "better-auth";
@@ -7,7 +8,7 @@ import { sendAuthEmail } from "./email";
 import { socialAuthConfiguration } from "./social-auth";
 
 export const auth = betterAuth({
-  plugins: [telegramLoginPlugin()],
+  plugins: [telegramLoginPlugin(), oneTap()],
   database: prismaAdapter(db, { provider: "postgresql" }),
   baseURL: process.env.APP_URL || "http://localhost:3000",
   secret: process.env.BETTER_AUTH_SECRET,

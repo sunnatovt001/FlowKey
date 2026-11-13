@@ -8,7 +8,7 @@ const copy = {
   en: { login: "Continue with Telegram", open: "Open Telegram", check: "Check this code in the bot and confirm sign in:", waiting: "Return to this window after confirming.", retry: "Start again", error: "Could not complete sign in. Please try again.", unavailable: "Not configured" },
 };
 type Flow = { flowId: string; code: string; url: string; expiresIn: number; started: number };
-export function TelegramSignIn({ available }: { available: boolean }) {
+export function TelegramSignIn({ available, iconOnly = false }: { available: boolean; iconOnly?: boolean }) {
   const { language } = useLanguage();
   const text = copy[language];
   const [flow, setFlow] = useState<Flow | null>(null);
@@ -53,8 +53,8 @@ export function TelegramSignIn({ available }: { available: boolean }) {
     return () => { cancelled = true; clearTimeout(timer); controller.abort(); };
   }, [flow, text.error]);
   return <div className="telegram-sign-in">
-    <button className="button secondary social-sign-in-button" type="button" disabled={!available || pending} onClick={() => void start()}>
-      {pending ? <LoaderCircle size={22} className="spin" /> : <Send size={22} />}<span>{flow ? text.retry : text.login}</span>{!available && <small>{text.unavailable}</small>}
+    <button className="button secondary social-sign-in-button" type="button" aria-label={iconOnly ? "Telegram" : undefined} disabled={!available || pending} onClick={() => void start()}>
+      {pending ? <LoaderCircle size={22} className="spin" /> : <Send size={22} />}<span className={iconOnly ? "sr-only" : undefined}>{flow ? text.retry : text.login}</span>{!available && <small>{text.unavailable}</small>}
     </button>
     {flow && <div className="telegram-login-flow" role="status"><p>{text.check}</p><strong className="telegram-login-code">{flow.code}</strong><a className="button primary" href={flow.url} target="_blank" rel="noopener noreferrer" data-keep-menu-open>{text.open}</a><p>{text.waiting}</p></div>}
     {error && <p className="error" role="alert">{error}</p>}

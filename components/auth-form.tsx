@@ -1,8 +1,9 @@
 "use client";
+import { T, useTranslation } from "./i18n/language-provider";
 import { authError } from "@/shared/locale";
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowRight, LoaderCircle } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { RecoveryForm } from "./recovery-form";
 import { useRouter } from "next/navigation";
 export function AuthForm({
@@ -13,6 +14,7 @@ export function AuthForm({
   localMail?: boolean;
 }) {
   const router = useRouter();
+  const t = useTranslation();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -66,59 +68,53 @@ export function AuthForm({
         }}
       >
         <label>
-          Elektron pochta manzili
+          <T>Elektron pochta manzili</T>
           <input
             required
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="siz@kompaniya.uz"
+            placeholder="email@example.com"
             maxLength={254}
           />
         </label>
         <label>
-          Parol
-          <input
+          <T>Parol</T>
+          <span className="auth-password-field"><input
             required
             name="password"
             type={visible ? "text" : "password"}
             minLength={12}
             maxLength={128}
             autoComplete={signup ? "new-password" : "current-password"}
-            placeholder={signup ? "Kamida 12 ta belgi" : "Parolingiz"}
+            placeholder={t(signup ? "Kamida 12 ta belgi" : "Parolingiz")}
           />
+          <button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={20}/> : <Eye size={20}/>}</button></span>
         </label>
-        <button
-          type="button"
-          className="button secondary small"
-          onClick={() => setVisible(!visible)}
-        >
-          {visible ? "Yashirish" : "Ko‘rsatish"} — parol
-        </button>
         {message && (
           <p className="notice" role="status">
-            {message}
+            {t(message)}
           </p>
         )}
-        {signup && <p className="form-hint">Kamida 12 ta belgi.</p>}
+        {signup && <p className="form-hint"><T>Kamida 12 ta belgi.</T></p>}
         {error && (
           <p className="error" role="alert">
-            {error}
+            {t(error)}
           </p>
         )}
         <button className="button primary full" disabled={loading}>
           {loading ? <LoaderCircle className="spin" size={18} /> : null}
-          {loading ? "Kuting…" : signup ? "Hisob yaratish" : "Kirish"}
-          {!loading && <ArrowRight size={16} />}
+          {t(loading ? "Kuting…" : signup ? "Hisob yaratish" : "Kirish")}
+
         </button>
-        <p className="form-bottom">
-          {signup ? "Hisobingiz bormi?" : "FlowKey’da yangimisiz?"}{" "}
-          <Link href={signup ? "/login" : "/signup"}>
-            {signup ? "Kirish" : "Hisob yarating"}
-          </Link>
-        </p>
+
       </form>
-      <RecoveryForm localMail={localMail} />
+      <div className="auth-access-links"><RecoveryForm localMail={localMail} compact />        <p className="form-bottom">
+          {t(signup ? "Hisobingiz bormi?" : "FlowKey’da yangimisiz?")}{" "}
+          <Link href={signup ? "/login" : "/signup"}>
+            {t(signup ? "Kirish" : "Hisob yarating")}
+          </Link>
+        </p></div>
     </>
   );
 }

@@ -46,3 +46,8 @@ export function T({children}: {children: string}) {
   const {language} = useLanguage();
   return language === "uz" ? children : messages[children]?.[language] ?? children;
 }
+
+export function useTranslation() {
+  const { language } = useLanguage();
+  return (text: string) => language === "uz" ? text : messages[text]?.[language] ?? text;
+}

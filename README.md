@@ -220,3 +220,15 @@ Admin hisob odatiy sayt sessiyasidan tashqari `/admin-login` orqali alohida paro
 
 Yangi `202611020001_admin_support` migratsiyasini deploydan oldin qo‘llang. Murojaatlar holati: yangi, ko‘rib chiqilmoqda va hal qilindi. Telegram’ga yetkazilish holati alohida saqlanadi; o‘zgarishlar audit jurnaliga yoziladi. Panel maxfiy API kalitlari yoki parollarni ko‘rsatmaydi.
 
+
+## Google One Tap on authentication screens
+
+`/login` and `/signup` load the official Google Identity Services client when Google
+OAuth is configured. The browser sends the returned credential to Better Auth's
+`/api/auth/one-tap/callback`, which validates the Google signature, issuer, audience
+and expiry before creating a session. Session tokens remain excluded from JSON.
+Google's personalized prompt depends on the visitor's Google/browser eligibility.
+In the existing Google OAuth client, add `https://flowkey.uz` to **Authorized JavaScript
+origins** (and `https://www.flowkey.uz` only if that origin is used), retaining the
+existing callback `https://flowkey.uz/api/auth/callback/google`. Client secret stays
+server-only. The ordinary Google button remains available if One Tap is dismissed.
