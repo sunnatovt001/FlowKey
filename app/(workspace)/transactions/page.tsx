@@ -7,7 +7,7 @@ import { db } from "@/server/db";
 
 import { Empty } from "@/components/ui";
 import { TransactionTable } from "@/components/transaction-table";
-export const metadata = { title: "Tranzaksiyalar" };
+export const metadata = { title: "To‘lovlar" };
 export default async function Transactions({
   searchParams,
 }: {
@@ -60,7 +60,7 @@ export default async function Transactions({
     <>
       <div className="page-heading">
         <div>
-          <h1>Tranzaksiyalar</h1>
+          <h1>To‘lovlar</h1>
         </div>
         <span className="sandbox-label">Faqat sinov ma’lumotlari</span>
       </div>
@@ -121,7 +121,7 @@ export default async function Transactions({
             {q || status || from || to
               ? "Boshqa ID, holat yoki sana oralig‘ini tanlang."
               : "Tranzaksiyani ko‘rish uchun Dasturchilar bo‘limida sinov to‘lovi yarating."}
-            <Link href={`/developers?project=${project.id}&tab=sandbox`}>
+            <Link href={`/testing?project=${project.id}&area=payments`}>
               Unit muhitini ochish
             </Link>
           </Empty>

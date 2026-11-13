@@ -50,3 +50,6 @@ https://flowkey.uz as an authorized JavaScript origin for the existing client.
 - [x] Languages, password visibility, recovery and provider actions.
 - [x] Google One Tap with server token verification and scoped CSP.
 - [x] Desktop/mobile browser captures and post-fix comparison.
+
+After preserving the already deployed workspace updates, the auth UI browser checks,
+typecheck, lint and unit suite were rerun successfully; auth-specific styles load last.

@@ -26,7 +26,7 @@ export function TransactionTable({
   }, [selected]);
   return (
     <>
-      <div className="table-scroll">
+      <div className="table-scroll transaction-desktop">
         <table>
           <thead>
             <tr>
@@ -59,6 +59,35 @@ export function TransactionTable({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="transaction-cards" aria-label="To‘lovlar ro‘yxati">
+        {rows.map((t) => (
+          <article className="transaction-card" key={t.id}>
+            <div className="transaction-card-heading">
+              <strong>
+                {money(t.amountMinor)} <small>{t.currency}</small>
+              </strong>
+              <Status status={t.status} />
+            </div>
+            <dl>
+              <div>
+                <dt>Sana · Toshkent</dt>
+                <dd>{tashkentDate(t.createdAt)}</dd>
+              </div>
+              <div>
+                <dt>Loyiha</dt>
+                <dd>{project}</dd>
+              </div>
+            </dl>
+            <button
+              className="transaction-detail-button"
+              onClick={() => setSelected(t)}
+            >
+              <span>{t.id.slice(0, 8)}… · Tafsilotlar</span>
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </button>
+          </article>
+        ))}
       </div>
       <dialog
         ref={ref}

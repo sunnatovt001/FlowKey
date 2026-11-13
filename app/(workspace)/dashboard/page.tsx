@@ -11,6 +11,7 @@ import {
   Webhook,
   ReceiptText,
   BookOpen,
+  FlaskConical,
 } from "lucide-react";
 import { dashboardData } from "@/server/dashboard";
 import type { Search } from "@/server/workspace";
@@ -126,6 +127,11 @@ export default async function Dashboard({
           icon: BookOpen,
         },
       ];
+  actions.push({
+    label: "Sinov markazi",
+    href: `/testing?project=${project.id}`,
+    icon: FlaskConical,
+  });
   return (
     <div className="dashboard-page">
       <header className="dashboard-heading">
