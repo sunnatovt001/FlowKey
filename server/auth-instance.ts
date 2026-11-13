@@ -50,6 +50,7 @@ export const auth = betterAuth({
     customRules: {
       "/telegram/status": { window: 60, max: 1000 },
       "/telegram/complete": { window: 60, max: 120 },
+      "/telegram/resume": { window: 60, max: 120 },
       "/sign-in/email": { window: 60, max: 10 },
       "/sign-up/email": { window: 60, max: 10 },
       "/request-password-reset": { window: 60, max: 5 },

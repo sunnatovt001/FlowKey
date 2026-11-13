@@ -6,7 +6,7 @@
   position: relative;
   padding: 76px 16px 36px;
   isolation: isolate;
-  background: #30221d url('/auth-flowkey.webp') right center / cover no-repeat;
+  background: #30221d url('/auth-flowkey-clear.webp') right center / cover no-repeat;
   font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 .auth-scene::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(14 8 22 / 62%), rgb(14 8 22 / 12%) 70%); }
@@ -73,7 +73,7 @@ body:has(.auth-scene) .help-chat-launcher > span { display: none; }
 /* FlowKey's own scene: right-side form and left-side language control. */
 .auth-scene {
   justify-content: flex-end;
-  background-image: url('/auth-flowkey.webp');
+  background-image: url('/auth-flowkey-clear.webp');
   background-position: center;
 }
 .auth-scene::before { background: linear-gradient(90deg, rgb(22 10 40 / 8%), rgb(22 10 40 / 28%)); }
@@ -111,3 +111,25 @@ body:has(.auth-scene) .help-chat-launcher > span { display: none; }
   @keyframes flowkey-auth-enter { from { opacity: 0; transform: translateX(28px) translateY(8px) scale(.985); } to { opacity: 1; transform: translateX(0) translateY(0) scale(1); } }
   @keyframes flowkey-auth-content { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
 }
+
+/* Keep the photograph clear: no tint, translucency, blur or color veil. */
+.auth-scene { background-image: url('/auth-flowkey-clear.webp'); }
+.auth-scene::before { content: none; display: none; background: none; }
+.auth-step-shell { width: 100%; max-width: 448px; margin: 0 8vw 0 0; }
+.auth-step-shell .auth-card { width: 100%; max-width: none; margin: 0; }
+.auth-step-shell .auth-card,
+.auth-step-shell .auth-card-header,
+.auth-step-shell .auth-card form,
+.auth-step-shell .auth-access-links,
+.auth-step-shell .auth-method-divider,
+.auth-step-shell .social-sign-in-icons { animation: none; }
+.locale-flag { display: block; width: 22px; height: 22px; flex: 0 0 22px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1px #321b4d12; }
+.locale-trigger .locale-flag { width: 20px; height: 20px; flex-basis: 20px; }
+.auth-forgot-link { color: #7024df; font-size: 12px; }
+.auth-recovery-links { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 18px; font-size: 13px; color: #7024df; }
+.telegram-auth-screen { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.telegram-auth-screen p { margin: 0; font-size: 14px; line-height: 1.6; }
+.telegram-auth-screen .telegram-login-code { letter-spacing: .18em; font-size: 30px; }
+.telegram-auth-spinner { color: #26a5e4; }
+.telegram-auth-screen .button { width: 100%; }
+@media(max-width:760px) { .auth-step-shell { margin: 0; max-width: 420px; } }

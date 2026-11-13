@@ -73,6 +73,23 @@ test("Telegram login confirms privately, consumes once, issues a standard sessio
     await bot({ callback_query: { id: "wrong-person", data: `fk_confirm_${data.flowId}`, from: { id: sender.id + 1 }, message: { chat: { id: sender.id + 1, type: "private" } } } });
     assert.equal((await (await call("status", { flowId: data.flowId }, cookie)).json()).status, "awaiting");
     await bot({ callback_query: { id: "confirmed", data: `fk_confirm_${data.flowId}`, from: sender, message: { chat } } });
+    const messageWithReturn = sent.findLast(value => !!(value as { reply_markup?: { inline_keyboard?: { url?: string }[][] } }).reply_markup?.inline_keyboard?.[0]?.[0]?.url) as { reply_markup: { inline_keyboard: { url: string }[][] } };
+    const returnUrl = new URL(messageWithReturn.reply_markup.inline_keyboard[0][0].url);
+    assert.equal(returnUrl.pathname, "/telegram-login");
+    assert.equal(returnUrl.search, "", "Return credential must not appear in server query logs");
+    const resumeToken = new URLSearchParams(returnUrl.hash.slice(1)).get("telegram_token");
+    assert(resumeToken);
+    assert.equal((await call("resume", { resumeToken: "x".repeat(43) })).status, 400);
+    const resumed = await call("resume", { resumeToken });
+    assert.equal(resumed.status, 200);
+    const resumedCookie = resumed.headers.getSetCookie().find(c => c.includes("better-auth.session_token="))!.split(";")[0];
+    const resumedSession = await auth.api.getSession({ headers: new Headers({ cookie: resumedCookie }) });
+    assert(resumedSession);
+    users.push(resumedSession.user.id);
+    assert.equal((await call("resume", { resumeToken })).status, 400);
+    // A repeated bot confirmation must never re-arm an already consumed return link.
+    await bot({ callback_query: { id: "confirmed-again", data: `fk_confirm_${data.flowId}`, from: sender, message: { chat } } });
+    assert.equal((await call("resume", { resumeToken })).status, 400);
     const responses = await Promise.all([call("complete", { flowId: data.flowId }, cookie), call("complete", { flowId: data.flowId }, cookie)]);
     assert.equal(responses.filter(r => r.status === 200).length, 1);
     const complete = responses.find(r => r.status === 200)!;
@@ -80,7 +97,7 @@ test("Telegram login confirms privately, consumes once, issues a standard sessio
     const sessionCookie = complete.headers.getSetCookie().find(s => s.includes("better-auth.session_token="))!.split(";")[0];
     const session = await auth.api.getSession({ headers: new Headers({ cookie: sessionCookie }) });
     assert(session);
-    users.push(session.user.id);
+    assert.equal(session.user.id, resumedSession.user.id);
     assert.equal(session.user.emailVerified, false);
     assert(session.user.email.endsWith("@telegram.flowkey.invalid"));
     if (process.env.FLOWZA_TELEGRAM_HTTP_TEST === "1") {
@@ -95,12 +112,28 @@ test("Telegram login confirms privately, consumes once, issues a standard sessio
     assert.equal(repeatComplete.status, 200);
     assert.equal(await db.account.count({ where: { userId: session.user.id, providerId: "telegram", accountId: String(sender.id) } }), 1);
     assert((await call("complete", { flowId: data.flowId }, cookie)).status >= 400);
+    const racing = await start();
+    const secondSender = { id: sender.id + 17, first_name: "Concurrent Telegram test" };
+    const secondChat = { id: secondSender.id, type: "private" };
+    await bot({ message: { chat: secondChat, from: secondSender, text: `/start ${new URL(racing.data.url).searchParams.get("start")}` } });
+    await bot({ callback_query: { id: "race", data: `fk_confirm_${racing.data.flowId}`, from: secondSender, message: { chat: secondChat } } });
+    const raceMessage = sent.findLast(value => !!(value as { reply_markup?: { inline_keyboard?: { url?: string }[][] } }).reply_markup?.inline_keyboard?.[0]?.[0]?.url) as { reply_markup: { inline_keyboard: { url: string }[][] } };
+    const raceToken = new URLSearchParams(new URL(raceMessage.reply_markup.inline_keyboard[0][0].url).hash.slice(1)).get("telegram_token");
+    const channels = await Promise.all([call("complete", { flowId: racing.data.flowId }, racing.cookie), call("resume", { resumeToken: raceToken })]);
+    const ids: string[] = [];
+    for (const response of channels) {
+      assert.equal(response.status, 200, await response.clone().text());
+      const c = response.headers.getSetCookie().find(s => s.includes("better-auth.session_token="))!.split(";")[0];
+      const signedIn = await auth.api.getSession({ headers: new Headers({ cookie: c }) });
+      assert(signedIn); ids.push(signedIn.user.id); users.push(signedIn.user.id);
+    }
+    assert.equal(ids[0], ids[1]);
     const expired = await start();
     await db.verification.update({ where: { id: expired.data.flowId }, data: { expiresAt: new Date(0) } });
     assert.equal((await call("status", { flowId: expired.data.flowId }, expired.cookie)).status, 400);
   } finally {
     globalThis.fetch = originalFetch;
-    await db.verification.deleteMany({ where: { id: { in: flowIds } } });
+    await db.verification.deleteMany({ where: { id: { in: [...flowIds, ...flowIds.map(id => `tg-resume-${id}`)] } } });
     await db.user.deleteMany({ where: { id: { in: users } } });
     await db.$disconnect();
   }

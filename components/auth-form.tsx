@@ -4,14 +4,11 @@ import { authError } from "@/shared/locale";
 import Link from "next/link";
 import { useState } from "react";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
-import { RecoveryForm } from "./recovery-form";
 import { useRouter } from "next/navigation";
 export function AuthForm({
   signup,
-  localMail = false,
 }: {
   signup: boolean;
-  localMail?: boolean;
 }) {
   const router = useRouter();
   const t = useTranslation();
@@ -109,12 +106,14 @@ export function AuthForm({
         </button>
 
       </form>
-      <div className="auth-access-links"><RecoveryForm localMail={localMail} compact />        <p className="form-bottom">
+      <div className="auth-access-links"><Link className="auth-forgot-link" href="/forgot-password">{t("Parolni unutdingizmi?")}</Link>
+        <p className="form-bottom">
           {t(signup ? "Hisobingiz bormi?" : "FlowKey’da yangimisiz?")}{" "}
           <Link href={signup ? "/login" : "/signup"}>
             {t(signup ? "Kirish" : "Hisob yarating")}
           </Link>
-        </p></div>
+        </p>
+      </div>
     </>
   );
 }

@@ -33,3 +33,11 @@ Requests are single-use and browser-bound; no bot token or browser proof appears
 Provider identity is mapped by Telegram ID, never by user-supplied email. Telegram-only
 accounts have no verified email and cannot use email/password recovery. Internal reserved
 email placeholders are not deliverable mailboxes and never grant email verification.
+
+Auth flow update: /forgot-password, /reset-password and /verify-email are standalone
+screens. Legacy /login?token= links redirect to /reset-password. Telegram bot return
+uses /telegram-login#telegram_token=...; the fragment is removed before the POST to
+/api/auth/telegram/resume. Each return credential is single-use and expires with the
+original request; original-browser confirmation can complete independently once.
+FlowKey nginx uses flowkey_auth_safe logging: no query strings, no /api/auth/ credential
+paths, and no referrer values. Configuration: /etc/nginx/conf.d/flowkey-auth-logging.conf.

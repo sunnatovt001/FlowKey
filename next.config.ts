@@ -4,7 +4,7 @@ const config: NextConfig = {
     process.env.FLOWZA_BUILD_DIR ||
     (process.env.FLOWZA_TEST_INSTANCE === "1" ? ".next-test" : ".next"),
   poweredByHeader: false,
-  logging: { incomingRequests: { ignore: [/\/api\/auth\//, /\/login\?/] } },
+  logging: { incomingRequests: { ignore: [/\/api\/auth\//, /\/login\?/, /\/reset-password\?/] } },
   async headers() {
     return [
       {
