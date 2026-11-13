@@ -1,24 +1,9 @@
 import { workspace, type Search } from "@/server/workspace";
 import { notFound } from "next/navigation";
 import { db } from "@/server/db";
-export const metadata = { title: "Faoliyat jurnali" };
-const actions: Record<string, string> = {
-  "payment.created": "Sinov to‘lovi yaratildi",
-  "sandbox.refund.created": "Sinov qaytarishi bajarildi",
-  "sandbox.payout.requested": "Pul chiqarish so‘raldi",
-  "sandbox.payout.approved": "Ariza tasdiqlandi",
-  "sandbox.payout.completed": "Sinov pul chiqarishi bajarildi",
-  "sandbox.payout.failed": "Sinov pul chiqarishi bajarilmadi",
-  "sandbox.payout.rejected": "Ariza rad etildi",
-  "team.invited": "Jamoaga taklif yaratildi",
-  "team.accepted": "Taklif qabul qilindi",
-  "team.declined": "Taklif rad etildi",
-  "team.removed": "A’zolik bekor qilindi",
-  "team.invite_revoked": "Taklif bekor qilindi",
-  "sandbox.subscription.created": "Sinov obunasi yaratildi",
-  "sandbox.subscription.billed": "Obuna davri sinovdan o‘tdi",
-  "sandbox.subscription.cancelled": "Obuna bekor qilindi",
-};
+import { ActivityHub } from "@/components/activity-hub";
+async function snapshotTime() { return Date.now(); }
+export const metadata = { title: "Hodisalar" };
 export default async function Activity({
   searchParams,
 }: {
@@ -29,50 +14,21 @@ export default async function Activity({
   const rows = await db.auditLog.findMany({
     where: { projectId: project.id },
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    take: 200,
+    take: 201,
+    select: { id: true, action: true, resourceId: true, createdAt: true },
   });
   return (
     <>
       <div className="page-heading">
-        <div>
-          <h1>Faoliyat jurnali.</h1>
-        </div>
+        <h1>Hodisalar</h1>
       </div>
-      <section className="panel operation-panel">
-        {rows.length ? (
-          <div className="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Vaqt (Toshkent)</th>
-                  <th>Amal</th>
-                  <th>Resurs</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r) => (
-                  <tr key={r.id}>
-                    <td>
-                      {r.createdAt.toLocaleString("uz-UZ", {
-                        timeZone: "Asia/Tashkent",
-                      })}
-                    </td>
-                    <td>{actions[r.action] || r.action}</td>
-                    <td>
-                      <code>{r.resourceId}</code>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p>
-            Hali hodisalar yo‘q. Loyihada bajarilgan amallar shu yerda
-            ko‘rinadi.
-          </p>
-        )}
-      </section>
+      <ActivityHub
+        rows={rows
+          .slice(0, 200)
+          .map((row) => ({ ...row, createdAt: row.createdAt.toISOString() }))}
+        limited={rows.length > 200}
+        now={await snapshotTime()}
+      />
     </>
   );
 }

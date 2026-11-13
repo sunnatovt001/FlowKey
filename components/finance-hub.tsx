@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { OperationForm } from "./operation-form";
 type Props = {
+  testing?: boolean;
   projectId: string;
   owner: boolean;
   balances: { currency: string; account: string; amountMinor: string }[];
@@ -67,6 +68,7 @@ function date(value: string) {
 }
 export function FinanceHub({
   projectId,
+  testing = false,
   owner,
   balances,
   payments,
@@ -103,7 +105,7 @@ export function FinanceHub({
   return (
     <div className="finance-hub">
       <header className="finance-heading">
-        <h1>Moliya</h1>
+        {testing ? <h2>Mablag‘lar sinovi</h2> : <h1>Mablag‘lar</h1>}
         <a
           className="button secondary"
           href={`/api/projects/${projectId}/report`}
@@ -150,32 +152,34 @@ export function FinanceHub({
           </details>
         </div>
       </section>
-      <section className="finance-actions" aria-label="Moliyaviy amallar">
-        <h2>Moliyaviy amallar</h2>
-        <div>
-          <button
-            className="button primary"
-            aria-expanded={form === "payout"}
-            aria-controls="finance-operation"
-            onClick={(e) => open("payout", e.currentTarget)}
-          >
-            <ArrowUpFromLine size={18} />
-            Pul chiqarish
-          </button>
-          {owner && (
+      {testing && (
+        <section className="finance-actions" aria-label="Moliyaviy amallar">
+          <h2>Moliyaviy amallar</h2>
+          <div>
             <button
-              className="button secondary"
-              aria-expanded={form === "refund"}
+              className="button primary"
+              aria-expanded={form === "payout"}
               aria-controls="finance-operation"
-              onClick={(e) => open("refund", e.currentTarget)}
+              onClick={(e) => open("payout", e.currentTarget)}
             >
-              <Undo2 size={18} />
-              To‘lovni qaytarish
+              <ArrowUpFromLine size={18} />
+              Pul chiqarish
             </button>
-          )}
-        </div>
-      </section>
-      {form && (
+            {owner && (
+              <button
+                className="button secondary"
+                aria-expanded={form === "refund"}
+                aria-controls="finance-operation"
+                onClick={(e) => open("refund", e.currentTarget)}
+              >
+                <Undo2 size={18} />
+                To‘lovni qaytarish
+              </button>
+            )}
+          </div>
+        </section>
+      )}
+      {testing && form && (
         <section
           className="finance-operation"
           id="finance-operation"
@@ -324,7 +328,7 @@ export function FinanceHub({
                 <th scope="col">
                   {tab === "payouts" ? "Holat" : "Komissiya, UZS"}
                 </th>
-                {tab === "payouts" && <th scope="col">Amal</th>}
+                {testing && tab === "payouts" && <th scope="col">Amal</th>}
               </tr>
             </thead>
             <tbody>
@@ -340,32 +344,35 @@ export function FinanceHub({
                           {labels[p.status] || p.status}
                         </span>
                       </td>
-                      <td>
-                        <div className="operation-actions">
-                          {owner &&
-                            (p.status === "requested"
-                              ? ["approve", "reject"]
-                              : p.status === "approved"
-                                ? ["complete", "fail"]
-                                : []
-                            ).map((action) => (
-                              <OperationForm
-                                key={action}
-                                endpoint={endpoint}
-                                action={action}
-                                fixed={{ id: p.id }}
-                                label={
-                                  {
-                                    approve: "Tasdiqlash",
-                                    reject: "Rad etish",
-                                    complete: "Sinovda bajarish",
-                                    fail: "Xatoni sinash",
-                                  }[action]!
-                                }
-                              />
-                            ))}
-                        </div>
-                      </td>
+                      {testing && (
+                        <td>
+                          <div className="operation-actions">
+                            {testing &&
+                              owner &&
+                              (p.status === "requested"
+                                ? ["approve", "reject"]
+                                : p.status === "approved"
+                                  ? ["complete", "fail"]
+                                  : []
+                              ).map((action) => (
+                                <OperationForm
+                                  key={action}
+                                  endpoint={endpoint}
+                                  action={action}
+                                  fixed={{ id: p.id }}
+                                  label={
+                                    {
+                                      approve: "Tasdiqlash",
+                                      reject: "Rad etish",
+                                      complete: "Sinovda bajarish",
+                                      fail: "Xatoni sinash",
+                                    }[action]!
+                                  }
+                                />
+                              ))}
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   ))
                 : refunds.map((r) => (
@@ -396,7 +403,7 @@ export function FinanceHub({
                 ? "Qaytarishlar shu yerda ko‘rinadi."
                 : "Arizalaringiz shu yerda ko‘rinadi."}
             </p>
-            {tab === "payouts" && (
+            {testing && tab === "payouts" && (
               <button
                 className="finance-text-button"
                 onClick={(e) => open("payout", e.currentTarget)}

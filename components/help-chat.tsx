@@ -35,7 +35,10 @@ export function HelpChat() {
   useEffect(() => {
     if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [messages, busy, error]);
-  function close() { setOpen(false); launcher.current?.focus(); }
+  function close() {
+    setOpen(false);
+    launcher.current?.focus();
+  }
   async function send(text = question) {
     const value = text.trim();
     if (!value || value.length > 1500 || busy || checking) return;

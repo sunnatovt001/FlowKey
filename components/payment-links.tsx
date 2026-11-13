@@ -36,7 +36,7 @@ export function PaymentLinks({
   }
   return (
     <section className="panel integration-result">
-      <h2>Unit yarating</h2>
+      <h2>To‘lov sahifasini yarating</h2>
 
       <form
         className="payment-link-form"
@@ -55,7 +55,7 @@ export function PaymentLinks({
         }}
       >
         <label>
-          Unit nomi
+          Sahifa nomi
           <input
             name="title"
             required
@@ -78,7 +78,7 @@ export function PaymentLinks({
           </span>
         </label>
         <button className="button primary" disabled={busy}>
-          {busy ? "Yaratilmoqda…" : "Unit yaratish"}
+          {busy ? "Yaratilmoqda…" : "Sahifa yaratish"}
         </button>
       </form>
       {error && (
@@ -86,7 +86,7 @@ export function PaymentLinks({
           {error}
         </p>
       )}
-      {!links.length && <p>Hozircha Unit yo‘q.</p>}
+      {!links.length && <p>Hozircha to‘lov sahifalari yo‘q.</p>}
       {links.map((link) => {
         const value =
           method === "Script"
@@ -126,7 +126,7 @@ export function PaymentLinks({
                   disabled={busy}
                   onClick={() => request("DELETE", { id: link.id })}
                 >
-                  Unitni o‘chirish
+                  Sahifani o‘chirish
                 </button>
               </>
             )}

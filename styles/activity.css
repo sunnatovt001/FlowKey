@@ -1,0 +1,229 @@
+.activity-hub {
+  max-width: 1140px;
+  padding-bottom: 80px;
+}
+.activity-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.activity-search {
+  flex: 1 1 280px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid #e4d8f4;
+  border-radius: 12px;
+  background: #fff;
+  color: #665575;
+}
+.activity-search input {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  min-width: 0;
+  width: 100%;
+  padding: 13px 0;
+}
+.activity-search:focus-within {
+  outline: 2px solid #6320d9;
+  outline-offset: 2px;
+}
+.activity-toolbar select {
+  min-height: 46px;
+  color: #35234e;
+  background: #fff;
+}
+.activity-refresh {
+  min-width: 46px;
+  padding: 12px;
+}
+.activity-hub .activity-log {
+  padding: 0;
+  overflow: hidden;
+}
+.activity-log-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 28px;
+  border-bottom: 1px solid #eee7f6;
+}
+.activity-log-heading h2 {
+  margin: 0;
+  font-size: 19px;
+}
+.activity-log-heading > span {
+  color: #665575;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.activity-list {
+  list-style: none;
+  padding: 0 28px 12px;
+  margin: 0;
+}
+.activity-day {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 26px 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #35234e;
+  font-variant-numeric: tabular-nums;
+}
+.activity-day span {
+  color: #665575;
+  font-size: 12px;
+  font-weight: 400;
+}
+.activity-event {
+  border-bottom: 1px solid #eee7f6;
+}
+.activity-event summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  list-style: none;
+  padding: 18px 0;
+  cursor: pointer;
+  min-height: 76px;
+}
+.activity-event summary::-webkit-details-marker {
+  display: none;
+}
+.activity-event summary:hover .activity-event-text strong {
+  color: #6320d9;
+}
+.activity-event summary:focus-visible {
+  outline: 2px solid #6320d9;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.activity-event-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: #f1e9fc;
+  color: #6320d9;
+  border-radius: 12px;
+}
+.activity-event-text {
+  display: grid;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+.activity-event-text strong {
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.activity-event-text > span,
+.activity-event time {
+  color: #665575;
+  font-size: 12px;
+}
+.activity-event time {
+  font-variant-numeric: tabular-nums;
+}
+.activity-chevron {
+  color: #665575;
+  flex-shrink: 0;
+}
+.activity-event[open] .activity-chevron {
+  transform: rotate(180deg);
+}
+.activity-event dl {
+  display: grid;
+  gap: 14px;
+  margin: 0 0 20px 56px;
+  padding: 18px;
+  border-radius: 10px;
+  background: #faf8fd;
+}
+.activity-event dl div {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 12px;
+}
+.activity-event dt {
+  color: #665575;
+  font-size: 12px;
+}
+.activity-event dd {
+  margin: 0;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.activity-empty {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: 64px 24px;
+  color: #665575;
+}
+.activity-empty h3 {
+  color: #35234e;
+  margin: 18px 0 8px;
+  font-size: 18px;
+}
+.activity-empty p {
+  margin: 0 0 20px;
+}
+.activity-more {
+  display: flex;
+  margin: 12px auto 24px;
+}
+.activity-limit {
+  font-size: 12px;
+  color: #665575;
+  margin: 16px 0;
+}
+@media (max-width: 600px) {
+  .activity-toolbar {
+    gap: 10px;
+  }
+  .activity-search {
+    flex-basis: 100%;
+  }
+  .activity-toolbar > label:not(.activity-search) {
+    flex: 1;
+    min-width: 0;
+  }
+  .activity-toolbar select {
+    width: 100%;
+    padding: 10px;
+  }
+  .activity-log-heading {
+    padding: 20px;
+  }
+  .activity-list {
+    padding: 0 16px 12px;
+  }
+  .activity-event summary {
+    gap: 10px;
+  }
+  .activity-event-icon {
+    width: 34px;
+    height: 34px;
+  }
+  .activity-event dl {
+    margin-left: 0;
+    padding: 14px;
+  }
+  .activity-event dl div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .activity-day {
+    gap: 8px;
+  }
+}

@@ -1,0 +1,496 @@
+.integration-hub {
+  max-width: 1400px;
+  padding-bottom: 80px;
+}
+.integration-intro {
+  color: #685675;
+  margin: -12px 0 24px;
+  font-size: 14px;
+}
+.integration-methods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.integration-methods > button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  padding: 24px;
+  min-height: 116px;
+  border: 1px solid #dfcbf5;
+  border-radius: 20px;
+  background: #fff;
+  color: #32104c;
+}
+.integration-methods > button > svg {
+  flex-shrink: 0;
+}
+.integration-methods > button > span {
+  display: grid;
+  gap: 8px;
+}
+.integration-methods strong {
+  font-size: 19px;
+  font-weight: 800;
+}
+.integration-methods button > span > span {
+  font-size: 13px;
+  color: #685675;
+}
+.integration-methods > button[aria-pressed="true"] {
+  border: 2px solid #6320d9;
+  padding: 23px;
+  background: linear-gradient(135deg, #fff, #f3eaff);
+}
+.integration-methods > button:hover {
+  background: #f7efff;
+}
+.integration-choice-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #6320d9;
+  color: #fff;
+  border-radius: 50%;
+  padding: 3px;
+  width: 22px;
+  height: 22px;
+}
+.integration-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  align-items: start;
+}
+.integration-main,
+.integration-sidebar {
+  min-width: 0;
+}
+.integration-hub [hidden] {
+  display: none !important;
+}
+.integration-workflow,
+.integration-ai-panel,
+.integration-connection {
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.integration-hub h2 {
+  font-size: 21px;
+  margin: 0 0 20px;
+}
+.integration-progress {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  padding: 0 0 24px;
+  margin: 0 0 20px;
+  border-bottom: 1px solid #eee3f7;
+}
+.integration-progress li {
+  min-width: 0;
+}
+.integration-progress button {
+  border: 0;
+  background: transparent;
+  color: #685675;
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  font-size: 13px;
+  padding: 4px;
+  min-height: 66px;
+}
+.integration-progress button > span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f4edfa;
+  color: #685675;
+  border: 1px solid #e4d6f2;
+  font-weight: 700;
+}
+.integration-progress button[aria-current="step"] {
+  color: #6320d9;
+  font-weight: 800;
+}
+.integration-progress button[aria-current="step"] > span {
+  background: #6320d9;
+  color: #fff;
+  border-color: #6320d9;
+}
+.integration-workflow .guided-tools > .panel,
+.integration-workflow .integration-result {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.guided-tools .panel-heading {
+  padding: 0;
+  margin-bottom: 20px;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.guided-tools .panel-heading p {
+  display: none;
+}
+.guided-tools .panel-heading h2 {
+  margin: 0;
+}
+.guided-tools .panel-note {
+  font-size: 12px;
+  color: #685675;
+  padding: 16px 0;
+  margin: 16px 0 0;
+  background: transparent;
+}
+.integration-workflow table {
+  min-width: 600px;
+  font-size: 12px;
+}
+.integration-workflow .table-scroll {
+  margin: 20px 0;
+}
+.integration-workflow .empty-state {
+  padding: 24px 12px;
+}
+.integration-workflow .sandbox-grid {
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+.integration-workflow .sandbox-grid > .panel {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.integration-workflow .sandbox-grid .response-panel {
+  border-top: 1px solid #eee3f7;
+  padding-top: 24px;
+}
+.integration-workflow .endpoint-list > div {
+  flex-wrap: wrap;
+}
+.integration-key-help {
+  border-top: 1px solid #eee3f7;
+  padding-top: 18px;
+  margin-top: 20px;
+}
+.integration-key-help summary,
+.integration-connect summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  min-height: 32px;
+}
+.integration-key-help p,
+.integration-connect p {
+  font-size: 13px;
+  color: #685675;
+  line-height: 1.7;
+  margin: 12px 0;
+}
+.integration-connect details {
+  margin: 20px 0;
+}
+.integration-connection dl {
+  margin: 0 0 22px;
+}
+.integration-connection dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee3f7;
+  font-size: 13px;
+}
+.integration-connection dt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+.integration-connection dd {
+  margin: 0;
+  color: #685675;
+  text-align: right;
+}
+.connection-dot {
+  width: 9px;
+  height: 9px;
+  display: inline-block;
+  border-radius: 50%;
+  background: #b3a8be;
+}
+.connection-dot.active {
+  background: #6320d9;
+}
+.integration-connection .text-link {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  padding: 8px 0;
+  min-height: 44px;
+  font-size: 13px;
+  color: #6320d9;
+}
+.integration-unit-note {
+  display: flex;
+  align-items: start;
+  gap: 14px;
+  background: #efe3fb;
+  border: 1px solid #e1cef6;
+  padding: 22px;
+  border-radius: 18px;
+  color: #6320d9;
+}
+.integration-unit-note > svg {
+  flex-shrink: 0;
+}
+.integration-unit-note strong {
+  color: #32104c;
+}
+.integration-unit-note p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #685675;
+}
+.integration-guide-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6320d9;
+  font-size: 13px;
+  margin-top: 20px;
+  padding: 8px;
+}
+.integration-assist > p {
+  font-size: 13px;
+  color: #685675;
+  margin: 0 0 18px;
+}
+.integration-assist-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.integration-assist-actions .button {
+  font-size: 13px;
+  justify-content: space-between;
+  padding: 12px;
+}
+.integration-assist .integration-copy-status {
+  margin: 12px 0 0;
+  min-height: 18px;
+  font-size: 12px;
+}
+.integration-step-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.integration-step-footer > span {
+  color: #685675;
+  font-size: 13px;
+}
+.integration-step-footer > div {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.integration-note {
+  font-size: 13px;
+  color: #685675;
+  margin: 16px 0;
+}
+.integration-embed-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.integration-embed-tabs [aria-pressed="true"] {
+  background: #eee0ff;
+  color: #6320d9;
+  border-color: #6320d9;
+}
+.integration-workflow .integration-result > h2 {
+  display: none;
+}
+.integration-workflow .payment-link-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: 18px;
+}
+.integration-workflow .payment-link-form > button {
+  justify-self: start;
+}
+.integration-workflow .payment-link-form label {
+  display: grid;
+  gap: 8px;
+}
+.integration-workflow .payment-link-form input {
+  width: 100%;
+  min-width: 0;
+}
+.integration-workflow .unit-result {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eee3f7;
+}
+.integration-workflow .unit-result .button {
+  margin: 8px 8px 0 0;
+}
+.integration-workflow .integration-prompts {
+  margin-top: 24px;
+}
+@media (max-width: 1100px) {
+  .integration-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .integration-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .integration-sidebar .integration-connection {
+    grid-row: span 2;
+    margin: 0;
+  }
+  .integration-sidebar .integration-unit-note {
+    align-self: start;
+  }
+  .integration-guide-link {
+    margin: 0;
+  }
+  .integration-methods > button {
+    padding: 20px 16px;
+    gap: 12px;
+  }
+  .integration-methods > button[aria-pressed="true"] {
+    padding: 19px 15px;
+  }
+  .integration-methods strong {
+    font-size: 17px;
+  }
+}
+@media (max-width: 650px) {
+  .integration-methods {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .integration-methods > button {
+    min-height: 90px;
+    padding: 18px;
+  }
+  .integration-methods > button[aria-pressed="true"] {
+    padding: 17px;
+  }
+  .integration-workflow,
+  .integration-ai-panel,
+  .integration-connection {
+    padding: 20px;
+  }
+  .integration-sidebar {
+    display: block;
+  }
+  .integration-sidebar .integration-connection {
+    margin-bottom: 20px;
+  }
+  .integration-guide-link {
+    margin-top: 12px;
+  }
+  .integration-assist-actions {
+    grid-template-columns: 1fr;
+  }
+  .integration-progress button {
+    font-size: 12px;
+  }
+  .integration-step-footer {
+    align-items: start;
+  }
+  .integration-step-footer > div {
+    flex-direction: column;
+  }
+  .integration-step-footer .button {
+    font-size: 12px;
+    padding: 12px;
+  }
+  .integration-workflow .payment-link-form {
+    grid-template-columns: 1fr;
+  }
+  .integration-workflow .payment-link-form > button {
+    justify-self: stretch;
+  }
+}
+/* Keep the key step concise and the assistant clear of small-screen actions. */
+.integration-workflow .guided-tools #api-keys > .panel-note {
+  display: none;
+}
+.integration-progress {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+.integration-key-help {
+  margin-top: 14px;
+}
+body:has(.integration-hub) .help-chat-launcher {
+  width: 54px;
+  min-width: 54px;
+  height: 54px;
+  min-height: 54px;
+  padding: 0;
+  border-radius: 50%;
+}
+body:has(.integration-hub) .help-chat-launcher > span {
+  display: none;
+}
+body .integration-hub .integration-embed-tabs .button[aria-pressed="true"] {
+  color: #fff;
+  background: #6320d9;
+  border-color: #6320d9;
+}
+body .integration-hub .integration-embed-tabs .button[aria-pressed="false"] {
+  color: #5920aa;
+  background: #fff;
+}
+.integration-embed-explanation {
+  padding: 18px 20px;
+  margin: 0 0 24px;
+  background: #f6effd;
+  border: 1px solid #e5d6f5;
+  border-radius: 14px;
+}
+.integration-embed-explanation h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+.integration-embed-explanation p {
+  font-size: 13px;
+  color: #685675;
+  line-height: 1.7;
+  margin: 0;
+}
+.integration-embed-explanation .integration-embed-next {
+  margin-top: 10px;
+  color: #4f2f68;
+}
+.integration-workflow .payment-link-form {
+  align-items: start;
+}
