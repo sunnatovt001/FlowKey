@@ -28,8 +28,10 @@ export async function POST(req: Request) {
     if (callback?.message && privateTelegramSender(callback.message.chat, callback.from)) {
       const match = callback.data?.match(/^fk_confirm_([a-f0-9]{32})$/);
       if (match) {
-        await telegramLoginBot("answerCallbackQuery", { callback_query_id: callback.id });
-        await confirmTelegramLogin(match[1], String(callback.from.id));
+        await Promise.all([
+          telegramLoginBot("answerCallbackQuery", { callback_query_id: callback.id }).catch(() => undefined),
+          confirmTelegramLogin(match[1], String(callback.from.id)),
+        ]);
       }
     }
     return { ok: true };

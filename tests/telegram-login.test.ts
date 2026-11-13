@@ -37,7 +37,9 @@ test("Telegram login confirms privately, consumes once, issues a standard sessio
   const sent: unknown[] = [];
   globalThis.fetch = async (input, init) => {
     assert.equal(new URL(String(input)).hostname, "api.telegram.org");
-    sent.push(JSON.parse(String(init?.body)));
+    const message = JSON.parse(String(init?.body));
+    sent.push(message);
+    if (String(input).endsWith("/answerCallbackQuery") && message.callback_query_id === "confirmed") return Response.json({ ok: false }, { status: 400 });
     return Response.json({ ok: true, result: {} });
   };
   const request = (path: string, body: unknown, cookie = "", origin = base) => new Request(base + path, { method: "POST", headers: { origin, "Content-Type": "application/json", cookie }, body: JSON.stringify(body) });
