@@ -322,4 +322,6 @@ export const messages: Record<string, {ru: string; en: string}> = {
   "Bu email uchun avval parol bilan kiring.": {"ru": "Сначала войдите в этот аккаунт с паролем.", "en": "Sign in with your password for this account first."},
   "Kirish xizmati javobi to‘liq kelmadi. Qayta urinib ko‘ring.": {"ru": "Неполный ответ сервера. Попробуйте ещё раз.", "en": "Incomplete server response. Please try again."},
   "Ulanib bo‘lmadi. Qayta urinib ko‘ring.": {"ru": "Не удалось подключиться. Попробуйте ещё раз.", "en": "Could not connect. Please try again."},
+  "ChatGPT orqali kirish hozircha mavjud emas": {"ru": "Вход через ChatGPT пока недоступен", "en": "ChatGPT sign-in is not available yet"},
+  "ChatGPT orqali kirish hozircha mavjud emas. Boshqa kirish usulini tanlang.": {"ru": "Вход через ChatGPT пока недоступен. Выберите другой способ входа.", "en": "ChatGPT sign-in is not available yet. Please choose another sign-in method."},
 };

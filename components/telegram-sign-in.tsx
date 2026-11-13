@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Send, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useLanguage } from "./i18n/language-provider";
 const copy = {
   uz: { login: "Telegram orqali kirish", open: "Telegram’da ochish", check: "Botda shu kodni tekshiring va kirishni tasdiqlang:", waiting: "Tasdiqdan so‘ng shu oynaga qayting.", retry: "Qayta boshlash", error: "Kirishni yakunlab bo‘lmadi. Qayta urinib ko‘ring.", unavailable: "Sozlanmagan" },
@@ -54,7 +54,7 @@ export function TelegramSignIn({ available, iconOnly = false }: { available: boo
   }, [flow, text.error]);
   return <div className="telegram-sign-in">
     <button className="button secondary social-sign-in-button" type="button" aria-label={iconOnly ? "Telegram" : undefined} disabled={!available || pending} onClick={() => void start()}>
-      {pending ? <LoaderCircle size={22} className="spin" /> : <Send size={22} />}<span className={iconOnly ? "sr-only" : undefined}>{flow ? text.retry : text.login}</span>{!available && <small>{text.unavailable}</small>}
+      {pending ? <LoaderCircle size={22} className="spin" /> : <img src="/brands/telegram.svg" width="22" height="22" alt="" aria-hidden="true" className="provider-brand-icon" />}<span className={iconOnly ? "sr-only" : undefined}>{flow ? text.retry : text.login}</span>{!available && <small>{text.unavailable}</small>}
     </button>
     {flow && <div className="telegram-login-flow" role="status"><p>{text.check}</p><strong className="telegram-login-code">{flow.code}</strong><a className="button primary" href={flow.url} target="_blank" rel="noopener noreferrer" data-keep-menu-open>{text.open}</a><p>{text.waiting}</p></div>}
     {error && <p className="error" role="alert">{error}</p>}

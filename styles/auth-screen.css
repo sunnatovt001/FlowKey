@@ -6,7 +6,7 @@
   position: relative;
   padding: 76px 16px 36px;
   isolation: isolate;
-  background: #30221d url('/auth-campus.jpg') right center / cover no-repeat;
+  background: #30221d url('/auth-flowkey.webp') right center / cover no-repeat;
   font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 .auth-scene::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(14 8 22 / 62%), rgb(14 8 22 / 12%) 70%); }
@@ -69,3 +69,45 @@ body:has(.auth-scene) .help-chat-launcher { width: 52px; padding: 0; margin-left
 body:has(.auth-scene) .help-chat-launcher > span { display: none; }
 .auth-scene-note { right: 90px; }
 @media(max-width: 760px) { .auth-scene-note { text-align: left; right: 84px; } }
+
+/* FlowKey's own scene: right-side form and left-side language control. */
+.auth-scene {
+  justify-content: flex-end;
+  background-image: url('/auth-flowkey.webp');
+  background-position: center;
+}
+.auth-scene::before { background: linear-gradient(90deg, rgb(22 10 40 / 8%), rgb(22 10 40 / 28%)); }
+.auth-scene-language { left: 20px; right: auto; }
+.auth-scene-language .locale-menu { left: 0; right: auto; }
+.auth-card { margin-left: 0; margin-right: 8vw; }
+.auth-scene-note { text-align: left; }
+.auth-card .social-sign-in-icons { grid-template-columns: repeat(4, 46px); gap: 14px; }
+.auth-card .social-sign-in-icons .social-sign-in-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+  gap: 0;
+  line-height: 1;
+  color: #181717;
+  flex-shrink: 0;
+}
+.provider-brand-icon { display: block; flex: 0 0 22px; width: 22px; height: 22px; object-fit: contain; }
+.auth-card .social-sign-in-button > svg { display: block; width: 22px; height: 22px; flex-shrink: 0; }
+.auth-card .social-sign-in-icons .auth-provider-notice { grid-column: 1 / -1; width: min(360px, calc(100vw - 100px)); justify-self: center; border: 1px solid #e7d8f1; border-radius: 10px; padding: 12px; margin: 0; background: #f9f5fc; color: #665273; font-size: 13px; line-height: 1.6; text-align: center; }
+@media (max-width: 760px) {
+  .auth-scene { justify-content: center; background-position: 35% center; }
+  .auth-card { margin: 0; }
+  .auth-scene-language { left: 16px; right: auto; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .auth-card { animation: flowkey-auth-enter 520ms cubic-bezier(.22,1,.36,1) both; }
+  .auth-card-header, .auth-card form, .auth-access-links, .auth-method-divider, .auth-card .social-sign-in-icons { animation: flowkey-auth-content 420ms ease-out both; }
+  .auth-card form { animation-delay: 70ms; }
+  .auth-access-links { animation-delay: 105ms; }
+  .auth-method-divider, .auth-card .social-sign-in-icons { animation-delay: 140ms; }
+  @keyframes flowkey-auth-enter { from { opacity: 0; transform: translateX(28px) translateY(8px) scale(.985); } to { opacity: 1; transform: translateX(0) translateY(0) scale(1); } }
+  @keyframes flowkey-auth-content { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+}
