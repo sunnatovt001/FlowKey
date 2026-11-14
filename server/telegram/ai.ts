@@ -1,5 +1,6 @@
 import { assistantInstructions, redact, cleanAssistantAnswer } from "./policy";
 import { accountLookupTool } from "./lookup";
+import { answerLlama } from "./llama";
 import { answerGemini } from "./gemini";
 export type Turn = { role: "user" | "assistant"; content: string };
 type Output = {
@@ -16,6 +17,8 @@ export async function answerQuestion(
   fetcher: typeof fetch = fetch,
   lookup?: (args: unknown) => Promise<unknown>,
 ) {
+  if (process.env.LLAMA_API_KEY?.trim())
+    return answerLlama(snapshot, history, question, fetcher, lookup);
   if (process.env.GEMINI_API_KEY?.trim())
     return answerGemini(snapshot, history, question, fetcher, lookup);
   if (!process.env.SUPPORT_AI_API_KEY)

@@ -2,12 +2,22 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, ArrowUp, X, RotateCcw, BookOpen, MessageCircle } from "lucide-react";
-import { helpGuide, helpSuggestions } from "@/shared/help-guide";
+import { Bot, ArrowUp, X } from "lucide-react";
+import { helpGuide } from "@/shared/help-guide";
+
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useLanguage } from "./i18n/language-provider";
 
 type Message = { role: "user" | "assistant"; content: string; href?: string; label?: string; guide?: boolean };
 export function HelpChat() {
   const pathname = usePathname();
+  const reducedMotion = useReducedMotion();
+  const { language } = useLanguage();
+  const copy = {
+    uz: { open: "Yordamchini ochish", close: "Yordamchini yopish", question: "Savolingizni yozing…", send: "Yuborish", login: "Hisobga kirish", thinking: "Javob tayyorlanmoqda…", guide: "Qo‘llanma" },
+    ru: { open: "Открыть помощника", close: "Закрыть помощника", question: "Напишите сообщение…", send: "Отправить", login: "Войти", thinking: "Готовлю ответ…", guide: "Справка" },
+    en: { open: "Open assistant", close: "Close assistant", question: "Message FlowKey…", send: "Send", login: "Sign in", thinking: "Thinking…", guide: "Guide" },
+  }[language];
   const [open, setOpen] = useState(false);
   const [available, setAvailable] = useState(false);
   const [checking, setChecking] = useState(false);
@@ -35,6 +45,11 @@ export function HelpChat() {
   useEffect(() => {
     if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [messages, busy, error]);
+  useEffect(() => {
+    if (!field.current) return;
+    field.current.style.height = "auto";
+    field.current.style.height = `${Math.min(field.current.scrollHeight, 132)}px`;
+  }, [question, open]);
   function close() {
     setOpen(false);
     launcher.current?.focus();
@@ -73,39 +88,39 @@ export function HelpChat() {
   if (hidden) return null;
   return (
     <div className="help-chat">
+      <AnimatePresence>
       {open && (
-        <section id="flowkey-help-panel" role="dialog" aria-labelledby="flowkey-help-title" className="help-chat-panel"
+        <motion.section id="flowkey-help-panel" role="dialog" aria-labelledby="flowkey-help-title" className="help-chat-panel"
+          initial={{ opacity: 0, y: reducedMotion ? 0 : 18, scale: reducedMotion ? 1 : .96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: reducedMotion ? 0 : 12, scale: reducedMotion ? 1 : .97 }}
+          transition={{ duration: reducedMotion ? 0 : .24, ease: [.22, 1, .36, 1] }}
           onKeyDown={event => { if (event.key === "Escape") { event.stopPropagation(); close(); } }}>
           <header className="help-chat-header">
-            <span className="help-chat-mark"><Bot size={22} aria-hidden="true" /></span>
-            <div><h2 id="flowkey-help-title">FlowKey yordamchi</h2><p>{checking ? "Tekshirilmoqda…" : available ? "AI yordamchi" : "Qo‘llanma rejimi"}</p></div>
-            <button type="button" aria-label="Suhbatni tozalash" disabled={busy || !messages.length} onClick={() => { setMessages([]); setError(""); setNeedsLogin(false); }}><RotateCcw size={17} /></button>
-            <button type="button" aria-label="Yordamchini yopish" onClick={close}><X size={21} /></button>
+            <h2 id="flowkey-help-title">FlowKey</h2>
+            <button type="button" aria-label={copy.close} onClick={close}><X size={21} /></button>
           </header>
-          <div ref={log} className="help-chat-log" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Yordamchi bilan suhbat">
-            {!messages.length && <div className="help-chat-welcome"><MessageCircle size={28} aria-hidden="true" /><h3>Qanday yordam beray?</h3><p>FlowKey bo‘yicha savolingizni yozing.</p>
-              <div className="help-chat-suggestions">{helpSuggestions.map(text => <button type="button" key={text} disabled={checking} onClick={() => void send(text)}>{text}<span aria-hidden="true">↗</span></button>)}</div>
-            </div>}
+          <div ref={log} className="help-chat-log" role="log" aria-live="polite" aria-relevant="additions text" aria-label="FlowKey chat">
+            <AnimatePresence>{!messages.length && <motion.div key="welcome" className="help-chat-welcome" aria-hidden="true" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, scale: reducedMotion ? 1 : .9 }} transition={{ duration: reducedMotion ? 0 : .18 }}><Bot size={100} strokeWidth={1.3} /></motion.div>}</AnimatePresence>
             {messages.map((message, index) => <div key={index} className={`help-chat-message ${message.role}`}>
-              <span className="help-chat-speaker">{message.role === "user" ? "Siz" : message.guide ? "Qo‘llanma javobi" : "FlowKey AI"}</span>
+              {message.guide && <span className="help-chat-guide">{copy.guide}</span>}
               <p>{message.content}</p>
               {message.href && <Link href={message.href} onClick={close}>{message.label} <span aria-hidden="true">↗</span></Link>}
             </div>)}
-            {busy && <p className="help-chat-thinking" role="status">Javob tayyorlanmoqda…</p>}
-            {error && <div className="help-chat-error" role="alert">{error}{needsLogin && <Link href="/login" onClick={close}>Hisobga kirish ↗</Link>}</div>}
+            {busy && <p className="help-chat-thinking" role="status">{copy.thinking}</p>}
+            {error && <div className="help-chat-error" role="alert">{error}{needsLogin && <Link href="/login" onClick={close}>{copy.login} ↗</Link>}</div>}
           </div>
           <form className="help-chat-compose" onSubmit={event => { event.preventDefault(); void send(); }}>
-            <label className="sr-only" htmlFor="flowkey-help-question">Savolingiz</label>
-            <div><textarea ref={field} id="flowkey-help-question" value={question} onChange={event => setQuestion(event.target.value)} maxLength={1500} rows={2} placeholder="Savolingizni yozing…"
+            <label className="sr-only" htmlFor="flowkey-help-question">{copy.question}</label>
+            <div><textarea ref={field} id="flowkey-help-question" value={question} onChange={event => setQuestion(event.target.value)} maxLength={1500} rows={1} placeholder={copy.question}
               onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }} />
-              <button type="submit" aria-label="Savolni yuborish" disabled={busy || checking || !question.trim()}><ArrowUp size={20} /></button></div>
-            <p>{available ? "Parol yoki maxfiy kalit yubormang." : "AI hali ulanmagan. Hozir tayyor qo‘llanma javoblari beriladi."}</p>
+              <button type="submit" aria-label={copy.send} disabled={busy || checking || !question.trim()}><ArrowUp size={20} /></button></div>
           </form>
-          <Link className="help-chat-docs" href="/docs" onClick={close}><BookOpen size={14} /> Qo‘llanmani ochish</Link>
-        </section>
+        </motion.section>
       )}
-      <button ref={launcher} type="button" className="help-chat-launcher" aria-label={open ? "Yordamchini yopish" : "AI yordamchini ochish"} aria-expanded={open} aria-controls="flowkey-help-panel" onClick={() => { if (open) close(); else { setChecking(true); setOpen(true); } }}>
-        {open ? <X size={22} aria-hidden="true" /> : <><Bot size={23} aria-hidden="true" /><span>AI yordamchi</span></>}
+      </AnimatePresence>
+      <button ref={launcher} type="button" className="help-chat-launcher" aria-label={open ? copy.close : copy.open} aria-expanded={open} aria-controls="flowkey-help-panel" onClick={() => { if (open) close(); else { setChecking(true); setOpen(true); } }}>
+        {open ? <X size={22} aria-hidden="true" /> : <Bot size={25} aria-hidden="true" />}
       </button>
     </div>
   );

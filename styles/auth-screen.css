@@ -6,7 +6,7 @@
   position: relative;
   padding: 76px 16px 36px;
   isolation: isolate;
-  background: #30221d url('/auth-flowkey-clear.webp') right center / cover no-repeat;
+  background: #30221d url('/auth-flowkey-playful.webp') right center / cover no-repeat;
   font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 .auth-scene::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(14 8 22 / 62%), rgb(14 8 22 / 12%) 70%); }
@@ -65,7 +65,7 @@
 .auth-card .auth-access-links .form-bottom { margin: 0; }
 .auth-access-links:has(fieldset) { grid-template-columns: 1fr; }
 @media (max-width: 760px) { .auth-card { padding: 24px 22px; } }
-body:has(.auth-scene) .help-chat-launcher { width: 52px; padding: 0; margin-left: auto; }
+body:has(.auth-scene) .help-chat-launcher { width: 56px; height: 56px; padding: 0; margin-left: auto; }
 body:has(.auth-scene) .help-chat-launcher > span { display: none; }
 .auth-scene-note { right: 90px; }
 @media(max-width: 760px) { .auth-scene-note { text-align: left; right: 84px; } }
@@ -73,7 +73,7 @@ body:has(.auth-scene) .help-chat-launcher > span { display: none; }
 /* FlowKey's own scene: right-side form and left-side language control. */
 .auth-scene {
   justify-content: flex-end;
-  background-image: url('/auth-flowkey-clear.webp');
+  background-image: url('/auth-flowkey-playful.webp');
   background-position: center;
 }
 .auth-scene::before { background: linear-gradient(90deg, rgb(22 10 40 / 8%), rgb(22 10 40 / 28%)); }
@@ -113,7 +113,7 @@ body:has(.auth-scene) .help-chat-launcher > span { display: none; }
 }
 
 /* Keep the photograph clear: no tint, translucency, blur or color veil. */
-.auth-scene { background-image: url('/auth-flowkey-clear.webp'); }
+.auth-scene { background-image: url('/auth-flowkey-playful.webp'); }
 .auth-scene::before { content: none; display: none; background: none; }
 .auth-step-shell { width: 100%; max-width: 448px; margin: 0 8vw 0 0; }
 .auth-step-shell .auth-card { width: 100%; max-width: none; margin: 0; }

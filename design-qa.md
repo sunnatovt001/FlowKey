@@ -1,34 +1,26 @@
-# Authentication flow revision QA
+# FlowKey background and support chat QA
 
-final result: passed
+Result: local checks passed; live Meta request intentionally omitted at user's request.
 
-Target: latest user request: Logic Coin-style Telegram handoff/return, Edmission's
-actual exit-before-entry animation, national language flags, separate recovery
-screens and a fully sharp background without a tint/blur layer.
+The auth background is an original glossy purple/orange cartoon illustration matching
+FlowKey's logo. No opacity, dark tint or blur layer was added. Existing auth card,
+language flags and transitions remain in place.
 
-Visual evidence: output/auth-flow/telegram-desktop.png (1440 × 900 CSS/pixels, DPR 1),
-output/auth-flow/reset-mobile.png (390 × 844 CSS/pixels, DPR 1).
-Background reference: generated_images/exec-2b12a495-97f1-4a7e-b343-f51a953bc5d4.png.
-The generated photograph and both rendered pages were visually inspected. No new
-pixel-exact mockup was supplied; the existing right-side FlowKey layout is preserved.
+Visual evidence inspected: output/support-chat/desktop-empty.png (1440×1000),
+output/support-chat/desktop-reply.png and output/support-chat/mobile-reply.png (390×844).
+Generated source: /workspace/generated_images/exec-83d0ad51-7784-4026-8766-7245602bdfce.png.
 
-- Typography/layout: existing form rhythm retained; standalone forgot/reset/verify
-  and Telegram screens share the same card and language control. No mobile overflow.
-- Colors/assets: opaque white form; original flag SVGs (UZ, RU, US) in trigger and menu.
-  Photograph has detailed right-side architecture, no baked blur and no CSS overlay.
-- Motion: Edmission AuthStepTransition source inspected on server. AnimatePresence
-  mode=wait and matching x/scale/easing/duration copied using framer-motion; initial
-  entry is enabled as requested. Reduced-motion preference remains respected.
-- Copy/behavior: full Telegram waiting screen, code check, re-open link, retry and
-  expiry states. Bot return uses a short-lived one-use fragment credential; original
-  browser remains independently bound to its HttpOnly proof.
+Support launcher is 56×56 on auth and other pages. Panel uses a short opacity/scale
+transition, with reduced-motion support. Empty state has only the bot graphic;
+it disappears after the first message. Removed intro, suggested questions and footer.
+Composer has one rounded border, a borderless expanding textarea and circular send.
 
-Browser checks passed: flags/selection, no overlay, standalone recovery request,
-old reset-link redirect, Telegram automatic launch, transient network retry, reload
-persistence, original-browser completion, return-link fragment clearing, and a single
-resume callback under React Strict Mode. No page JavaScript errors.
+Browser checks: desktop/mobile sizing, no horizontal overflow, mocked message/reply,
+empty graphic removal, Escape dismissal and focus return passed. API responses were
+mocked; these checks do not establish real Meta service availability.
 
-Database integration passed: browser binding, foreign origin/webhook/sender rejection,
-expiry, replay prevention, duplicate bot callback prevention, return-link completion,
-original-browser completion, and concurrent first sign-ins mapping to one account.
-No actionable P0/P1/P2 findings remain.
+Meta adapter follows the official meta-llama/llama-api-python schemas: native
+completion_message response, max_completion_tokens, bounded owner-scoped read tools.
+Tests cover native text/object output, tool continuation, redaction and safe failures.
+Typecheck passed; 52 tests passed, 14 integration tests skipped; lint has 13 existing
+warnings and no errors. GPT sign-in request remains prepared and unsubmitted.
