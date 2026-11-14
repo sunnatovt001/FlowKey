@@ -1,7 +1,20 @@
-import test, {beforeEach,afterEach} from "node:test";
-let savedGemini:string|undefined;
-beforeEach(()=>{savedGemini=process.env.GEMINI_API_KEY;delete process.env.GEMINI_API_KEY;});
-afterEach(()=>{if(savedGemini===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=savedGemini;});
+import test, { beforeEach, afterEach } from "node:test";
+// Unit tests must never select providers using inherited deployment secrets.
+const providerKeys = ["LLAMA_API_KEY", "GEMINI_API_KEY", "SUPPORT_AI_API_KEY"] as const;
+let savedProviders: Partial<Record<typeof providerKeys[number], string>>;
+beforeEach(() => {
+  savedProviders = {};
+  for (const key of providerKeys) {
+    if (process.env[key] !== undefined) savedProviders[key] = process.env[key];
+    delete process.env[key];
+  }
+});
+afterEach(() => {
+  for (const key of providerKeys) {
+    if (savedProviders[key] === undefined) delete process.env[key];
+    else process.env[key] = savedProviders[key];
+  }
+});
 import assert from "node:assert/strict";
 import {
   redact,
