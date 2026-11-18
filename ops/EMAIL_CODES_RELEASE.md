@@ -4,10 +4,12 @@ The email verification and password recovery fix is committed to
 `fix/email-verification-codes` at `ea0e22e` and merged into `main`.
 
 Production rollout uses the mail-only branch based on the previously active
-`3f0ceeb`, preserving the reviewed server patch application in the deployment
-script. A one-off `deploy-email-codes.sh` changes only the fetched branch/ref;
-the build, tests, existing patch preservation, schema compatibility guard,
-health checks and rollback behavior are unchanged.
+`3f0ceeb`, using the exact previously active source as its baseline. A one-off
+`deploy-email-codes.sh` selects the mail-only branch and omits the deployment
+script's pending platform patch blocks. The final comparison is against the
+previously active release, rather than against prepared but unreleased patches.
+Build, tests, schema compatibility guard, health checks and rollback behavior
+are unchanged. The standard deployment script is not modified.
 
 Main also contains pre-existing Prisma changes from the parallel platform work.
 The deployment schema guard requires their compatibility review before deploying
