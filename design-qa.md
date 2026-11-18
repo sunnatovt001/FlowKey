@@ -31,3 +31,19 @@ sending a test message. Existing mail log confirms Gmail accepted a message for
 the user-supplied recipient (DSN 2.0.0). SMTP acceptance does not establish inbox
 placement; spam filtering remains possible. New mail logs record only sanitized
 failure codes or SMTP acceptance, never recipient addresses or OTPs.
+
+## Jamoa redesign
+
+final result: passed
+
+Compared the approved Jamoa mockup and the authenticated 1440 × 1024 team
+page side by side with the Members tab selected and one pending invitation.
+The first render had a tighter table and smaller hierarchy. Increased
+heading, action, row, and avatar sizes, then captured the same state again.
+The workspace shell retains its current navigation, project selector, and
+profile control. The directory uses the workspace’s light table header.
+
+Chromium verified the 390 px layout without horizontal overflow, mouse and
+keyboard tab navigation, the invitation dialog, invitation creation and
+revocation, member removal, and the owner row’s protected state. The run used
+a disposable local database and recorded no browser page errors.

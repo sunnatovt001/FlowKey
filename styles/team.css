@@ -1,0 +1,69 @@
+.team-page { color: var(--ink, #2a1048); }
+.team-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 32px; }
+.team-heading h1 { margin: 0; font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1.15; }
+.team-heading p { margin: 6px 0 0; color: #654c7e; font-size: 1.05rem; }
+.team-heading .team-invite { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.team-directory { padding: 0 20px 12px; background: #fff; border: 1px solid #e8dcf2; border-radius: 20px; }
+.team-tabs { display: flex; gap: 12px; border-bottom: 1px solid #e8dcf2; }
+.team-tabs button { appearance: none; padding: 16px 18px 13px; color: #654c7e; background: transparent; border: 0; border-bottom: 3px solid transparent; font: inherit; font-weight: 700; cursor: pointer; }
+.team-tabs button[aria-selected="true"] { color: #6320d9; border-bottom-color: #6320d9; }
+.team-count, .team-role { display: inline-block; border-radius: 9px; background: #eee4f8; color: #3b2054; font-weight: 750; }
+.team-count { margin-inline-start: 7px; padding: 0 8px; }
+.team-role { padding: 4px 10px; font-size: .875rem; }
+.team-table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+.team-table :is(th, td) { padding: 14px 12px; border-bottom: 1px solid #e8dcf2; text-align: start; overflow-wrap: anywhere; }
+.team-table th { color: #654c7e; font-weight: 800; }
+.team-table th:first-child { width: 56%; }
+.team-table th:last-child { width: 92px; }
+.team-table tr:last-child td { border-bottom: 0; }
+.team-table :is(th, td):last-child { text-align: center; }
+.team-person { display: flex; align-items: center; gap: 14px; }
+.team-person :is(strong, .team-email) { display: block; }
+.team-email { color: #654c7e; }
+.team-avatar { display: grid; place-items: center; flex: 0 0 42px; height: 42px; border-radius: 50%; background: #e9daf9; font-weight: 800; }
+.team-page [data-owner="true"] { background: #ffe5c9; }
+.team-row-actions { position: relative; display: inline-block; }
+.team-icon-button { display: inline-grid; place-items: center; width: 46px; height: 44px; list-style: none; cursor: pointer; border: 1px solid #e8dcf2; border-radius: 12px; background: #fff; color: #2a1048; }
+.team-icon-button::-webkit-details-marker { display: none; }
+.team-icon-button:hover { background: #faf6fd; }
+.team-action-options { position: absolute; z-index: 2; right: 0; top: calc(100% + 4px); min-width: max-content; padding: 6px; background: #fff; border: 1px solid #e8dcf2; border-radius: 12px; box-shadow: 0 8px 24px #2a10481a; }
+.team-action-options button { color: #8e263e; }
+.team-action-options .form-error { max-width: 215px; }
+.team-empty, .team-note { color: #654c7e; }
+.team-empty { padding: 12px; }
+.team-dialog { margin: auto; width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 24px; background: #fff; color: #2a1048; border: 1px solid #e8dcf2; border-radius: 20px; }
+.team-dialog::backdrop { background: #2a104866; }
+.team-dialog-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.team-dialog-heading h2 { margin: 0; }
+.team-dialog .operation-form { display: grid; gap: 12px; }
+.team-dialog .operation-form > button { justify-self: start; background: #ff890a; color: #2a1048; }
+.team-note summary { cursor: pointer; }
+@media (max-width: 600px) {
+  .team-heading { align-items: flex-start; flex-direction: column; margin-bottom: 20px; }
+  .team-directory { padding-inline: 8px; }
+  .team-tabs { gap: 0; }
+  .team-tabs button { padding-inline: 9px; font-size: .9rem; }
+  .team-table :is(th, td) { padding-inline: 4px; font-size: .85rem; }
+  .team-table th:last-child { width: 56px; }
+  .team-person { gap: 6px; }
+  .team-avatar { flex-basis: 28px; height: 28px; }
+  .team-role { padding-inline: 5px; font-size: .78rem; }
+}
+
+/* Match the directory scale while keeping the shared workspace shell. */
+.workspace-content .team-heading h1 { font-size: clamp(2rem, 4vw, 2.75rem); }
+.team-heading .team-invite { font-size: 1rem; min-height: 48px; padding-inline: 18px; }
+.team-directory .team-tabs button { font-size: 1rem; }
+.team-directory .team-table { font-size: 1rem; }
+.team-directory .team-table thead,
+.team-directory .team-table tbody tr { background: #fff; }
+.team-directory .team-table :is(th, td) { padding-block: 18px; }
+.team-directory .team-table th { padding-top: 24px; }
+.team-person strong { font-size: 1.06rem; }
+.team-avatar { flex-basis: 52px; height: 52px; }
+@media (max-width: 600px) {
+  .team-directory .team-tabs button { font-size: .9rem; }
+  .team-directory .team-table :is(th, td) { padding-block: 12px; }
+  .team-person strong { font-size: .9rem; }
+  .team-avatar { flex-basis: 28px; height: 28px; }
+}
