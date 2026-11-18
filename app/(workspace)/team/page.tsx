@@ -2,6 +2,9 @@ import { workspace, type Search } from "@/server/workspace";
 import { notFound } from "next/navigation";
 import { db } from "@/server/db";
 import { OperationForm } from "@/components/operation-form";
+import { TeamActions, TeamDirectory, TeamInvite } from "@/components/team-controls";
+import "@/styles/team.css";
+
 export const metadata = { title: "Jamoa" };
 const roles: Record<string, string> = {
   owner: "Egasi",
@@ -18,7 +21,8 @@ export default async function Team({
   const [members, invites] = await Promise.all([
     db.membership.findMany({
       where: { projectId: project.id },
-      include: { user: { select: { email: true } } },
+      include: { user: { select: { email: true, name: true } } },
+      orderBy: { user: { email: "asc" } },
     }),
     db.projectInvite.findMany({
       where: {
@@ -30,114 +34,92 @@ export default async function Team({
     }),
   ]);
   const endpoint = `/api/projects/${project.id}/team`;
+  const orderedMembers = [...members.filter(member => member.role === "owner"), ...members.filter(member => member.role !== "owner")];
   return (
-    <>
-      <div className="page-heading">
+    <div className="team-page">
+      <header className="team-heading">
         <div>
-          <h1>Loyiha jamoasi.</h1>
+          <h1>Jamoa</h1>
+          <p>Loyiha a’zolari va ularning rollarini boshqaring.</p>
         </div>
-      </div>
-      <section className="panel operation-panel">
-        <h2>A’zo taklif qilish</h2>
-        <p className="muted">
-          Taklif 7 kun amal qiladi. Xat yuborilmaydi: oluvchi shu email bilan
-          kirib, “Loyiha takliflari” sahifasida qabul qiladi.
-        </p>
-        <OperationForm
-          endpoint={endpoint}
-          action="invite"
-          label="Taklif yaratish"
-        >
-          <label>
-            Elektron pochta
-            <input
-              type="email"
-              name="email"
-              required
-              maxLength={254}
-              autoComplete="email"
-            />
-          </label>
-          <label>
-            Rol
-            <select name="role">
-              <option value="developer">Dasturchi</option>
-              <option value="accountant">Buxgalter</option>
-            </select>
-          </label>
-        </OperationForm>
-        <p className="panel-note">
-          Dasturchi: integratsiya, API va sinov obunalari. Buxgalter: moliyaviy
-          hisobot va pul chiqarish arizalari. Faqat egasi qaytarish va pul
-          chiqarishni tasdiqlaydi.
-        </p>
-      </section>
-      <section className="panel operation-panel">
-        <h2>Ishtirokchilar</h2>
-        <div className="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>Amal</th>
-              </tr>
-            </thead>
+        <TeamInvite>
+          <OperationForm endpoint={endpoint} action="invite" label="Taklif yaratish">
+            <label>
+              Elektron pochta
+              <input type="email" name="email" required maxLength={254} autoComplete="email" />
+            </label>
+            <label>
+              Rol
+              <select name="role">
+                <option value="developer">Dasturchi</option>
+                <option value="accountant">Buxgalter</option>
+              </select>
+            </label>
+          </OperationForm>
+          <p className="team-note">
+            Taklif 7 kun amal qiladi. Oluvchi shu email bilan kirib,
+            “Loyiha takliflari” sahifasida qabul qiladi. Email xabari yuborilmaydi.
+          </p>
+          <details className="team-note">
+            <summary>Rollar va ruxsatlar</summary>
+            <p>
+              Dasturchi integratsiya, API va sinov obunalari bilan ishlaydi.
+              Buxgalter moliyaviy hisobotlar va pul chiqarish arizalari bilan ishlaydi.
+              Qaytarish va pul chiqarishni loyiha egasi tasdiqlaydi.
+            </p>
+          </details>
+        </TeamInvite>
+      </header>
+      <TeamDirectory
+        count={invites.length}
+        members={
+          <table className="team-table">
+            <thead><tr><th scope="col">A’zo</th><th scope="col">Rol</th><th scope="col">Amallar</th></tr></thead>
             <tbody>
-              {members.map((m) => (
-                <tr key={m.userId}>
-                  <td>{m.user.email}</td>
-                  <td>{roles[m.role] || m.role}</td>
-                  <td>
-                    {m.role !== "owner" && (
-                      <OperationForm
-                        endpoint={endpoint}
-                        action="remove"
-                        fixed={{ userId: m.userId }}
-                        label="A’zolikni bekor qilish"
-                      />
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {orderedMembers.map(({ user, userId, role }) => {
+                const name = user.name?.trim();
+                const initials = (name || user.email).split(/\s+/).slice(0, 2)
+                  .map(part => Array.from(part)[0]).join("").toLocaleUpperCase("uz");
+                return (
+                  <tr key={userId}>
+                    <td>
+                      <div className="team-person">
+                        <span className="team-avatar" data-owner={role === "owner"} aria-hidden="true">{initials}</span>
+                        <div>
+                          {name && <strong>{name}</strong>}
+                          <span className={name ? "team-email" : undefined}>{user.email}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span className="team-role" data-owner={role === "owner"}>{roles[role] || role}</span></td>
+                    <td>{role !== "owner" && (
+                      <TeamActions label={`${user.email} uchun amallar`}>
+                        <OperationForm endpoint={endpoint} action="remove" fixed={{ userId }} label="A’zolikni bekor qilish" />
+                      </TeamActions>
+                    )}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-        </div>
-      </section>
-      <section className="panel operation-panel">
-        <h2>Kutilayotgan takliflar</h2>
-        {invites.length ? (
-          <div className="table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Email</th>
-                  <th>Rol</th>
-                  <th>Amal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invites.map((i) => (
-                  <tr key={i.id}>
-                    <td>{i.email}</td>
-                    <td>{roles[i.role]}</td>
-                    <td>
-                      <OperationForm
-                        endpoint={endpoint}
-                        action="revoke"
-                        fixed={{ id: i.id }}
-                        label="Taklifni bekor qilish"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="muted">Kutilayotgan takliflar yo‘q.</p>
-        )}
-      </section>
-    </>
+        }
+        invitations={invites.length ? (
+          <table className="team-table">
+            <thead><tr><th scope="col">Email</th><th scope="col">Rol</th><th scope="col">Amallar</th></tr></thead>
+            <tbody>{invites.map(invite => (
+              <tr key={invite.id}>
+                <td>{invite.email}</td>
+                <td><span className="team-role">{roles[invite.role] || invite.role}</span></td>
+                <td>
+                  <TeamActions label={`${invite.email} taklifi uchun amallar`}>
+                    <OperationForm endpoint={endpoint} action="revoke" fixed={{ id: invite.id }} label="Taklifni bekor qilish" />
+                  </TeamActions>
+                </td>
+              </tr>
+            ))}</tbody>
+          </table>
+        ) : <p className="team-empty">Kutilayotgan takliflar yo‘q.</p>}
+      />
+    </div>
   );
 }
