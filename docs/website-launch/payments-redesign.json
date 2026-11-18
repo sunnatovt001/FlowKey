@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-15",
+  "status": "Deployed and production health verified",
+  "scope": "Payments history redesign and automatic filters",
+  "changes": [
+    "Single payment ledger with successful UZS volume and transaction count from authorized project records",
+    "Debounced 300ms ID search; immediate status/date navigation; no Apply button or document reload",
+    "Date presets, custom ranges, validation, clear and pagination retain project context",
+    "Short payment references and explicit details; raw UTC/minor units progressively disclosed",
+    "Mobile payment rows, four visible status controls and centered accessible dialog"
+  ],
+  "verification": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "unitSuite": {
+      "passed": 54,
+      "failed": 0,
+      "skipped": 18
+    },
+    "targetedDateFilterTests": 4,
+    "browser": [
+      "Status filtering and page reset",
+      "Pagination 20+7 fixture records",
+      "ID search and empty result recovery",
+      "Input focus retained after server navigation",
+      "Invalid custom date range rejected; valid dates auto-apply",
+      "Document sentinel preserved through all filter changes",
+      "Full payment ID in dialog; Escape dismisses",
+      "Refresh works",
+      "1440/768/390 no viewport overflow",
+      "Mobile failed-status filter visible and functional",
+      "Reduced motion",
+      "Tashkent midnight included/excluded correctly",
+      "Foreign project yields streamed not-found with no private project/transaction content",
+      "Hydration date-format mismatch fixed with deterministic Uzbek labels",
+      "Dialog centered; copy control stays by ID"
+    ],
+    "productionBuild": "passed"
+  },
+  "artifacts": [
+    "output/playwright/payments-desktop.png",
+    "output/playwright/payments-tablet.png",
+    "output/playwright/payments-mobile.png",
+    "output/playwright/payment-details.png"
+  ],
+  "limitations": [
+    "Screenshots use synthetic isolated test records",
+    "Tests needing other external services are skipped in default suite",
+    "Git not pushed; authenticated interaction tests were local; production verified by release source, build, tests and health"
+  ],
+  "cleanup": {
+    "databaseDropped": true,
+    "temporaryEnvRemoved": true,
+    "browserClosed": true,
+    "localTestServerStopped": true
+  },
+  "production": {
+    "url": "https://flowkey.uz/transactions",
+    "release": "20261115T073731-payments-redesign",
+    "port": 4051,
+    "health": "ok",
+    "patchReverseCheck": "passed",
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "passed": 56,
+      "failed": 0,
+      "skipped": 15
+    },
+    "monitor": "healthy",
+    "futureDeployPreservation": "installed"
+  }
+}

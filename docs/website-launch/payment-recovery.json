@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-14",
+  "status": "Deployed after explicit user approval",
+  "changes": [
+    "Checkout blocks synchronous duplicate submissions",
+    "Lost or malformed responses show an unknown result and retry the original outcome",
+    "Payment-link retry retains an idempotency key scoped to the link",
+    "Concurrent session creation returns the unique-key winner",
+    "Pending result advises against starting another payment",
+    "Transaction reset updates both results and filter controls",
+    "Auth and recovery native form fallback uses POST"
+  ],
+  "checks": {
+    "typecheck": "passed",
+    "changedFileLint": "passed",
+    "defaultSuite": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 16
+    },
+    "targetedCheckoutAndRecovery": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": [
+      "Response dropped after server commit; retry preserves outcome and payment",
+      "Missing success fields are not treated as success",
+      "Failed and pending states display correctly",
+      "Expired checkout has no payment controls",
+      "Lost payment-link response reuses the same request key and session",
+      "History filters each status and an empty future range",
+      "Reset clears both fields and results",
+      "History has no viewport overflow at 1440/768/390",
+      "JavaScript-disabled login submits POST with no password query parameter"
+    ]
+  },
+  "limitations": [
+    "Simulated payments only; no real money processing tested",
+    "Network failure injected in local browser",
+    "No production data written or Git push performed"
+  ],
+  "production": {
+    "url": "https://flowkey.uz",
+    "release": "20261114T125418-payment-recovery",
+    "port": 4052,
+    "health": "ok",
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 16
+    },
+    "patchConfirmed": true,
+    "publicAuthPostForms": "login/signup/forgot-password/verify-email confirmed",
+    "authenticatedWrites": "not performed"
+  }
+}

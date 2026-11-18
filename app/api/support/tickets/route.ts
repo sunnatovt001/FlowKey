@@ -15,11 +15,24 @@ export async function GET() {
         status: true,
         createdAt: true,
         deliveredAt: true,
+        resolutionStatus: true,
+        resolvedAt: true,
+        replies: {
+          select: { id: true, content: true, createdAt: true },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          take: 20,
+        },
       },
       orderBy: { createdAt: "desc" },
       take: 10,
     });
-    return tickets.map((t) => ({ ...t, summary: unpackText(t.summary) }));
+    return tickets.map((t) => ({
+      ...t,
+      summary: unpackText(t.summary),
+      replies: t.replies
+        .reverse()
+        .map((r) => ({ ...r, content: unpackText(r.content) })),
+    }));
   });
 }
 export async function POST(req: Request) {

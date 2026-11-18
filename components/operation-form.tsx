@@ -1,5 +1,5 @@
 "use client";
-import { useState, type ReactNode, type FormEvent } from "react";
+import { useRef, useState, type ReactNode, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { uzsToMinor } from "@/server/checkout-validation";
 export function OperationForm({
@@ -18,13 +18,24 @@ export function OperationForm({
   amountName?: string;
 }) {
   const router = useRouter();
+  const pending = useRef(false);
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [success, setSuccess] = useState("");
   const [requestKey, setRequestKey] = useState<string>();
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy) return;
+    if (pending.current) return;
+    if (
+      ["remove", "revoke"].includes(action) &&
+      !confirm(
+        action === "remove"
+          ? "Bu a’zoning loyihaga kirishi bekor qilinsinmi?"
+          : "Bu taklif bekor qilinsinmi?",
+      )
+    )
+      return;
+    pending.current = true;
     const form = event.currentTarget,
       values = new FormData(form);
     setBusy(true);
@@ -48,8 +59,14 @@ export function OperationForm({
       const result = await response.json();
       if (!response.ok) {
         setRequestKey(undefined);
-        throw new Error(result.error?.message || "Amal bajarilmadi.");
+        throw new Error(result?.error?.message || "Amal bajarilmadi.");
       }
+      if (
+        !result ||
+        typeof result !== "object" ||
+        !(result.ok === true || Object.hasOwn(result, "data"))
+      )
+        throw new Error("Natija tasdiqlanmadi. Holatni yangilab tekshiring.");
       form.reset();
       setRequestKey(undefined);
       setSuccess("Saqlandi.");
@@ -61,11 +78,13 @@ export function OperationForm({
           : "Aloqani tekshirib, qayta urinib ko‘ring.",
       );
     } finally {
+      pending.current = false;
       setBusy(false);
     }
   }
   return (
     <form
+      method="post"
       className={children ? "operation-form" : "operation-inline"}
       onSubmit={submit}
       onChange={() => setRequestKey(undefined)}

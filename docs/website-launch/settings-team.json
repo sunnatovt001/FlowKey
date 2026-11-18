@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-14",
+  "status": "Deployed and production health verified",
+  "scope": "Profile, avatar, password/session lifecycle and project team management",
+  "changes": [
+    "Invited members can edit their own profile/security without creating a business",
+    "Existing active members return to Dashboard after login",
+    "Personal-only settings omit product/project tabs",
+    "Already-active project members cannot receive redundant invitations",
+    "Settings, avatar and operation forms guard synchronous duplicate submissions",
+    "Team removal and invitation revocation require confirmation",
+    "Current session is labeled and password/session actions reload current session metadata",
+    "Password inputs clear after a successful change; native forms use POST",
+    "Malformed success responses show errors and preserve drafts"
+  ],
+  "checks": {
+    "typecheck": "passed",
+    "changedFileLint": "passed",
+    "defaultSuite": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 17
+    },
+    "targetedHttpDbWorkflow": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "api": [
+      "Concurrent invitation accept returns 200/409 and does not duplicate membership",
+      "Wrong recipient, expired and revoked invitations cannot be accepted",
+      "Declining an invitation creates no membership",
+      "Owner/developer/accountant/outsider authorization boundaries",
+      "Removed member loses project access",
+      "Profile and avatar remain account-scoped",
+      "Session responses exclude tokens and identify the current session",
+      "Attempt to delete another account's session does not revoke it",
+      "Wrong current password leaves sessions intact",
+      "Password change revokes old sessions and issues a valid replacement cookie"
+    ],
+    "browser": [
+      "Profile double submit sends one PATCH and saved name survives reload",
+      "PNG upload is converted and can be removed",
+      "Other-device session becomes unauthorized after revocation",
+      "Password change clears fields and preserves the rotated browser session",
+      "Invited developer reaches Dashboard and personal settings without owner tabs",
+      "Team double submit sends one invitation request",
+      "Dismissed revoke confirmation sends no mutation; accepted confirmation revokes",
+      "Removing a member ends its API access",
+      "Settings and team do not overflow at 1440/768/390",
+      "Malformed profile success response preserves draft and supports a real retry"
+    ]
+  },
+  "limitations": [
+    "All writes used a disposable loopback test database",
+    "No external invitation email was sent; existing in-app invitation behavior retained",
+    "No production changes or Git push performed"
+  ],
+  "production": {
+    "url": "https://flowkey.uz",
+    "release": "20261114T132606-settings-team",
+    "port": 4051,
+    "health": "ok",
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 17
+    },
+    "authenticatedFlows": "verified locally; not repeated against production"
+  }
+}

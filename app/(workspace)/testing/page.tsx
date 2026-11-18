@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { integrationData } from "@/server/integration-data";
 import { TestingCenter } from "@/components/testing-center";
 import { DeveloperTools } from "@/components/developer-tools";
+import { TestPayment } from "@/components/test-payment";
 import { TestCheckout } from "@/components/test-checkout";
 import { FinanceSection } from "@/components/finance-section";
 import { SubscriptionsSection } from "@/components/subscriptions-section";
@@ -25,7 +26,7 @@ export default async function Testing({
       title: "To‘lov",
       description:
         "Muvaffaqiyatli, xato va kutish natijalarini yarating. Bu kabinet sinovi; haqiqiy API ulanishini kodingizdan ham tekshiring.",
-      content: <DeveloperTools {...data.tools} tab="sandbox" guided />,
+      content: <TestPayment projectId={project.id} />,
     });
     panels.push({
       id: "checkout",
@@ -73,5 +74,7 @@ export default async function Testing({
         <SubscriptionsSection projectId={project.id} role={role} testing />
       ),
     });
-  return <TestingCenter key={project.id} panels={panels} />;
+  return (
+    <TestingCenter key={project.id} projectId={project.id} panels={panels} />
+  );
 }

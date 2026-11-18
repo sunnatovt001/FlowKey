@@ -15,6 +15,8 @@ type Ticket = {
   id: string;
   summary: string;
   status: string;
+  resolutionStatus: string;
+  replies: { id: string; content: string; createdAt: string }[];
   createdAt: string;
 };
 export function TelegramSettings() {
@@ -240,7 +242,26 @@ export function TelegramSettings() {
                 )[t.status] || t.status}{" "}
                 · {tashkentDate(t.createdAt)}
               </p>
+              <p>
+                {(
+                  {
+                    open: "Yangi",
+                    in_progress: "Ko‘rib chiqilmoqda",
+                    resolved: "Hal qilindi",
+                  } as Record<string, string>
+                )[t.resolutionStatus] || "Yangi"}
+              </p>
               <small>{t.id}</small>
+              {t.replies?.length === 20 && (
+                <p className="muted">Oxirgi 20 ta javob</p>
+              )}
+              {t.replies?.map((reply) => (
+                <div className="admin-conversation" key={reply.id}>
+                  <strong>Administrator javobi</strong>
+                  <p className="admin-message">{reply.content}</p>
+                  <small>{tashkentDate(reply.createdAt)}</small>
+                </div>
+              ))}
             </article>
           ))}
         </div>

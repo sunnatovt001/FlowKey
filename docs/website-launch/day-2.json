@@ -1,0 +1,89 @@
+{
+  "stage": "Website day 2 — local execution",
+  "date": "2026-11-14",
+  "sourceBaseline": "20261113T155751-e4e91c730b33",
+  "routes": 32,
+  "completed": [
+    "Current server source/assets synchronized with backups; no env/data copied",
+    "Explicit post-signup verification destination",
+    "Verification-required sign-in recovery action",
+    "Synchronous duplicate-submit guards on auth/recovery",
+    "Malformed recovery response remains an error and preserves input",
+    "Auth animation overflow contained"
+  ],
+  "checks": {
+    "typecheck": "passed",
+    "changedComponentLint": "passed",
+    "unitTests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 14
+    },
+    "authLifecycleAPI": {
+      "passed": 1,
+      "skipped": 0
+    },
+    "browser": [
+      "Signup to verify-email instruction",
+      "Unverified login shows resend link",
+      "Two immediate sign-in submits make one HTTP request",
+      "Email verification, login and complete product/project onboarding",
+      "Product to project step retains performance.timeOrigin",
+      "Two immediate project submits create one project and one key",
+      "Malformed recovery JSON leaves input and shows error; retry succeeds",
+      "Missing reset token does not show password form",
+      "1440/768/390 responsive and reduced-motion checks"
+    ],
+    "productionBuild": "passed in clean isolated local build directory"
+  },
+  "production": {
+    "status": "deployed after explicit user approval",
+    "url": "https://flowkey.uz",
+    "baseCommit": "e4e91c730b33fa96d1563886345960227807e014",
+    "port": 4051,
+    "health": "ok",
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 14
+    },
+    "liveChecks": [
+      "Verification instruction rendered",
+      "1440/768/390 responsive view",
+      "Unverified-email recovery link with intercepted response; no real login POST"
+    ],
+    "unchanged": [
+      "database schema",
+      "provider credentials",
+      "deploy.sh",
+      "worker configuration"
+    ],
+    "patchConfirmed": true
+  },
+  "proposedProductionPatch": [
+    "components/auth-form.tsx",
+    "components/recovery-form.tsx",
+    "components/i18n/messages.ts",
+    "styles/auth-screen.css"
+  ],
+  "outOfScope": [
+    "Database schema changes",
+    "New bank integrations",
+    "Provider credentials",
+    "Telegram Mini App"
+  ],
+  "cleanup": {
+    "databaseDropped": true,
+    "fixtureUsers": 2,
+    "mailFilesRemoved": 4,
+    "temporarySSHKeyRemoved": true
+  },
+  "notTested": [
+    "Live external Gmail delivery",
+    "Google/GitHub/Telegram provider end-to-end authorization",
+    "Bank processing",
+    "Full repository security audit"
+  ]
+}

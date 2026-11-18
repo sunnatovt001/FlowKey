@@ -29,6 +29,13 @@ export async function POST(req: Request, { params }: Context) {
       if (data.action === "invite") {
         if (data.email === user.email.toLowerCase())
           throw new ApiError(400, "O‘zingizni taklif qila olmaysiz.");
+        if (
+          await tx.membership.findFirst({
+            where: { projectId, user: { email: data.email } },
+            select: { userId: true },
+          })
+        )
+          throw new ApiError(409, "Bu foydalanuvchi allaqachon loyiha a’zosi.");
         const invite = await tx.projectInvite.upsert({
           where: { projectId_email: { projectId, email: data.email } },
           create: {

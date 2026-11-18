@@ -180,6 +180,16 @@ export async function adminTicket(id: string) {
       createdAt: true,
       resolvedAt: true,
       deliveredAt: true,
+      replies: {
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        take: 50,
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          notificationStatus: true,
+        },
+      },
       user: { select: { name: true, email: true } },
     },
   });
@@ -212,6 +222,9 @@ export async function adminTicket(id: string) {
   return {
     ...row,
     diagnostics: undefined,
+    replies: row.replies
+      .reverse()
+      .map((r) => ({ ...r, content: unpackText(r.content) })),
     summary: redact(unpackText(row.summary)),
     findings,
     conversation,

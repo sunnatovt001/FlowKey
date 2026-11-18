@@ -1,3 +1,4 @@
+import { AdminTicketReply } from "@/components/admin-ticket-reply";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adminTicket } from "@/server/admin";
@@ -74,6 +75,36 @@ export default async function Ticket({
           />
         </section>
       </div>
+      <section className="panel admin-panel">
+        <h2>Administrator javoblari</h2>
+        {ticket.replies.length === 50 && (
+          <p className="admin-note">Oxirgi 50 ta javob</p>
+        )}
+        {ticket.replies.length ? (
+          ticket.replies.map((reply) => (
+            <article className="admin-conversation" key={reply.id}>
+              <strong>Administrator</strong> ·{" "}
+              <AdminTime date={reply.createdAt} />
+              <p className="admin-message">{reply.content}</p>
+              <small>
+                Telegram:{" "}
+                {(
+                  {
+                    queued: "Navbatda",
+                    sending: "Yuborilmoqda",
+                    sent: "Yetkazildi",
+                    failed: "Yetkazilmadi; javob saytda mavjud",
+                    not_linked: "Foydalanuvchi ulanmagan",
+                  } as Record<string, string>
+                )[reply.notificationStatus] || "Navbatda"}
+              </small>
+            </article>
+          ))
+        ) : (
+          <p className="admin-note">Hali javob yozilmagan.</p>
+        )}
+        <AdminTicketReply id={id} />
+      </section>
       <section className="panel admin-panel">
         <h2>Murojaatga biriktirilgan suhbat</h2>
         {ticket.conversation.length ? (

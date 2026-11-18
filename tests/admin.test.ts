@@ -131,6 +131,34 @@ test(
         ).status,
         403,
       );
+      // Every admin read surface rejects an ordinary account, even with a copied admin grant.
+      for (const resource of [
+        "overview",
+        "users",
+        "projects",
+        "tickets",
+        "audit",
+      ]) {
+        const denied = await fetch(`${base}/api/admin/${resource}`, {
+          headers: {
+            Cookie:
+              cookies[1] +
+              "; " +
+              cookies[0]
+                .split("; ")
+                .filter((x) => x.startsWith("flowkey_admin="))
+                .join("; "),
+          },
+        });
+        assert.equal(denied.status, 403, resource);
+      }
+      for (const method of ["POST", "DELETE"]) {
+        const denied = await fetch(`${base}/api/admin/telegram`, {
+          method,
+          headers: { Cookie: cookies[1], Origin: base! },
+        });
+        assert.equal(denied.status, 403, `Telegram ${method}`);
+      }
       const overview = await fetch(`${base}/api/admin/overview`, {
         headers: { Cookie: cookies[0] },
       });
@@ -153,6 +181,61 @@ test(
         },
       });
       ticketId = ticket.id;
+      const replyUrl = `/api/admin/tickets/${ticket.id}/replies`;
+      const requestKey = crypto.randomUUID();
+      const replyInput = {
+        content: "Muammo tekshirildi. Qayta kirib ko‘ring.",
+        requestKey,
+      };
+      assert.equal((await post(replyUrl, replyInput, cookies[1])).status, 403);
+      assert.equal(
+        (
+          await post(
+            replyUrl,
+            replyInput,
+            cookies[0],
+            "https://invalid.example",
+          )
+        ).status,
+        403,
+      );
+      assert.equal(
+        (await post(replyUrl, { content: "", requestKey }, cookies[0])).status,
+        400,
+      );
+      const parallel = await Promise.all([
+        post(replyUrl, replyInput, cookies[0]),
+        post(replyUrl, replyInput, cookies[0]),
+      ]);
+      assert.deepEqual(
+        parallel.map((r) => r.status),
+        [200, 200],
+      );
+      const replies = await Promise.all(parallel.map((r) => r.json()));
+      assert.equal(replies[0].id, replies[1].id);
+      assert.equal(
+        await db.supportReply.count({ where: { ticketId: ticket.id } }),
+        1,
+      );
+      assert.equal(
+        (
+          await post(
+            replyUrl,
+            { ...replyInput, content: "Different response" },
+            cookies[0],
+          )
+        ).status,
+        409,
+      );
+      const history = await fetch(`${base}/api/support/tickets`, {
+        headers: { Cookie: cookies[1] },
+      });
+      const visible = (await history.json()).find(
+        (t: { id: string }) => t.id === ticket.id,
+      );
+      assert.equal(visible.replies[0].content, replyInput.content);
+      assert.equal(visible.replies[0].actorId, undefined);
+      assert.equal(visible.replies[0].requestKey, undefined);
       const patch = (status: string, expectedStatus: string, origin = base!) =>
         fetch(`${base}/api/admin/tickets/${ticket.id}`, {
           method: "PATCH",
@@ -168,6 +251,20 @@ test(
         403,
       );
       assert.equal((await patch("invalid", "open")).status, 400);
+      const forbiddenWrite = await fetch(
+        `${base}/api/admin/tickets/${ticket.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Cookie: cookies[1],
+            Origin: base!,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "resolved", expectedStatus: "open" }),
+        },
+      );
+      assert.equal(forbiddenWrite.status, 403);
+      assert.equal((await fetch(`${base}/api/support/tickets`)).status, 401);
       assert.equal((await patch("in_progress", "open")).status, 200);
       assert.equal((await patch("resolved", "open")).status, 409);
       assert.equal((await patch("resolved", "in_progress")).status, 200);
@@ -178,9 +275,41 @@ test(
       assert.equal(updated.resolutionStatus, "resolved");
       assert.ok(updated.resolvedAt);
       assert.equal(updated.resolvedBy, users[0]);
+      const ownHistory = await fetch(`${base}/api/support/tickets`, {
+        headers: { Cookie: cookies[1] },
+      });
+      const ownTickets = await ownHistory.json();
+      assert.equal(
+        ownTickets.find((t: { id: string }) => t.id === ticket.id)
+          .resolutionStatus,
+        "resolved",
+      );
+      const otherHistory = await fetch(`${base}/api/support/tickets`, {
+        headers: { Cookie: cookies[0] },
+      });
+      assert.ok(
+        !(await otherHistory.json()).some(
+          (t: { id: string }) => t.id === ticket.id,
+        ),
+      );
+      // A retry of the same state must not create another audit record.
+      assert.equal((await patch("resolved", "resolved")).status, 200);
       assert.equal(
         await db.adminAudit.count({ where: { targetId: ticket.id } }),
-        2,
+        3,
+      );
+      // Replaying both cookies must not resurrect a revoked auth session.
+      assert.equal(
+        (await post("/api/auth/sign-out", {}, cookies[0])).status,
+        200,
+      );
+      assert.equal(
+        (
+          await fetch(`${base}/api/admin/overview`, {
+            headers: { Cookie: cookies[0] },
+          })
+        ).status,
+        401,
       );
     } finally {
       if (ticketId)

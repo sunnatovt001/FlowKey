@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-15",
+  "status": "Installed and verified on production",
+  "production": "https://flowkey.uz",
+  "backup": {
+    "intervalHours": 6,
+    "retentionDays": 14,
+    "location": "/home/deploy/flowkey-ops/backups",
+    "format": "pg_dump custom",
+    "permissions": "directory700; dump600",
+    "snapshotConsistent": true,
+    "latestBytes": 3889876,
+    "offsite": false
+  },
+  "restore": {
+    "schedule": "Weekly Sunday 04:25 in server cron timezone",
+    "verifiedTables": 32,
+    "checksumVerified": true,
+    "countsMatchSnapshot": true,
+    "temporaryDatabaseRemoved": true,
+    "productionDatabaseModified": false,
+    "applicationCreatedbPrivilegeGranted": false
+  },
+  "monitoring": {
+    "intervalMinutes": 1,
+    "checks": [
+      "HTTPS health includes database",
+      "PM2 worker online",
+      "Worker heartbeat <180 seconds",
+      "Latest backup <8 hours",
+      "Latest successful restore <8 days"
+    ],
+    "alertThreshold": 2,
+    "repeatAfterMinutes": 60,
+    "recoveryNotice": true,
+    "configuredAdminTestNotice": "delivered",
+    "current": "healthy"
+  },
+  "rollback": {
+    "script": "ops/rollback.sh",
+    "candidate": "20261114T165940-support-replies",
+    "rehearsal": "passed",
+    "checks": [
+      "health",
+      "login",
+      "anonymous admin API denied"
+    ],
+    "liveTrafficChanged": false,
+    "schemaMismatchFailsClosed": true,
+    "activation": "explicit --activate release; automatic deploy paused; database and current schema-compatible worker unchanged"
+  },
+  "verification": {
+    "nodeSyntax": "passed",
+    "eslint": "passed",
+    "incidentUnitTest": "passed",
+    "backupRestore": "passed",
+    "rollbackRehearsal": "passed",
+    "productionHealth": "ok"
+  },
+  "limitations": [
+    "Backups are on the same server; offsite encrypted storage remains to be configured",
+    "No real production outage or live rollback was induced",
+    "Rollback activation deliberately retains the working schema-compatible worker"
+  ],
+  "gitPush": false
+}

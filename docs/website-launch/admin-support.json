@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-14",
+  "status": "Verified locally; not deployed",
+  "scope": "Admin access and support ticket status workflow",
+  "changes": [
+    "Support history exposes resolutionStatus and resolvedAt only for the signed-in owner",
+    "Admin status form prevents synchronous duplicate writes",
+    "Malformed success responses are rejected; failed changes announce an alert",
+    "Stale ticket updates refresh server state"
+  ],
+  "verification": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "defaultTests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 17
+    },
+    "isolatedAdminTests": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "checks": [
+      "Admin grant tied to login session, account and credential; expiry/tampering rejected",
+      "All admin read APIs reject ordinary users",
+      "Telegram admin POST/DELETE reject ordinary users",
+      "Copied admin grant does not grant another account access",
+      "Ticket PATCH rejects ordinary users and foreign origins",
+      "Status conflict returns409; duplicate state produces no extra audit",
+      "User support history excludes other users tickets",
+      "Telegram grants expire and are invalidated by credential changes or relinking",
+      "Browser double-submit sends one PATCH; state persists after reload",
+      "Malformed200{} produces error; real update reaches resolved state",
+      "Admin ticket 1440/768/390 no viewport overflow; mobile screenshot inspected"
+    ],
+    "screenshot": "output/playwright/admin-ticket-mobile.png",
+    "productionBuild": "passed"
+  },
+  "limitations": [
+    "No admin reply composer currently exists; this step verifies status management only",
+    "Telegram delivery was mocked; no live user messages sent",
+    "No production changes or Git push",
+    "This is scoped verification, not a complete security audit"
+  ],
+  "cleanup": {
+    "isolatedDatabaseDropped": true,
+    "temporaryEnvRemoved": true,
+    "browserClosed": true
+  }
+}
