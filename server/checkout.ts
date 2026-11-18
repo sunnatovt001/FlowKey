@@ -4,6 +4,8 @@ import { db } from "./db";
 import { ApiError, hash } from "./security";
 import { checkoutInput } from "./checkout-validation";
 import { createPayment } from "./payments";
+import { lockFinance } from "./finance";
+export const checkoutLifetime = 30 * 60_000;
 const id = () => randomBytes(32).toString("hex");
 export function checkoutUrl(path: string) {
   const origin = process.env.APP_URL;
@@ -38,7 +40,7 @@ export async function newSession(
         currency: data.currency,
         requestKey,
         requestHash,
-        expiresAt: new Date(Date.now() + 30 * 60_000),
+        expiresAt: new Date(Date.now() + checkoutLifetime),
       },
     })
     .catch(async (error) => {
@@ -68,37 +70,55 @@ export async function newSession(
     livemode: false,
   };
 }
+export async function getCheckoutSession(id: string) {
+  if (!/^[a-f0-9]{64}$/.test(id)) return null;
+  const session = await db.checkoutSession.findUnique({
+    where: { id }, include: { project: true, link: true },
+  });
+  return session && !session.project.archivedAt && !session.link?.disabledAt ? session : null;
+}
+
+export async function refreshCheckout(id: string) {
+  const session = await getCheckoutSession(id);
+  if (!session) throw new ApiError(404, "To‘lov sessiyasi mavjud emas.");
+  const now = new Date();
+  await db.checkoutSession.updateMany({
+    where: { id, result: null, expiresAt: { lte: now } },
+    data: { expiresAt: new Date(now.getTime() + checkoutLifetime) },
+  });
+}
+
 export async function completeSession(
   sessionId: string,
   result: "successful" | "failed" | "pending",
+  expectedExpiry?: Date,
 ) {
-  const session = await db.checkoutSession.findUnique({
-    where: { id: sessionId },
-    include: { project: true, link: true },
-  });
-  if (!session || session.project.archivedAt || session.link?.disabledAt)
-    throw new ApiError(404, "To‘lov sessiyasi mavjud emas.");
-  if (!session.result && session.expiresAt <= new Date())
-    throw new ApiError(
-      410,
-      "To‘lov sessiyasi muddati tugagan. To‘lov havolasini qayta oching.",
+  const session = await getCheckoutSession(sessionId);
+  if (!session) throw new ApiError(404, "To‘lov sessiyasi mavjud emas.");
+  return db.$transaction(async tx => {
+    await lockFinance(tx, session.projectId);
+    const locked = await tx.checkoutSession.findUniqueOrThrow({
+      where: { id: sessionId }, include: { project: true, link: true },
+    });
+    if (locked.project.archivedAt || locked.link?.disabledAt) {
+      throw new ApiError(404, "To‘lov sessiyasi mavjud emas.");
+    }
+    if (expectedExpiry && locked.expiresAt.getTime() !== expectedExpiry.getTime()) {
+      throw new ApiError(410, "Telegram havolasining muddati tugagan.");
+    }
+    if (!locked.result) {
+      const changed = await tx.checkoutSession.updateMany({
+        where: { id: sessionId, result: null, expiresAt: { gt: new Date(), equals: locked.expiresAt } },
+        data: { result },
+      });
+      if (!changed.count) throw new ApiError(410, "To‘lov sessiyasi muddati tugagan.");
+    }
+    return createPayment(
+      locked.projectId,
+      { amount_minor: Number(locked.amountMinor), currency: locked.currency, result: locked.result ?? result },
+      `checkout_${sessionId}`,
+      tx,
+      sessionId,
     );
-  await db.checkoutSession.updateMany({
-    where: { id: sessionId, result: null, expiresAt: { gt: new Date() } },
-    data: { result },
-  });
-  const locked = await db.checkoutSession.findUniqueOrThrow({
-    where: { id: sessionId },
-  });
-  if (!locked.result)
-    throw new ApiError(410, "To‘lov sessiyasi muddati tugagan.");
-  return createPayment(
-    session.projectId,
-    {
-      amount_minor: Number(session.amountMinor),
-      currency: session.currency,
-      result: locked.result,
-    },
-    `checkout_${sessionId}`,
-  );
+  }, { maxWait: 20000, timeout: 20000 });
 }

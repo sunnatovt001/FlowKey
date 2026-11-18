@@ -318,3 +318,22 @@ body :is(button, a, summary, input, select, textarea):focus-visible {
     min-height: 46px;
   }
 }
+
+.checkout-telegram {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-block-end: 16px;
+}
+
+.checkout-telegram img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+@media (max-width: 600px) {
+  .checkout-telegram img {
+    display: none;
+  }
+}

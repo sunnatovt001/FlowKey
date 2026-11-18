@@ -27,3 +27,22 @@ The same key and payload return the same checkout; a changed payload returns 409
 Completion returns the normal payment ID. Verify using GET /api/v1/payments/{id} with your server key or the existing signed webhook flow; never fulfill an order using browser text as proof. Reusable links have no customer/order identity and are suitable for demos, not automated order fulfillment. Order-specific integrations should create one session per order server-side and store its ID. Unknown, disabled or archived links show not-found; expired sessions cannot create a payment.
 
 Anonymous public routes: /pay/{id}, /checkout/{id}; same-origin POST /api/payment-links/{id} starts checkout and POST /api/checkout/{id} completes it. Session-authorized owner-only POST/DELETE /api/projects/{projectId}/payment-links manages links. Public possession of a high-entropy URL permits sandbox interaction, never account access.
+
+## Telegram sandbox checkout
+
+When the Telegram login bot and its webhook are configured on the HTTPS APP_URL,
+the checkout page shows a Telegram link and a desktop QR code. Both open the
+bot, which returns a button to open the same order in a Mini App. The customer
+explicitly chooses a sandbox outcome. The server validates Telegram's signed
+Mini App data for this path. The browser simulation also remains available.
+
+An unfinished expired checkout can be renewed from its browser page. Renewal
+preserves the merchant's session ID and invalidates the old Telegram link.
+The original browser updates automatically while visible. A pending outcome
+is a simulated pending payment and does not trigger a second charge.
+
+For checkout-created payments, signed webhook events include
+`data.checkout_session_id` so the merchant can match the event to its order.
+The authenticated session lookup remains available for reconciliation.
+These paths are sandbox-only. Enabling bank payments or selling digital
+goods in Telegram requires a separately configured, permitted payment model.
