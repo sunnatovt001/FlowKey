@@ -3,6 +3,7 @@ import { Search } from "@/server/workspace";
 
 import { SettingsForm } from "@/components/settings-form";
 import { pageUser } from "@/server/auth";
+import { redirect } from "next/navigation";
 export const metadata = { title: "Sozlamalar" };
 export default async function Settings({
   searchParams,
@@ -14,12 +15,12 @@ export default async function Settings({
   const business = await db.business.findUnique({
     where: { ownerId: user.id },
   });
-  const allProjects = business
-    ? await db.project.findMany({
-        where: { businessId: business.id },
-        orderBy: { createdAt: "asc" },
-      })
-    : [];
+  if (!business) redirect("/onboarding");
+  const allProjects = await db.project.findMany({
+    where: { businessId: business.id },
+    orderBy: { createdAt: "asc" },
+  });
+  if (!allProjects.length) redirect("/projects/new");
   return (
     <>
       <div className="page-heading">

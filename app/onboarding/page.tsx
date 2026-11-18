@@ -16,14 +16,6 @@ export default async function Onboarding({
   });
   const edit = (await searchParams).edit === "1";
   if (business?.projects.length && !edit) redirect("/dashboard");
-  if (
-    !edit &&
-    (await db.membership.findFirst({
-      where: { userId: user.id, project: { archivedAt: null } },
-      select: { projectId: true },
-    }))
-  )
-    redirect("/dashboard");
   return (
     <SetupWizard
       initial={

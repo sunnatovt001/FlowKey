@@ -101,3 +101,4 @@ Open https://flowkey.uz/miniapp or the support bot menu button “FlowKey Busine
 Four in-page destinations: Asosiy (7/30/90-day simulated volume and counts), To‘lovlar (last 50, local search/status filters and detail dialog), Loyihalar (authorized projects), Profil (own ticket summaries and existing account/help links). Website configuration pages open through links. No card credentials or real-money actions are collected.
 
 To configure the support bot menu after deployment: `node --env-file=.env --import tsx scripts/configure-telegram-miniapp.ts`. This updates only the menu button; it does not change the webhook or send messages. Mini App HTML is no-store and allows only Telegram web frame origins. initData HMAC, duplicate fields, future timestamps and one-hour expiry are checked on the server; each requested project is reauthorized.
+

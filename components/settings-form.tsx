@@ -5,7 +5,7 @@ import { AvatarSettings } from "./avatar";
 import { IntegrationPrompts } from "./integration-prompts";
 import { Code } from "./copy";
 import { businessLabel, authError } from "@/shared/locale";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -40,48 +40,33 @@ export function SettingsForm({
 }: {
   name: string;
   email: string;
-  business: { name: string; type: string } | null;
+  business: { name: string; type: string };
   projects: Project[];
   joinedAt: string;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<SettingsTab>("profile");
-  const availableTabs = business
-    ? tabs
-    : tabs.filter((t) => !["product", "projects"].includes(t.id));
   useEffect(() => {
     const sync = () => {
       const hash = window.location.hash.slice(1);
       const target = hash === "create-project" ? "projects" : hash;
-      if (
-        tabs.some(
-          (t) =>
-            t.id === target &&
-            (business || !["product", "projects"].includes(t.id)),
-        )
-      )
-        setTab(target as SettingsTab);
+      if (tabs.some((t) => t.id === target)) setTab(target as SettingsTab);
     };
     sync();
     window.addEventListener("hashchange", sync);
     return () => window.removeEventListener("hashchange", sync);
-  }, [business]);
+  }, []);
   const [created, setCreated] = useState<{ id: string; secret: string } | null>(
     null,
   );
   const [message, setMessage] = useState("");
-  const [messageError, setMessageError] = useState(false);
   const [busy, setBusy] = useState(false);
-  const pending = useRef(false);
   const [sessions, setSessions] = useState<
-    { id: string; userAgent?: string; createdAt: string; current?: boolean }[]
+    { id: string; userAgent?: string; createdAt: string }[]
   >([]);
   async function send(path: string, data: unknown, method = "POST") {
-    if (pending.current) return null;
-    pending.current = true;
     setBusy(true);
     setMessage("");
-    setMessageError(false);
     try {
       const response = await fetch(path, {
         method,
@@ -91,46 +76,16 @@ export function SettingsForm({
       const json = await response.json();
       if (!response.ok)
         throw new Error(
-          json?.code
+          json.code
             ? authError(json.code)
-            : json?.error?.message || "Saqlab bo‘lmadi.",
+            : json.error?.message || "Saqlab bo‘lmadi.",
         );
-      if (
-        !json ||
-        typeof json !== "object" ||
-        !(
-          json.ok === true ||
-          json.status === true ||
-          typeof json.user?.id === "string" ||
-          typeof json.id === "string"
-        )
-      )
-        throw new Error("Natija tasdiqlanmadi. Holatni yangilab tekshiring.");
-      setMessage(
-        path === "/api/auth/change-password"
-          ? "Parol yangilandi. Boshqa sessiyalar bekor qilindi."
-          : path === "/api/auth/revoke-other-sessions"
-            ? "Boshqa sessiyalar bekor qilindi."
-            : "Muvaffaqiyatli saqlandi.",
-      );
-      if (path === "/api/settings/profile" || path === "/api/settings/business")
-        router.refresh();
-      if (
-        path === "/api/auth/revoke-other-sessions" ||
-        path === "/api/auth/change-password"
-      )
-        await fetch("/api/settings/sessions", { cache: "no-store" })
-          .then(async (response) =>
-            setSessions(response.ok ? await response.json() : []),
-          )
-          .catch(() => setSessions([]));
+      setMessage("Muvaffaqiyatli saqlandi.");
       return json;
     } catch (error) {
-      setMessageError(true);
       setMessage(error instanceof Error ? error.message : "Ulanib bo‘lmadi.");
       return null;
     } finally {
-      pending.current = false;
       setBusy(false);
     }
   }
@@ -146,7 +101,7 @@ export function SettingsForm({
         role="tablist"
         aria-label="Sozlamalar bo‘limlari"
       >
-        {availableTabs.map(({ id, label, icon: Icon }, index) => (
+        {tabs.map(({ id, label, icon: Icon }, index) => (
           <button
             key={id}
             id={`settings-tab-${id}`}
@@ -162,16 +117,14 @@ export function SettingsForm({
             }}
             onKeyDown={(event) => {
               let next = index;
-              if (event.key === "ArrowRight")
-                next = (index + 1) % availableTabs.length;
+              if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
               else if (event.key === "ArrowLeft")
-                next =
-                  (index + availableTabs.length - 1) % availableTabs.length;
+                next = (index + tabs.length - 1) % tabs.length;
               else if (event.key === "Home") next = 0;
-              else if (event.key === "End") next = availableTabs.length - 1;
+              else if (event.key === "End") next = tabs.length - 1;
               else return;
               event.preventDefault();
-              const target = availableTabs[next].id;
+              const target = tabs[next].id;
               setTab(target);
               setMessage("");
               window.history.replaceState(null, "", `#${target}`);
@@ -184,10 +137,7 @@ export function SettingsForm({
         ))}
       </div>
       {message && (
-        <p
-          role={messageError ? "alert" : "status"}
-          className={messageError ? "error" : "notice"}
-        >
+        <p role="status" className="notice">
           {message}
         </p>
       )}
@@ -201,15 +151,8 @@ export function SettingsForm({
         <section className="panel settings-panel settings-profile">
           <h2>Profil ma’lumotlari</h2>
           <AvatarSettings email={email} />
-          {email.endsWith("@telegram.flowkey.invalid") && (
-            <p className="notice">
-              Bu hisob Telegram orqali yaratilgan. Qayta kirish uchun Telegram
-              tugmasidan foydalaning.
-            </p>
-          )}
+          {email.endsWith("@telegram.flowkey.invalid") && <p className="notice">Bu hisob Telegram orqali yaratilgan. Qayta kirish uchun Telegram tugmasidan foydalaning.</p>}
           <form
-            method="post"
-            aria-busy={busy}
             onSubmit={(event) => {
               void send("/api/settings/profile", values(event), "PATCH");
             }}
@@ -226,14 +169,7 @@ export function SettingsForm({
             </label>
             <label>
               Elektron pochta
-              <input
-                value={
-                  email.endsWith("@telegram.flowkey.invalid")
-                    ? "Ulanmagan · Telegram orqali kirish"
-                    : email
-                }
-                disabled
-              />
+              <input value={email.endsWith("@telegram.flowkey.invalid") ? "Ulanmagan · Telegram orqali kirish" : email} disabled />
             </label>
             <button disabled={busy} className="button primary">
               Profilni saqlash
@@ -249,11 +185,11 @@ export function SettingsForm({
             </div>
             <div>
               <dt>Mahsulot</dt>
-              <dd>{business?.name || "—"}</dd>
+              <dd>{business.name}</dd>
             </div>
             <div>
               <dt>Mahsulot turi</dt>
-              <dd>{business ? businessLabel(business.type) : "—"}</dd>
+              <dd>{businessLabel(business.type)}</dd>
             </div>
           </dl>
         </details>
@@ -262,14 +198,12 @@ export function SettingsForm({
         role="tabpanel"
         id="settings-panel-product"
         aria-labelledby="settings-tab-product"
-        hidden={!business || tab !== "product"}
+        hidden={tab !== "product"}
         tabIndex={0}
       >
         <section className="panel settings-panel">
           <h2>Mahsulot</h2>
           <form
-            method="post"
-            aria-busy={busy}
             onSubmit={(event) => {
               void send("/api/settings/business", values(event), "PATCH");
             }}
@@ -278,7 +212,7 @@ export function SettingsForm({
               Mahsulot nomi
               <input
                 name="businessName"
-                defaultValue={business?.name || ""}
+                defaultValue={business.name}
                 required
                 minLength={2}
                 maxLength={100}
@@ -286,10 +220,7 @@ export function SettingsForm({
             </label>
             <label>
               Mahsulot turi
-              <select
-                name="businessType"
-                defaultValue={business?.type || "Startup"}
-              >
+              <select name="businessType" defaultValue={business.type}>
                 {types.map((type) => (
                   <option key={type} value={type}>
                     {businessLabel(type)}
@@ -313,16 +244,12 @@ export function SettingsForm({
         <section className="panel settings-panel">
           <h2>Parol va sessiyalar</h2>
           <form
-            method="post"
-            aria-busy={busy}
-            onSubmit={async (event) => {
-              const form = event.currentTarget;
+            onSubmit={(event) => {
               const data = values(event);
-              const result = await send("/api/auth/change-password", {
+              void send("/api/auth/change-password", {
                 ...data,
                 revokeOtherSessions: true,
               });
-              if (result) form.reset();
             }}
           >
             <label>
@@ -360,7 +287,6 @@ export function SettingsForm({
                 if (!response.ok) throw new Error();
                 setSessions(await response.json());
               } catch {
-                setMessageError(true);
                 setMessage("Sessiyalarni yuklab bo‘lmadi.");
               }
             }}
@@ -372,23 +298,19 @@ export function SettingsForm({
               <li key={session.id}>
                 {session.userAgent || "Noma’lum qurilma"} ·{" "}
                 {tashkentDate(session.createdAt)}{" "}
-                {session.current ? (
-                  <strong>Joriy sessiya</strong>
-                ) : (
-                  <button
-                    disabled={busy}
-                    onClick={async () => {
-                      if (
-                        await send("/api/settings/sessions", { id: session.id })
-                      )
-                        setSessions((current) =>
-                          current.filter((item) => item.id !== session.id),
-                        );
-                    }}
-                  >
-                    Sessiyani bekor qilish
-                  </button>
-                )}
+                <button
+                  disabled={busy}
+                  onClick={async () => {
+                    if (
+                      await send("/api/settings/sessions", { id: session.id })
+                    )
+                      setSessions((current) =>
+                        current.filter((item) => item.id !== session.id),
+                      );
+                  }}
+                >
+                  Sessiyani bekor qilish
+                </button>
               </li>
             ))}
           </ul>
@@ -416,15 +338,13 @@ export function SettingsForm({
         role="tabpanel"
         id="settings-panel-projects"
         aria-labelledby="settings-tab-projects"
-        hidden={!business || tab !== "projects"}
+        hidden={tab !== "projects"}
         tabIndex={0}
       >
         <section className="panel settings-panel" data-tour="create-project">
           <h2 id="create-project">Loyiha yaratish</h2>
 
           <form
-            method="post"
-            aria-busy={busy}
             onSubmit={async (event) => {
               const result = await send("/api/projects", values(event));
               if (result) {
@@ -477,8 +397,6 @@ export function SettingsForm({
             {!project.archivedAt && (
               <>
                 <form
-                  method="post"
-                  aria-busy={busy}
                   onSubmit={(event) => {
                     void send(
                       `/api/projects/${project.id}`,

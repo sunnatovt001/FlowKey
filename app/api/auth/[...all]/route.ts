@@ -1,7 +1,6 @@
 import { toNextJsHandler } from "better-auth/next-js";
 import { auth } from "@/server/auth-instance";
-import { body, limit, sameOrigin } from "@/server/http";
-import { z } from "zod";
+import { body, limit } from "@/server/http";
 import { ApiError } from "@/server/security";
 const handlers = toNextJsHandler(auth);
 function redact(value: unknown): unknown {
@@ -49,35 +48,19 @@ export async function POST(req: Request) {
     ].some((path) => new URL(req.url).pathname.endsWith(`/${path}`))
   ) {
     try {
-      // Reject foreign-origin and malformed requests before they consume an
-      // account's allowance or reach the password/email provider.
-      sameOrigin(req);
-      const parsed = z
-        .object({ email: z.email().max(254) })
-        .safeParse(await body(req.clone()));
-      if (!parsed.success)
-        throw new ApiError(400, "Email manzilini to‘g‘ri kiriting.");
-      const email = parsed.data.email.toLowerCase();
-      if (email.endsWith("@telegram.flowkey.invalid"))
+      const input = (await body(req.clone())) as { email?: unknown };
+      if (typeof input?.email === "string" && input.email.trim().toLowerCase().endsWith("@telegram.flowkey.invalid"))
         throw new ApiError(400, "Bu hisobga Telegram orqali kiring.");
-      await limit(`auth-account:${email}`, 10);
-      const path = new URL(req.url).pathname;
-      if (
-        path.endsWith("/request-password-reset") ||
-        path.endsWith("/send-verification-email")
-      )
-        await limit(`auth-mail:${path.split("/").pop()}:${email}`, 3);
+      if (typeof input?.email === "string")
+        await limit(
+          `auth-account:${input.email.trim().toLowerCase().slice(0, 254)}`,
+          10,
+        );
     } catch (error) {
       if (error instanceof ApiError)
         return Response.json(
           { message: error.message },
-          {
-            status: error.status,
-            headers: {
-              "Cache-Control": "no-store",
-              ...(error.status === 429 ? { "Retry-After": "60" } : {}),
-            },
-          },
+          { status: error.status, headers: { "Retry-After": "60" } },
         );
       console.error(
         JSON.stringify({
@@ -87,7 +70,7 @@ export async function POST(req: Request) {
       );
       return Response.json(
         { message: "Kirish xizmati vaqtincha ishlamayapti." },
-        { status: 503, headers: { "Cache-Control": "no-store" } },
+        { status: 503 },
       );
     }
   }

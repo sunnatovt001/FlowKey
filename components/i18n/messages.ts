@@ -338,6 +338,4 @@ export const messages: Record<string, {ru: string; en: string}> = {
   "Ulanish uzildi. Avtomatik qayta tekshiryapmiz…": {"ru": "Связь прервалась. Проверяем ещё раз автоматически…", "en": "Connection interrupted. Retrying automatically…"},
   "Qayta tekshirish": {"ru": "Проверить ещё раз", "en": "Check again"},
   "Kirishni qayta boshlash": {"ru": "Начать вход заново", "en": "Start sign in again"},
-  "Tasdiqlash xatini qayta so‘rash": {ru: "Запросить письмо подтверждения", en: "Request a verification email"},
-  "Ro‘yxatdan o‘tishda ko‘rsatgan pochtangizni tekshiring. Xat kelmasa, quyidan qayta so‘rang.": {ru: "Проверьте почту, указанную при регистрации. Если письма нет, запросите его ниже.", en: "Check the email you used to sign up. If the message has not arrived, request it again below."},
 };

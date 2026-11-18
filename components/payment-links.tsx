@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Code } from "./copy";
 import { IntegrationPrompts } from "./integration-prompts";
@@ -16,10 +16,7 @@ export function PaymentLinks({
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const pending = useRef(false);
   async function request(verb: string, data: unknown) {
-    if (pending.current) return;
-    pending.current = true;
     setBusy(true);
     setError("");
     try {
@@ -34,7 +31,6 @@ export function PaymentLinks({
     } catch (e) {
       setError(e instanceof Error ? e.message : "Qayta urinib ko‘ring.");
     } finally {
-      pending.current = false;
       setBusy(false);
     }
   }
@@ -44,7 +40,6 @@ export function PaymentLinks({
 
       <form
         className="payment-link-form"
-        aria-busy={busy}
         onSubmit={(e) => {
           e.preventDefault();
           const data = new FormData(e.currentTarget);
