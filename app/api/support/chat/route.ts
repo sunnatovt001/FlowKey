@@ -2,8 +2,8 @@ import { z } from "zod";
 import { currentUser, requireUser } from "@/server/auth";
 import { body, handle, limit, sameOrigin } from "@/server/http";
 import { ApiError } from "@/server/security";
-import { answerQuestion } from "@/server/telegram/ai";
-import {aiConfigured} from "@/server/telegram/ai-config";
+import { answerWebQuestion } from "@/server/web-assistant";
+import { webAiConfigured } from "@/server/telegram/ai-config";
 import { accountContext } from "@/server/telegram/context";
 import { lookupAccount } from "@/server/telegram/lookup";
 
@@ -17,7 +17,7 @@ const input = z.object({
   })).max(8).default([]),
 }).strict();
 export async function GET() {
-  return Response.json({ available: aiConfigured() }, {
+  return Response.json({ available: webAiConfigured() }, {
     headers: { "Cache-Control": "no-store" },
   });
 }
@@ -27,11 +27,11 @@ export async function POST(req: Request) {
     const user = await requireUser();
     await limit(`web-assistant:${user.id}`, 8);
     const data = input.parse(await body(req));
-    if (!aiConfigured())
+    if (!webAiConfigured())
       throw new ApiError(503, "AI hozircha ulanmagan. Qo‘llanma rejimidan foydalaning.");
     let answer: string;
     try {
-      answer = await answerQuestion(
+      answer = await answerWebQuestion(
         { account: await accountContext(user.id), currentPage:data.page?.split("?")[0] }, data.history, data.question, fetch,
         args => lookupAccount(user.id, args),
       );

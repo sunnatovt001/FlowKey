@@ -54,6 +54,10 @@ export function HelpChat() {
     setOpen(false);
     launcher.current?.focus();
   }
+  function appendGuide(value: string) {
+    const reply = helpGuide(value);
+    setMessages(previous => [...previous, { role: "assistant", content: reply.text, href: reply.href, label: reply.label, guide: true }]);
+  }
   async function send(text = question) {
     const value = text.trim();
     if (!value || value.length > 1500 || busy || checking) return;
@@ -62,8 +66,7 @@ export function HelpChat() {
     while(history.length && new TextEncoder().encode(JSON.stringify({question:value,history,page:pathname})).byteLength>14000)history.shift();
     setMessages(previous => [...previous.slice(-18), { role: "user", content: value }]);
     if (!available) {
-      const reply = helpGuide(value);
-      setMessages(previous => [...previous, { role: "assistant", content: reply.text, href: reply.href, label: reply.label, guide: true }]);
+      appendGuide(value);
       field.current?.focus();
       return;
     }
@@ -74,14 +77,18 @@ export function HelpChat() {
         body: JSON.stringify({ question: value, history, page:pathname }), signal: AbortSignal.timeout(70000),
       });
       const data = await response.json();
+      if (response.status === 502 || response.status === 503) {
+        appendGuide(value);
+        return;
+      }
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) setNeedsLogin(true);
-        if (response.status === 503) setAvailable(false);
         throw new Error(data.error?.message || "Javob olinmadi. Qayta urinib ko‘ring.");
       }
       setMessages(previous => [...previous, { role: "assistant", content: data.answer }]);
     } catch (failure) {
-      setQuestion(value);
+      setMessages(previous => previous.slice(0, -1));
+      setQuestion(current => current || value);
       setError(failure instanceof Error && failure.name !== "TimeoutError" ? failure.message : "Javob kechikdi. Qayta urinib ko‘ring.");
     } finally { setBusy(false); field.current?.focus(); }
   }
