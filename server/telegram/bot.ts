@@ -10,6 +10,7 @@ import { answerQuestion, Turn } from "./ai";
 import { redact } from "./policy";
 import { sendText, telegramCall, TelegramUpdate } from "./api";
 import { createTicket } from "./tickets";
+import {handleAdminPanel} from "./admin-panel";
 export async function processUpdate(update: TelegramUpdate) {
   const callback = update.callback_query;
   const message = update.message || callback?.message;
@@ -27,6 +28,9 @@ export async function processUpdate(update: TelegramUpdate) {
       callback_query_id: callback.id,
     });
   const text = update.message?.text?.trim() || "";
+  if(text==="/panel"||text==="/adminpanel"||callback?.data?.startsWith("pa:")||(text==="/admin"&&chatId===process.env.TELEGRAM_ADMIN_CHAT_ID?.trim())){
+    await handleAdminPanel(chatId,callback?.data||"pa:home");return;
+  }
   if (text === "/id") {
     await sendText(chatId, `Sizning Telegram chat ID: ${chatId}`);
     return;
@@ -34,7 +38,7 @@ export async function processUpdate(update: TelegramUpdate) {
   if (text === "/help" || text === "/start") {
     await sendText(
       chatId,
-      "FlowKey yordam botiga xush kelibsiz. Kabinet → Hisob sozlamalari → Telegram yordamchi orqali hisobingizni ulang.\n/check — hisob holati\n/admin — muammoni adminga yuborish\n/unlink — hisobni uzish",
+      "FlowKey yordam botiga xush kelibsiz. Kabinet → Hisob sozlamalari → Telegram yordamchi orqali hisobingizni ulang.\n/check — hisob holati\n/admin — muammoni adminga yuborish\n/unlink — hisobni uzish"+(chatId===process.env.TELEGRAM_ADMIN_CHAT_ID?.trim()?"\n/panel — admin boshqaruvi":""),
     );
     return;
   }

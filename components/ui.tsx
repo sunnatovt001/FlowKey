@@ -1,37 +1,7 @@
 import { statusLabel } from "@/shared/locale";
-import Link from "next/link";
-import { ArrowUpRight, Waves } from "lucide-react";
-export function Logo() {
-  return (
-    <Link href="/" className="logo" aria-label="FlowKey bosh sahifasi">
-      <span className="brand-mark" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      <span className="brand-word">
-        Flow<span>Key</span>
-      </span>
-    </Link>
-  );
-}
-export function PublicNav() {
-  return (
-    <header className="public-nav">
-      <Logo />
-      <nav aria-label="Asosiy menyu">
-        <Link href="/#pricing">Narxlar</Link>
-        <Link href="/docs">Qo‘llanma</Link>
-      </nav>
-      <div className="nav-actions">
-        <Link href="/login">Kirish</Link>
-        <Link className="button primary" href="/signup">
-          Boshlash <ArrowUpRight size={16} />
-        </Link>
-      </div>
-    </header>
-  );
-}
+import { Waves } from "lucide-react";
+export { Logo } from "./common/logo";
+export { PublicNav } from "./common/public-nav";
 export function Status({ status }: { status: string }) {
   return (
     <span className={`status ${status}`}>

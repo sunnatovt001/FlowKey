@@ -1,0 +1,552 @@
+{
+  "date": "2026-11-14",
+  "scope": "Faqat mavjud FlowKey sayti",
+  "evidenceLevel": "Kod va mavjud loyiha hujjatlari; yangi jonli xavfsizlik auditi yoki E2E sertifikati emas",
+  "excluded": [
+    "Yangi Telegram Mini App",
+    "Yangi bank integratsiyasi",
+    "Hamyon",
+    "Native mobil ilovalar",
+    "Yangi raqamli xizmatlar katalogi"
+  ],
+  "routes": [
+    {
+      "route": "/activity",
+      "name": "Hodisalar",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P1",
+      "access": "Loyiha egasi",
+      "job": "Hodisalar tarixi va tafsilotlarini tekshirish",
+      "source": "app/(workspace)/activity/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/dashboard",
+      "name": "Dashboard",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P1",
+      "access": "Loyiha a’zosi",
+      "job": "Loyiha ko‘rsatkichlari va ulanish holatini ko‘rish",
+      "source": "app/(workspace)/dashboard/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/developers",
+      "name": "Integratsiya",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P0",
+      "access": "Egasi / dasturchi",
+      "job": "API, tayyor sahifa yoki embed usulini sozlash",
+      "source": "app/(workspace)/developers/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/finance",
+      "name": "Mablag‘lar",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P0",
+      "access": "Egasi / hisobchi",
+      "job": "Balans va operatsiyalar tarixini ko‘rish",
+      "source": "app/(workspace)/finance/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/guide",
+      "name": "Qo‘llanma",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P1",
+      "access": "Hisobga kirgan",
+      "job": "Mavzu yoki xato yechimini topish",
+      "source": "app/(workspace)/guide/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/settings",
+      "name": "Sozlamalar",
+      "group": "Kabinet",
+      "day": 4,
+      "priority": "P0",
+      "access": "Hisobga kirgan",
+      "job": "Profil, mahsulot, loyiha, xavfsizlik va yordam",
+      "source": "app/(workspace)/settings/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/subscriptions",
+      "name": "Obunalar",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P1",
+      "access": "Egasi / dasturchi",
+      "job": "Obuna holatlari va davrlarini ko‘rish",
+      "source": "app/(workspace)/subscriptions/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/team",
+      "name": "Jamoa",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P1",
+      "access": "Loyiha egasi",
+      "job": "Takliflar va loyiha rollarini boshqarish",
+      "source": "app/(workspace)/team/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/testing",
+      "name": "Sinov markazi",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P0",
+      "access": "Rol bo‘yicha",
+      "job": "To‘lov, sahifa, webhook, mablag‘ va obunani sinash",
+      "source": "app/(workspace)/testing/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/transactions",
+      "name": "To‘lovlar",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P0",
+      "access": "Loyiha a’zosi",
+      "job": "Qidirish, filtrlash va to‘lov tafsilotlarini ko‘rish",
+      "source": "app/(workspace)/transactions/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin/audit",
+      "name": "Admin hodisalari",
+      "group": "Admin",
+      "day": 4,
+      "priority": "P1",
+      "access": "Ruxsatli admin + admin sessiyasi",
+      "job": "Admin amallari izini ko‘rish",
+      "source": "app/admin/audit/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin",
+      "name": "Admin Dashboard",
+      "group": "Admin",
+      "day": 4,
+      "priority": "P0",
+      "access": "Ruxsatli admin + admin sessiyasi",
+      "job": "Haqiqiy hisoblar va murojaatlar ko‘rsatkichlari",
+      "source": "app/admin/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin/projects",
+      "name": "Loyihalar",
+      "group": "Admin",
+      "day": 4,
+      "priority": "P1",
+      "access": "Ruxsatli admin + admin sessiyasi",
+      "job": "Loyihalarni ko‘rish va tekshirish",
+      "source": "app/admin/projects/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin/telegram",
+      "name": "Telegram sozlamalari",
+      "group": "Admin",
+      "day": 4,
+      "priority": "P1",
+      "access": "Ruxsatli admin + admin sessiyasi",
+      "job": "Mavjud yordamchi ulanishi holatini boshqarish",
+      "source": "app/admin/telegram/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin/tickets/[id]",
+      "name": "Murojaat tafsiloti",
+      "group": "Admin",
+      "day": 4,
+      "priority": "P0",
+      "access": "Ruxsatli admin + admin sessiyasi",
+      "job": "Javob, holat va yetkazishni tekshirish",
+      "source": "app/admin/tickets/[id]/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin/tickets",
+      "name": "Murojaatlar",
+      "group": "Admin",
+      "day": 4,
+      "priority": "P0",
+      "access": "Ruxsatli admin + admin sessiyasi",
+      "job": "Murojaatlarni saralash va javob berish",
+      "source": "app/admin/tickets/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin/users",
+      "name": "Foydalanuvchilar",
+      "group": "Admin",
+      "day": 4,
+      "priority": "P0",
+      "access": "Ruxsatli admin + admin sessiyasi",
+      "job": "Hisob tafsilotlarini vakolat doirasida ko‘rish",
+      "source": "app/admin/users/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/admin-login",
+      "name": "Admin kirishi",
+      "group": "Kirish",
+      "day": 4,
+      "priority": "P0",
+      "access": "Ruxsatli admin",
+      "job": "Alohida admin sessiyasini tasdiqlash",
+      "source": "app/admin-login/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/checkout/[id]",
+      "name": "To‘lov sessiyasi",
+      "group": "Checkout",
+      "day": 3,
+      "priority": "P0",
+      "access": "Sessiya havolasi egasi",
+      "job": "Muddati, natijasi va qayta urinish holatini ko‘rish",
+      "source": "app/checkout/[id]/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/docs",
+      "name": "Ommaviy qo‘llanma",
+      "group": "Ommaviy",
+      "day": 2,
+      "priority": "P1",
+      "access": "Mehmon",
+      "job": "API bilan tanishish",
+      "source": "app/docs/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/invitations",
+      "name": "Loyiha takliflari",
+      "group": "Kabinet",
+      "day": 3,
+      "priority": "P1",
+      "access": "Taklif oluvchi",
+      "job": "O‘z emailiga tegishli taklifni qabul qilish",
+      "source": "app/invitations/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/login",
+      "name": "Kirish",
+      "group": "Kirish",
+      "day": 2,
+      "priority": "P0",
+      "access": "Mehmon",
+      "job": "Hisobga kirish va parolni tiklash",
+      "source": "app/login/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/onboarding",
+      "name": "Mahsulot",
+      "group": "Sozlash",
+      "day": 2,
+      "priority": "P0",
+      "access": "Hisob egasi",
+      "job": "Mahsulot nomi va turini kiritish",
+      "source": "app/onboarding/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/",
+      "name": "Bosh sahifa",
+      "group": "Ommaviy",
+      "day": 2,
+      "priority": "P1",
+      "access": "Mehmon",
+      "job": "Mahsulotni tushunish va hisob ochish",
+      "source": "app/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/pay/[id]",
+      "name": "To‘lov havolasi",
+      "group": "Checkout",
+      "day": 3,
+      "priority": "P0",
+      "access": "Havola egasi",
+      "job": "Sessiyani boshlash va aniq sinov holatini ko‘rish",
+      "source": "app/pay/[id]/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/privacy",
+      "name": "Maxfiylik",
+      "group": "Ommaviy",
+      "day": 2,
+      "priority": "P1",
+      "access": "Mehmon",
+      "job": "Ma’lumotlar ishlatilishini tushunish",
+      "source": "app/privacy/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/projects/new",
+      "name": "Yangi loyiha",
+      "group": "Sozlash",
+      "day": 2,
+      "priority": "P0",
+      "access": "Hisob egasi",
+      "job": "Loyiha va bir martalik birinchi kalitni yaratish",
+      "source": "app/projects/new/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    },
+    {
+      "route": "/signup",
+      "name": "Hisob yaratish",
+      "group": "Kirish",
+      "day": 2,
+      "priority": "P0",
+      "access": "Mehmon",
+      "job": "Hisob ochish va emailni tasdiqlash",
+      "source": "app/signup/page.tsx",
+      "evidence": "Koddagi sahifa va bog‘liq komponentlar; jonli E2E tasdig‘i hali emas",
+      "status": "Kod xaritasi tayyor"
+    }
+  ],
+  "flows": [
+    {
+      "id": "F01",
+      "name": "Yangi foydalanuvchi",
+      "path": "Bosh sahifa → hisob yaratish → email tasdiqlash → mahsulot → loyiha → bir martalik kalit → Dashboard",
+      "acceptance": "Qayta yuborish, muddati tugagan havola, oldindan mavjud email, tarmoq xatosi; kalit refreshdan keyin qayta ochilmaydi."
+    },
+    {
+      "id": "F02",
+      "name": "Qayta kirish va tiklash",
+      "path": "Kirish → parolni tiklash → email havolasi → yangi parol → kirish",
+      "acceptance": "Eskirgan/ishlatilgan token rad; account enumeration yo‘q; yangi parol bilan kirish; eski sessiyalar siyosati tekshiriladi."
+    },
+    {
+      "id": "F03",
+      "name": "Integratsiya",
+      "path": "Loyiha → ulash usuli → kalit/konfiguratsiya → Sinov markazi → To‘lovlar",
+      "acceptance": "API kaliti browser/promptsga chiqmaydi; frontend link/buttonda secret yo‘q; xatoda forma saqlanadi."
+    },
+    {
+      "id": "F04",
+      "name": "To‘lov tafsiloti",
+      "path": "To‘lovlar → filtr → natija → tafsilot → yopish",
+      "acceptance": "Summa/status/sana telefonda ko‘rinadi; filter projectni saqlaydi; Escape va fokus qaytishi ishlaydi."
+    },
+    {
+      "id": "F05",
+      "name": "Hamkorlik",
+      "path": "Jamoa → taklif → o‘z hisobida qabul → rolga mos kabinet",
+      "acceptance": "Begona email, eskirgan taklif, takror qabul va rolga mos bo‘lmagan API so‘rovi tekshiriladi."
+    },
+    {
+      "id": "F06",
+      "name": "Yordam",
+      "path": "Dumaloq AI → savol yoki qo‘llanma → murojaat → admin javobi",
+      "acceptance": "AI mavjud bo‘lmasa holat aniq; maxfiy ma’lumot yuborilmaydi; murojaat va javob yetkazilishi tekshiriladi."
+    },
+    {
+      "id": "F07",
+      "name": "Admin",
+      "path": "Oddiy hisob → admin tasdig‘i → murojaat → javob/holat → audit",
+      "acceptance": "Admin bo‘lmagan foydalanuvchi UI yoki to‘g‘ridan-to‘g‘ri URL/API orqali kira olmaydi; admin sessiyasi eskirishi tekshiriladi."
+    },
+    {
+      "id": "F08",
+      "name": "Checkout",
+      "path": "Havola → sessiya → sinov natijasi → sotuvchi tomonidan tekshirish",
+      "acceptance": "Muddati tugagan/bekor/allaqachon bajarilgan sessiya, parallel submit va takror webhook; browserdagi muvaffaqiyat yakuniy isbot emas."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "D1-01",
+      "priority": "P0",
+      "day": 1,
+      "status": "Tayyor",
+      "title": "Amaldagi dizayn standartini aniqlash",
+      "detail": "DESIGN.md boshida ustuvor standart: Nunito, binafsha/to‘q sariq, mobil drawer va dumaloq AI. Eski ko‘k/horizontal nav qoidalari tarix sifatida belgilanadi.",
+      "evidence": [
+        "DESIGN.md",
+        "styles/brand-system.css",
+        "styles/usability.css"
+      ]
+    },
+    {
+      "id": "D1-02",
+      "priority": "P1",
+      "day": 1,
+      "status": "Tayyor",
+      "title": "28 sahifa va 8 foydalanuvchi yo‘li",
+      "detail": "Har bir sahifa uchun vazifa, kirish roli, ish kuni va tayyorlik mezonlari ro‘yxati.",
+      "evidence": [
+        "app/**/page.tsx",
+        "shared/project-role.ts",
+        "server/workspace.ts"
+      ]
+    },
+    {
+      "id": "D1-03",
+      "priority": "P0",
+      "day": 2,
+      "status": "Keyingi ish",
+      "title": "Server/local dizayn bazasini sinxronlash",
+      "detail": "Local globals serverning saqlangan nusxasidagi 6 CSS importini o‘z ichiga olmaydi. Asset va komponent farqlarini yangi server snapshoti bilan tekshirib, tasdiqlangan bazani localga ko‘chirish kerak. Joriy server buzilgan degan xulosa emas.",
+      "evidence": [
+        "app/globals.css",
+        "tmp/usability-deploy/base/app/globals.css",
+        "components/ui.tsx"
+      ]
+    },
+    {
+      "id": "D1-04",
+      "priority": "P0",
+      "day": 2,
+      "status": "Tekshirish kerak",
+      "title": "Kirish/email/onboarding yo‘lini qayta tasdiqlash",
+      "detail": "Oldingi suhbatda email yetib kelmasligi holatlari bor. Hozir ishlamayapti deb tasdiqlanmagan; boshidan oxirigacha yangi nazoratli sinov bilan tekshiriladi.",
+      "evidence": [
+        "app/signup/page.tsx",
+        "components/auth-form.tsx",
+        "components/setup-wizard.tsx"
+      ]
+    },
+    {
+      "id": "D1-05",
+      "priority": "P1",
+      "day": 3,
+      "status": "Tekshirish kerak",
+      "title": "CSS ziddiyatlarini komponent bo‘yicha kamaytirish",
+      "detail": "Base, components, brand va usability bir xil UI elementlarini turli qatlamlarda belgilaydi. Avval computed style bilan tekshirish; keyin faqat tegishli komponentni bir egaga birlashtirish, global stylesheetni birdan almashtirmaslik.",
+      "evidence": [
+        "styles/base.css",
+        "styles/components.css",
+        "styles/brand-system.css",
+        "styles/usability.css"
+      ]
+    },
+    {
+      "id": "D1-06",
+      "priority": "P0",
+      "day": 4,
+      "status": "Tekshirish kerak",
+      "title": "Rollar va admin kirishini salbiy sinovdan o‘tkazish",
+      "detail": "Kodda roleAllows, membership va admin session tekshiruvlari bor. Ularning barcha URL/API yo‘llarida ishlashi hali bu kunning auditida isbotlanmagan.",
+      "evidence": [
+        "shared/project-role.ts",
+        "server/workspace.ts",
+        "app/admin/layout.tsx"
+      ]
+    },
+    {
+      "id": "D1-07",
+      "priority": "P0",
+      "day": 5,
+      "status": "Chiqish mezoni",
+      "title": "To‘liq release dalillari",
+      "detail": "Barcha zarur DB/E2E testlar, backupdan tiklash, rollback va monitoring dalillari yoziladi. Skipped testlar muvaffaqiyatli test sifatida sanalmaydi.",
+      "evidence": [
+        "package.json",
+        "tests/",
+        "ops/"
+      ]
+    },
+    {
+      "id": "D1-08",
+      "priority": "P1",
+      "day": 5,
+      "status": "Chiqish mezoni",
+      "title": "Uch ekran va accessibility tekshiruvi",
+      "detail": "1440×900, 768×1024, 390×844; uzun nomlar, nol/ko‘p qator, fokus, reduced motion va xato/loading holatlari bilan tekshirish.",
+      "evidence": [
+        "DESIGN.md",
+        "components/transaction-table.tsx",
+        "components/help-chat.tsx"
+      ]
+    }
+  ],
+  "releaseChecks": [
+    "Typecheck, tegishli lint, production build va test natijalari yozilgan",
+    "F01–F08 yo‘llari uchun natija va dalil bor",
+    "Tashqi servisga bog‘liq ishlamaydigan funksiyalar ochiq ko‘rsatilgan",
+    "P0 nosozlik yoki tasdiqlanmagan muhim ruxsat tekshiruvi qolmagan",
+    "Telefon/planshet/desktopda viewport overflow va unreachable amal yo‘q",
+    "Ishlayotgan backupdan tiklash hamda rollback mashqi bor",
+    "Health/error monitoring va mas’ul admin belgilangan",
+    "Haqiqiy pul ulanishi yo‘q bo‘lsa, barcha tegishli sahifalar buni to‘g‘ri bildiradi"
+  ],
+  "day1Done": [
+    "Sahifalar xaritasi",
+    "Foydalanuvchi yo‘llari",
+    "Dizayn/component standartlari",
+    "Dalilli ustuvor vazifalar",
+    "Release mezonlari"
+  ],
+  "tokens": {
+    "ink": "#2a1048",
+    "primary": "#6320d9",
+    "action": "#ff890a",
+    "muted": "#685675",
+    "surface": "#faf6fd",
+    "border": "#e8dcf2",
+    "card": "#ffffff"
+  },
+  "verification": {
+    "date": "2026-11-14",
+    "scope": "Faqat 1-kun ish doskasi va source xaritasi",
+    "routeSourcesExist": 28,
+    "flowCount": 8,
+    "taskIdsUnique": true,
+    "browserChecks": [
+      "28 sahifa ro‘yxati",
+      "URL qidirish",
+      "Admin guruhi: 7 sahifa",
+      "P0 filtri: 5 vazifa",
+      "Komponent namunasining holat xabari",
+      "Klaviatura bilan tab almashish",
+      "1440/768/390 da design panel viewport overflow yo‘q"
+    ],
+    "mechanicalDetectorFindings": 0,
+    "applicationE2EPerformed": false,
+    "applicationSecurityAuditPerformed": false
+  }
+}

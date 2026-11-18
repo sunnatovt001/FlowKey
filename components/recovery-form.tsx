@@ -1,81 +1,51 @@
 "use client";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useRef, useState } from "react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { authError } from "@/shared/locale";
-import { useSyncExternalStore, useState } from "react";
-const subscribe = () => () => {};
-export function RecoveryForm({ localMail = false }: { localMail?: boolean }) {
-  const [selectedMode, setMode] = useState("");
-  const search = useSyncExternalStore(
-    subscribe,
-    () => location.search,
-    () => "",
-  );
-  const params = new URLSearchParams(search);
-  const token = params.get("token") || "";
-  const mode =
-    selectedMode ||
-    (token
-      ? "reset"
-      : params.get("mode") === "verify" || params.has("error")
-        ? "verify"
-        : "");
+import { useTranslation } from "./i18n/language-provider";
+export type RecoveryMode = "forgot" | "reset" | "verify";
+export function RecoveryForm({
+  mode,
+  localMail = false,
+}: {
+  mode: RecoveryMode;
+  localMail?: boolean;
+}) {
+  const t = useTranslation();
+  const query = useSearchParams();
+  const token = query.get("token") || "";
+  const pending = useRef(false);
+  const sentAfterSignup = mode === "verify" && query.get("sent") === "1";
+  const [value, setValue] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const invalidReset = mode === "reset" && !token;
   return (
-    <section aria-label="Hisobni tiklash">
-      <p>
-        <button
-          type="button"
-          className="button secondary small"
-          onClick={() => setMode("forgot")}
-        >
-          Parolni unutdingizmi?
-        </button>{" "}
-        <button
-          type="button"
-          className="button secondary small"
-          onClick={() => setMode("verify")}
-        >
-          Pochtani tasdiqlash
-        </button>
-      </p>
-      {!mode && message && <p role="status">{message}</p>}
-      {mode && (
-        <fieldset disabled={busy}>
-          <legend>
-            {mode === "reset"
-              ? "Yangi parol o‘rnatish"
-              : mode === "verify"
-                ? "Tasdiqlash xatini qayta yuborish"
-                : "Parolni tiklash"}
-          </legend>
-          <label>
-            {mode === "reset" ? "Yangi parol" : "Hisob elektron pochtasi"}
-            <input
-              id="recovery-value"
-              type={mode === "reset" ? "password" : "email"}
-              minLength={mode === "reset" ? 12 : undefined}
-              maxLength={mode === "reset" ? 128 : 254}
-              autoComplete={mode === "reset" ? "new-password" : "email"}
-            />
-          </label>
-          {mode === "reset" && (
-            <p className="form-hint">
-              Yangi parol kamida 12 ta belgidan iborat bo‘lsin.
-            </p>
+    <div className="auth-recovery-page">
+      {sentAfterSignup && !done && (
+        <p className="notice" role="status">
+          {t(
+            "Ro‘yxatdan o‘tishda ko‘rsatgan pochtangizni tekshiring. Xat kelmasa, quyidan qayta so‘rang.",
           )}
-          <button
-            type="button"
-            className="button secondary"
-            onClick={async () => {
-              const value = (
-                document.getElementById("recovery-value") as HTMLInputElement
-              ).value;
-              if (!value) {
-                setMessage(
-                  "Elektron pochtangiz yoki yangi parolingizni kiriting.",
-                );
-                return;
-              }
+        </p>
+      )}
+      {invalidReset ? (
+        <p className="notice">
+          {t("Havola noto‘g‘ri yoki muddati tugagan. Yangi havola so‘rang.")}
+        </p>
+      ) : (
+        !done && (
+          <form
+            method="post"
+            aria-busy={busy}
+            onSubmit={async (event) => {
+              event.preventDefault();
+              if (pending.current) return;
+              pending.current = true;
               setBusy(true);
               setMessage("");
               try {
@@ -95,7 +65,7 @@ export function RecoveryForm({ localMail = false }: { localMail?: boolean }) {
                         }
                       : {
                           email: value.trim().toLowerCase(),
-                          redirectTo: `${location.origin}/login`,
+                          redirectTo: `${location.origin}/reset-password`,
                         };
                 const response = await fetch(`/api/auth/${endpoint}`, {
                   method: "POST",
@@ -105,33 +75,100 @@ export function RecoveryForm({ localMail = false }: { localMail?: boolean }) {
                 const data = await response.json().catch(() => null);
                 if (!response.ok)
                   throw new Error(authError(data?.code, response.status));
+                if (!data || typeof data !== "object")
+                  throw new Error(
+                    t(
+                      "Kirish xizmati javobi to‘liq kelmadi. Qayta urinib ko‘ring.",
+                    ),
+                  );
                 setMessage(
                   mode === "reset"
                     ? "Parol yangilandi. Endi kirishingiz mumkin."
                     : "Agar hisob mavjud va talabga mos bo‘lsa, xat yuborish so‘raldi.",
                 );
-                if (mode === "reset") history.replaceState(null, "", "/login");
+                setDone(true);
+                if (mode === "reset")
+                  history.replaceState(history.state, "", "/reset-password");
               } catch (error) {
                 setMessage(
                   error instanceof Error ? error.message : "Ulanib bo‘lmadi.",
                 );
               } finally {
+                pending.current = false;
                 setBusy(false);
               }
             }}
           >
-            {busy ? "Kuting…" : "Davom etish"}
-          </button>
-          <p role="status">{message}</p>
-          {localMail && mode !== "reset" && (
-            <p className="form-hint">
-              Local rejim: xat Gmail’ga yuborilmaydi. Tiklash yoki tasdiqlash
-              havolasi kompyuteringizdagi <code>local-data/mail</code> papkasiga
-              saqlanadi.
-            </p>
-          )}
-        </fieldset>
+            <label>
+              {t(mode === "reset" ? "Yangi parol" : "Hisob elektron pochtasi")}
+              <span
+                className={mode === "reset" ? "auth-password-field" : undefined}
+              >
+                <input
+                  name={mode === "reset" ? "newPassword" : "email"}
+                  required
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  type={
+                    mode === "reset" ? (visible ? "text" : "password") : "email"
+                  }
+                  minLength={mode === "reset" ? 12 : undefined}
+                  maxLength={mode === "reset" ? 128 : 254}
+                  autoComplete={mode === "reset" ? "new-password" : "email"}
+                  placeholder={
+                    mode === "reset"
+                      ? t("Kamida 12 ta belgi")
+                      : "email@example.com"
+                  }
+                />
+                {mode === "reset" && (
+                  <button
+                    type="button"
+                    className="auth-password-toggle"
+                    aria-label={t(
+                      visible ? "Parolni yashirish" : "Parolni ko‘rsatish",
+                    )}
+                    aria-pressed={visible}
+                    onClick={() => setVisible(!visible)}
+                  >
+                    {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                )}
+              </span>
+            </label>
+            <button
+              type="submit"
+              className="button primary full"
+              disabled={busy}
+            >
+              {busy && <LoaderCircle size={18} className="spin" />}
+              {t(busy ? "Kuting…" : "Davom etish")}
+            </button>
+          </form>
+        )
       )}
-    </section>
+      {message && (
+        <p
+          role={done ? "status" : "alert"}
+          className={done ? "notice" : "error"}
+        >
+          {t(message)}
+        </p>
+      )}
+      <div className="auth-recovery-links">
+        <Link href="/login">{t("Kirishga qaytish")}</Link>
+        {mode === "reset" && !done && (
+          <Link href="/forgot-password">{t("Yangi havola so‘rash")}</Link>
+        )}
+        {mode === "forgot" && (
+          <Link href="/verify-email">{t("Pochtani tasdiqlash")}</Link>
+        )}
+      </div>
+      {localMail && done && mode !== "reset" && (
+        <p className="form-hint">
+          {t("Local rejim: xat local-data/mail papkasiga saqlanadi.")}
+        </p>
+      )}
+    </div>
   );
 }

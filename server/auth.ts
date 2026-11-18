@@ -13,7 +13,7 @@ export async function currentUser() {
 export async function requireUser() {
   const user = await currentUser();
   if (!user) throw new ApiError(401, "Hisobga kiring.");
-  if (!user.emailVerified)
+  if (!(await hasVerifiedIdentity(user)))
     throw new ApiError(
       403,
       "Davom etishdan oldin elektron pochtangizni tasdiqlang.",
@@ -23,7 +23,7 @@ export async function requireUser() {
 export async function pageUser() {
   const user = await currentUser();
   if (!user) redirect("/login");
-  if (!user.emailVerified) redirect("/login?mode=verify");
+  if (!(await hasVerifiedIdentity(user))) redirect("/login?mode=verify");
   return user;
 }
 export async function requireProject(
@@ -60,7 +60,7 @@ export async function apiProject(req: Request) {
     !key ||
     key.revokedAt ||
     key.project.archivedAt ||
-    !key.project.business.owner.emailVerified
+    !(await hasVerifiedIdentity(key.project.business.owner))
   )
     throw new ApiError(
       401,
@@ -71,4 +71,10 @@ export async function apiProject(req: Request) {
     data: { lastUsedAt: new Date() },
   });
   return key.projectId;
+}
+
+// Telegram verifies its own provider identity, never an email address.
+async function hasVerifiedIdentity(user: { id: string; emailVerified: boolean }) {
+  if (user.emailVerified) return true;
+  return !!(await db.account.findFirst({ where: { userId: user.id, providerId: "telegram" }, select: { id: true } }));
 }

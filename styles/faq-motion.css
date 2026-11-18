@@ -1,0 +1,40 @@
+.flow-landing .faq .animated-faq-item summary::after {
+  content: "+";
+  display: inline-block;
+  transform: rotate(0);
+  transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+.flow-landing .faq .animated-faq-item[open]:not([data-expanded="false"]) summary::after {
+  content: "+";
+  transform: rotate(45deg);
+}
+.flow-landing .faq .animated-faq-item .faq-answer {
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 240ms ease, transform 320ms ease;
+}
+.flow-landing .faq .animated-faq-item[open]:not([data-expanded="false"]) .faq-answer {
+  opacity: 1;
+  transform: translateY(0);
+  @starting-style { opacity: 0; transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-landing .faq .animated-faq-item summary::after,
+  .flow-landing .faq .animated-faq-item .faq-answer { transition: none; }
+}
+
+/* Align the question and icon by their centres, including wrapped questions. */
+.flow-landing .faq .animated-faq-item summary {
+  align-items: center;
+  line-height: 1.5;
+  padding-right: 0;
+}
+.flow-landing .faq .animated-faq-item summary::after,
+.flow-landing .faq .animated-faq-item[open]:not([data-expanded="false"]) summary::after {
+  content: "";
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(currentColor, currentColor) center / 14px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 2px 14px no-repeat;
+}

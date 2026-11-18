@@ -13,6 +13,7 @@ model User {
   passwordHash  String           @default("")
   name          String           @default("")
   emailVerified Boolean          @default(false)
+  tourSeenAt    DateTime?
   telegramConnection TelegramConnection?
   telegramLink TelegramLink?
   supportTickets SupportTicket[]
@@ -301,10 +302,27 @@ model TelegramMessage {
   @@unique([connectionId, externalId])
   @@index([connectionId, createdAt])
 }
+model SupportReply {
+  id String @id @default(cuid())
+  ticketId String
+  ticket SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  actorId String
+  requestKey String
+  content String
+  notificationStatus String @default("queued")
+  attempts Int @default(0)
+  retryAt DateTime @default(now())
+  deliveredAt DateTime?
+  createdAt DateTime @default(now())
+  @@unique([ticketId, requestKey])
+  @@index([ticketId, createdAt])
+  @@index([notificationStatus, retryAt])
+}
 model SupportTicket {
   id String @id @default(cuid())
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies SupportReply[]
   requestKey String @unique
   summary String
   diagnostics Json

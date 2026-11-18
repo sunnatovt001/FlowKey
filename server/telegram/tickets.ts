@@ -64,6 +64,7 @@ export async function deliverTickets() {
       await sendText(
         admin,
         `FlowKey yordam murojaati\nID: ${ticket.id}\nHisob ID: ${ticket.userId}\nMuammo: ${redact(unpackText(ticket.summary))}\n\nTekshiruv ma’lumotlari:\n${redact(JSON.stringify(report)).slice(0, 5500)}`,
+        {inline_keyboard:[[{text:"Murojaatni boshqarish",callback_data:`pa:ticket:${ticket.id}`}]]},
       );
       await db.supportTicket.update({
         where: { id: ticket.id },

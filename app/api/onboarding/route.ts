@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       .parse(await body(req));
     const business = await db.business.upsert({
       where: { ownerId: user.id },
-      update: {},
+      update: { name: data.businessName, type: data.businessType },
       create: {
         ownerId: user.id,
         name: data.businessName,
@@ -46,9 +46,7 @@ export async function POST(req: Request) {
     await db.onboardingDraft.deleteMany({ where: { userId: user.id } });
     return {
       project: business.projects[0] || null,
-      redirect: business.projects.length
-        ? "/dashboard"
-        : "/settings?welcome=1#create-project",
+      redirect: business.projects.length ? "/dashboard" : "/projects/new",
     };
   });
 }

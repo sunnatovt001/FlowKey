@@ -214,6 +214,10 @@ minute. Chat history stays in browser memory; no new database tables are needed.
 
 # Saytdagi admin panel
 
+## Gemini yordamchi
+
+Google AI Studio kaliti uchun yopiq `.env` faylida `GEMINI_API_KEY` ni belgilang. `GEMINI_MODEL` standart qiymati `gemini-flash-lite-latest`. Kalit mavjud bo‘lsa sayt va Telegram yordamchisi Gemini’dan foydalanadi; aks holda mavjud OpenAI sozlamasi ishlaydi. Sozlamadan keyin web va Telegram jarayonlarini qayta ishga tushiring. Kalitni Git’ga qo‘shmang. Hisob qidiruvi kirgan foydalanuvchining o‘qish ruxsati bilan cheklangan.
+
 Admin hisob odatiy sayt sessiyasidan tashqari `/admin-login` orqali alohida parol bilan tasdiqlanadi. `FLOWKEY_ADMIN_EMAIL`, `FLOWKEY_ADMIN_PASSWORD_HASH` (Better Auth scrypt xeshi) va kamida 32 belgili tasodifiy `FLOWKEY_ADMIN_SESSION_SECRET` serverda sozlanadi. Ochiq parolni repozitoriyaga yozmang. Admin tasdig‘i asosiy login sessiyasiga bog‘langan va 15 daqiqada tugaydi; parol xeshi yoki imzolash kaliti o‘zgartirilsa avvalgi tasdiqlar bekor bo‘ladi. Har bir hisob uchun bir daqiqada ko‘pi bilan 5 urinishga ruxsat beriladi.
 
 `/admin` sahifasi foydalanuvchilar, loyihalar, yordam murojaatlari va admin amallari jurnalini ko‘rsatadi. `FLOWKEY_ADMIN_USER_IDS` server sozlamasiga ruxsat berilgan tasdiqlangan foydalanuvchilarning IDlarini vergul bilan ajratib kiriting. Sozlama bo‘sh bo‘lsa kirish yopiq. Telegram ulanishi admin huquqini avtomatik bermaydi.

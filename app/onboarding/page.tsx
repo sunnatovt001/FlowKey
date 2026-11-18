@@ -1,22 +1,36 @@
 import { redirect } from "next/navigation";
 import { pageUser } from "@/server/auth";
 import { db } from "@/server/db";
-import { Logo } from "@/components/ui";
-import { OnboardingForm } from "@/components/onboarding-form";
-export default async function Onboarding() {
+import { SetupWizard } from "@/components/setup-wizard";
+import "@/styles/project-setup.css";
+export const metadata = { title: "Boshlang‘ich sozlash" };
+export default async function Onboarding({
+  searchParams,
+}: {
+  searchParams: Promise<{ edit?: string }>;
+}) {
   const user = await pageUser();
-  if (await db.business.findUnique({ where: { ownerId: user.id } }))
+  const business = await db.business.findUnique({
+    where: { ownerId: user.id },
+    include: { projects: { where: { archivedAt: null }, take: 1 } },
+  });
+  const edit = (await searchParams).edit === "1";
+  if (business?.projects.length && !edit) redirect("/dashboard");
+  if (
+    !edit &&
+    (await db.membership.findFirst({
+      where: { userId: user.id, project: { archivedAt: null } },
+      select: { projectId: true },
+    }))
+  )
     redirect("/dashboard");
   return (
-    <main className="onboarding-page">
-      <header>
-        <Logo />
-        <span className="sandbox-label">Unit muhitini sozlash</span>
-      </header>
-      <OnboardingForm draftKey={`flowza-onboarding-${user.id}`} />
-      <p className="muted center">
-        Haqiqiy to‘lov va bank ma’lumotlarisiz. Faqat yangi g‘oyangiz.
-      </p>
-    </main>
+    <SetupWizard
+      initial={
+        business ? { name: business.name, type: business.type } : undefined
+      }
+      initialStep={business && !edit ? 2 : 1}
+      avatar={(user.name || user.email).slice(0, 1).toUpperCase()}
+    />
   );
 }

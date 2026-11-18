@@ -11,3 +11,6 @@ output/
 .playwright-cli/
 local-data/
 tmp/
+
+# Isolated Next.js verification builds
+.next-*/

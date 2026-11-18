@@ -18,37 +18,38 @@ export function WelcomeTour({
     height: number;
   } | null>(null);
   const panel = useRef<HTMLElement>(null);
+  const claimedFor = useRef<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const storageKey = `flowkey-tour-v1:${userKey}`;
   const steps = [
     {
       title: "FlowKey’ga xush kelibsiz",
-      text: "Loyiha nomini kiriting — API kaliti avtomatik yaratiladi.",
-      href: "/settings#create-project",
-      action: "Loyiha yaratish",
-      target: '[data-tour="create-project"]',
+      text: "Dashboard’da to‘lovlar, loyiha faolligi va ulanish holatini ko‘rasiz.",
+      href: `/dashboard?project=${projectId}`,
+      action: "Dashboard’ni ko‘rish",
+      target: 'nav a[href^="/dashboard"]',
     },
     {
       title: "API kalitingizni saqlang",
       text: "Kalit bir marta ko‘rsatiladi. Uni xavfsiz saqlang.",
       href: `/developers?project=${projectId}`,
       action: "Ulash bo‘limiga o‘tish",
-      target: ".integration-options",
+      target: ".integration-methods",
     },
     {
       title: "Qulay ulash usulini tanlang",
       text: "Ulash usulini tanlang. Tayyor GPT va Claude promptlaridan foydalanishingiz mumkin.",
       href: `/developers?project=${projectId}`,
       action: "Ulash usullarini ko‘rish",
-      target: ".integration-options",
+      target: ".integration-methods",
     },
     {
-      title: "Birinchi Unit’ni sinang",
-      text: "Nom va summani kiriting, so‘ng sinov to‘lovini bajaring.",
-      href: `/developers?project=${projectId}`,
-      action: "Unit yaratish",
-      target: ".integration-options",
+      title: "Sinov markazida tekshiring",
+      text: "To‘lov, webhook va boshqa sinovlarni shu sahifada bajaring.",
+      href: `/testing?project=${projectId}`,
+      action: "Sinov markazini ochish",
+      target: ".testing-center",
     },
     {
       title: "Natijalarni kuzating",
@@ -59,18 +60,23 @@ export function WelcomeTour({
     },
   ];
   useEffect(() => {
-    // Show the guide only on this account's first visit in this browser.
-    /* eslint-disable react-hooks/set-state-in-effect */
-    try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved === null) {
-        localStorage.setItem(storageKey, "seen");
-        setStep(0);
-      }
-    } catch {
-      setStep(0);
-    }
-    /* eslint-enable react-hooks/set-state-in-effect */
+    if (claimedFor.current === storageKey) return;
+    claimedFor.current = storageKey;
+    // The database claim is atomic: only one tab/device gets the first tour.
+    fetch("/api/settings/welcome-tour", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ alreadySeen: false }),
+    })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const result = await response.json();
+        if (claimedFor.current === storageKey && result.show === true)
+          setStep(0);
+      })
+      .catch(() => {
+        /* Keep the workspace usable if persistence is unavailable. */
+      });
   }, [storageKey]);
   useEffect(() => {
     if (step === null) return;
@@ -120,14 +126,8 @@ export function WelcomeTour({
       window.removeEventListener("scroll", schedule, true);
     };
   }, [step, pathname]); // eslint-disable-line react-hooks/exhaustive-deps
-  function move(next: number | null, done = false) {
+  function move(next: number | null) {
     setStep(next);
-    try {
-      localStorage.setItem(
-        storageKey,
-        next === null ? (done ? "done" : "skipped") : "seen",
-      );
-    } catch {}
   }
   function navigate(next: number) {
     move(next);
@@ -190,9 +190,7 @@ export function WelcomeTour({
                 </button>
                 <button
                   className="button primary"
-                  onClick={() =>
-                    step === 4 ? move(null, true) : navigate(step + 1)
-                  }
+                  onClick={() => (step === 4 ? move(null) : navigate(step + 1))}
                 >
                   {step === 4 ? "Tugatish" : "Keyingi"}
                 </button>

@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-15",
+  "status": "Deployed; active release and monitoring verified",
+  "approvedReference": "output/design/testing-approved.png",
+  "changes": [
+    "Three-column test type selector / configuration / result matching approved mockup",
+    "Existing five test types and server-enforced role restrictions retained",
+    "Native radio outcomes, amount presets, concise human-readable result and collapsed JSON",
+    "Honest readiness state before a real test API response",
+    "Synchronous duplicate-submit guard; ambiguous response locks inputs and retries identical key/body",
+    "Responsive rail above work area on tablet and stacked setup/result on phone"
+  ],
+  "verification": {
+    "lint": "passed in isolated staging",
+    "typecheck": "passed in isolated staging",
+    "productionBuild": "passed in isolated staging",
+    "defaultTests": {
+      "passed": 58,
+      "failed": 0,
+      "skipped": 15
+    },
+    "targetedAmountReplyTests": 2,
+    "isolatedRoleHTTPTests": 1,
+    "sourceProof": "six normalized hashes match local files",
+    "browser": [
+      "Successful, rejected and pending real test responses",
+      "Amount validation blocks invalid sum",
+      "Double submit causes one payment request",
+      "JSON starts collapsed and opens",
+      "Malformed 200 reply preserves request; retry returns same created payment ID, body and key",
+      "Tabs retain document and project context",
+      "Keyboard tab navigation",
+      "All five panels tested at1440/768/390 without viewport overflow",
+      "Reduced motion",
+      "Screenshot compared side by side with approved mockup"
+    ]
+  },
+  "artifacts": [
+    "output/playwright/testing-desktop.png",
+    "output/playwright/testing-tablet.png",
+    "output/playwright/testing-mobile.png",
+    "output/design/testing-comparison.png"
+  ],
+  "environment": {
+    "localInitialAttempt": "Low free RAM and cold compilation caused timeouts; testing moved to VPS staging",
+    "stagingDatabase": "Synthetic isolated test database; no production user data copied",
+    "productionReleaseUnchanged": "20261115T073731-payments-redesign",
+    "productionHealth": "ok"
+  },
+  "cleanup": {
+    "localTestDatabaseDropped": true,
+    "stagingTestDatabaseDropped": true,
+    "temporaryCredentialsRemoved": true,
+    "testServersStopped": true,
+    "browserClosed": true,
+    "sshTunnelClosed": true
+  },
+  "limitations": [
+    "No real money processing or external Telegram/email sent",
+    "Git not pushed"
+  ],
+  "production": {
+    "url": "https://flowkey.uz/testing",
+    "release": "20261115T111602-testing-redesign",
+    "port": 4052,
+    "health": "ok",
+    "sourceReverseCheck": "passed",
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "passed": 58,
+      "failed": 0,
+      "skipped": 15
+    },
+    "monitor": "healthy",
+    "futureDeployPreservation": "installed"
+  }
+}

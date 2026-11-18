@@ -5,31 +5,35 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
-  LayoutDashboard,
-  ArrowLeftRight,
-  Code2,
-  BookOpen,
-  Settings,
+  PanelsTopLeft,
+  ReceiptText,
+  PlugZap,
+  BookOpenText,
+  SlidersHorizontal,
   LogOut,
   ArrowUpRight,
-  Wallet,
-  Users,
-  Repeat,
-  History,
+  WalletCards,
+  UsersRound,
+  CalendarClock,
+  ListChecks,
   ShieldCheck,
+  FlaskConical,
+  Menu,
+  X,
 } from "lucide-react";
 import { Logo } from "./ui";
 import { roleAllows } from "@/shared/project-role";
 const navigation = [
-  ["/dashboard", "Umumiy ko‘rinish", LayoutDashboard],
-  ["/transactions", "Tranzaksiyalar", ArrowLeftRight],
-  ["/developers", "Ulash", Code2],
-  ["/finance", "Moliya", Wallet],
-  ["/subscriptions", "Obunalar", Repeat],
-  ["/team", "Jamoa", Users],
-  ["/activity", "Faoliyat", History],
-  ["/guide", "Qo‘llanma", BookOpen],
-  ["/settings", "Hisob sozlamalari", Settings],
+  ["/dashboard", "Dashboard", PanelsTopLeft],
+  ["/transactions", "To‘lovlar", ReceiptText],
+  ["/developers", "Integratsiya", PlugZap],
+  ["/testing", "Sinov markazi", FlaskConical],
+  ["/finance", "Mablag‘lar", WalletCards],
+  ["/subscriptions", "Obunalar", CalendarClock],
+  ["/team", "Jamoa", UsersRound],
+  ["/activity", "Hodisalar", ListChecks],
+  ["/guide", "Qo‘llanma", BookOpenText],
+  ["/settings", "Sozlamalar", SlidersHorizontal],
 ] as const;
 export function AppShell({
   projects,
@@ -47,14 +51,39 @@ export function AppShell({
   const query = useSearchParams();
   const selected = query.get("project") || projects[0]?.id || "";
   const [error, setError] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuToggle = useRef<HTMLButtonElement>(null);
   const profileMenu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document
+      .querySelector<HTMLAnchorElement>("#workspace-navigation a")
+      ?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
   useEffect(() => {
     const closeOutside = (event: Event) => {
       const menu = profileMenu.current;
-      if (menu?.open && event.target instanceof Node && !menu.contains(event.target))
+      if (
+        menu?.open &&
+        event.target instanceof Node &&
+        !menu.contains(event.target)
+      )
         menu.open = false;
     };
     const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        if (
+          event.target instanceof Element &&
+          event.target.closest("#workspace-navigation")
+        )
+          menuToggle.current?.focus();
+      }
       const menu = profileMenu.current;
       if (event.key === "Escape" && menu?.open) {
         menu.open = false;
@@ -76,9 +105,31 @@ export function AppShell({
   const role = projects.find((p) => p.id === selected)?.role || "owner";
   return (
     <div className="app-shell">
-      <aside className="sidebar">
+      <aside className="sidebar" data-open={menuOpen}>
         <Logo />
-        <nav aria-label="Kabinet menyusi">
+        <button
+          ref={menuToggle}
+          type="button"
+          className="sidebar-menu-toggle"
+          aria-label={menuOpen ? "Menyuni yopish" : "Menyuni ochish"}
+          aria-expanded={menuOpen}
+          aria-controls="workspace-navigation"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+        {menuOpen && (
+          <button
+            type="button"
+            className="sidebar-backdrop"
+            aria-label="Menyuni yopish"
+            onClick={() => {
+              setMenuOpen(false);
+              menuToggle.current?.focus();
+            }}
+          />
+        )}
+        <nav id="workspace-navigation" aria-label="Kabinet menyusi">
           {navigation
             .filter(([href]) =>
               href === "/finance"
@@ -93,6 +144,7 @@ export function AppShell({
               <Link
                 className={path === href ? "active" : ""}
                 href={href + (selected ? `?project=${selected}` : "")}
+                onClick={() => setMenuOpen(false)}
                 key={href}
               >
                 <Icon size={18} />
@@ -100,7 +152,11 @@ export function AppShell({
               </Link>
             ))}
           {isAdmin && (
-            <Link href="/admin" className={path.startsWith("/admin") ? "active" : ""}>
+            <Link
+              href="/admin"
+              onClick={() => setMenuOpen(false)}
+              className={path.startsWith("/admin") ? "active" : ""}
+            >
               <ShieldCheck size={18} />
               Admin panel
             </Link>
@@ -126,8 +182,11 @@ export function AppShell({
               id="project"
               value={selected}
               onChange={(e) => {
+                setMenuOpen(false);
                 if (e.target.value === "__new_project__") {
-                  router.push(`/settings${selected ? `?project=${encodeURIComponent(selected)}` : ""}#create-project`);
+                  router.push(
+                    `/settings${selected ? `?project=${encodeURIComponent(selected)}` : ""}#create-project`,
+                  );
                   return;
                 }
                 const params = new URLSearchParams(query);
@@ -157,8 +216,20 @@ export function AppShell({
               <UserAvatar email={email} />
             </summary>
             <div>
-              <Link href="/invitations" onClick={() => { if (profileMenu.current) profileMenu.current.open = false; }}>Loyiha takliflari</Link>
-              <Link href={`/settings?project=${selected}`} onClick={() => { if (profileMenu.current) profileMenu.current.open = false; }}>
+              <Link
+                href="/invitations"
+                onClick={() => {
+                  if (profileMenu.current) profileMenu.current.open = false;
+                }}
+              >
+                Loyiha takliflari
+              </Link>
+              <Link
+                href={`/settings?project=${selected}`}
+                onClick={() => {
+                  if (profileMenu.current) profileMenu.current.open = false;
+                }}
+              >
                 Hisob sozlamalari
               </Link>
               <button
@@ -186,8 +257,7 @@ export function AppShell({
         <main className="workspace-content">{children}</main>
         <WelcomeTour userKey={email} projectId={selected} />
         <div className="workspace-footer">
-          FlowKey Unit muhiti{" "}
-          <span>Haqiqiy to‘lovlar tez kunda · Hamkor tasdig‘i kutilmoqda</span>
+          FlowKey Unit muhiti <span>Haqiqiy pul operatsiyalari ulanmagan</span>
         </div>
       </div>
     </div>

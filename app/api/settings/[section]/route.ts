@@ -4,6 +4,8 @@ import { requireUser } from "@/server/auth";
 import { body, handle, limit, sameOrigin } from "@/server/http";
 import { ApiError } from "@/server/security";
 import { onboarding } from "@/server/validators";
+import { auth } from "@/server/auth-instance";
+import { headers } from "next/headers";
 type Context = { params: Promise<{ section: string }> };
 export async function GET(_req: Request, { params }: Context) {
   return handle(async () => {
@@ -13,11 +15,17 @@ export async function GET(_req: Request, { params }: Context) {
       return { id: user.id, name: user.name, email: user.email };
     if (section === "business")
       return db.business.findUnique({ where: { ownerId: user.id } });
-    if (section === "sessions")
-      return db.session.findMany({
+    if (section === "sessions") {
+      const current = await auth.api.getSession({ headers: await headers() });
+      const rows = await db.session.findMany({
         where: { userId: user.id, expiresAt: { gt: new Date() } },
         select: { id: true, userAgent: true, createdAt: true, expiresAt: true },
       });
+      return rows.map((row) => ({
+        ...row,
+        current: row.id === current?.session.id,
+      }));
+    }
     throw new ApiError(404, "Bo‘lim topilmadi.");
   });
 }
@@ -53,10 +61,11 @@ export async function PATCH(req: Request, { params }: Context) {
       const data = onboarding
         .pick({ businessName: true, businessType: true })
         .parse(input);
-      await db.business.update({
+      const updated = await db.business.updateMany({
         where: { ownerId: user.id },
         data: { name: data.businessName, type: data.businessType },
       });
+      if (!updated.count) throw new ApiError(404, "Mahsulot topilmadi.");
       return { ok: true };
     }
     throw new ApiError(404, "Bo‘lim topilmadi.");

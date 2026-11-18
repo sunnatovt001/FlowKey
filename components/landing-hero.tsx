@@ -13,9 +13,9 @@ export function LandingHero() {
     <section className="flow-hero">
       <div className="flow-hero-copy">
         <h1>
-          To‘lovlar.
+          Loyihangiz.
           <br />
-          <em>Endi sodda.</em>
+          <em>Bitta kabinetda.</em>
         </h1>
         <div className="hero-actions">
           <Link href="/signup" className="button primary">
@@ -36,7 +36,7 @@ export function LandingHero() {
           </span>
           <span>
             <ShieldCheck />
-            Xavfsiz sinov
+            Hisob himoyasi
           </span>
         </div>
         <p className="hero-disclaimer">

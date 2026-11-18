@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-14",
+  "status": "Deployed; active release and worker verified",
+  "changes": [
+    "Admin replies with transactional audit and request-key idempotency",
+    "Owner-scoped reply history in Settings > Telegram",
+    "Background Telegram generic notices with retry and delivery status"
+  ],
+  "verification": {
+    "productionBuild": "passed",
+    "typecheck": "passed",
+    "lint": "passed",
+    "defaultTests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 18
+    },
+    "isolatedTests": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": [
+      "Admin reply persisted after reload",
+      "Double submit produced one write",
+      "Malformed response preserved draft; retry saved answer",
+      "User settings displayed both answers",
+      "1440/768/390 overflow checks passed"
+    ],
+    "screenshots": [
+      "output/playwright/admin-replies-mobile.png",
+      "output/playwright/support-replies-mobile.png"
+    ]
+  },
+  "rollout": {
+    "migration": "202611140001_support_replies",
+    "workerRestartRequired": false,
+    "productionChanged": true,
+    "gitPushed": false
+  },
+  "limitations": [
+    "Live Telegram delivery not tested; mocked provider only",
+    "Notifications at-least-once; crash after provider acceptance may duplicate notice",
+    "Latest 20 replies per ticket for user, 50 for admin",
+    "User browser screenshot includes existing first-time tour; replies visible below it"
+  ],
+  "cleanup": {
+    "testDatabaseDropped": true,
+    "testEnvRemoved": true,
+    "testServerStopped": true
+  },
+  "production": {
+    "url": "https://flowkey.uz",
+    "release": "20261115T041307-support-replies",
+    "baseSha": "3f0ceeb92963277bba142935c8fa43be1a97e3ad",
+    "port": 4052,
+    "health": "ok",
+    "patchReverseCheck": "passed (preserving newer tests/admin.test.ts)",
+    "tests": {
+      "passed": 52,
+      "failed": 0,
+      "skipped": 15
+    },
+    "backup": "Saved on server before migration",
+    "worker": "restarted on new release; heartbeats verified",
+    "futureDeployPreservation": "installed; patch conflicts stop deploy"
+  }
+}

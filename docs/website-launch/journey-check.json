@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-14",
+  "scope": "Website simulated payment journey",
+  "environment": "Disposable loopback PostgreSQL database and localhost:3012",
+  "apiTests": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browserChecks": [
+    "Signup opens verify-email page; local verification followed by password login",
+    "Product to project step preserves document timeOrigin",
+    "Project creates initial API key and shows first-run tutorial",
+    "Payment link duplicate submit reproduced (2 POSTs), fixed and retested (1 POST)",
+    "HTML button opens payment page; generated script opens and closes iframe dialog",
+    "Checkout success persisted as exactly one 125000 UZS payment",
+    "Dashboard and history reflect the payment",
+    "Mobile drawer navigation preserves document timeOrigin",
+    "Login/signup/verification and checkout/history have no viewport overflow at 1440, 768 and 390",
+    "Reduced-motion auth hydration mismatch reproduced, fixed and retested"
+  ],
+  "webhookChecks": [
+    "Signature validates exact payload",
+    "503 followed by 204 records failure then delivered",
+    "Retry ceiling and interrupted delivery recovery",
+    "Unsafe local/private destination rejected"
+  ],
+  "liveReadOnly": {
+    "baseURL": "https://flowkey.uz",
+    "http200": [
+      "/",
+      "/login",
+      "/signup",
+      "/verify-email?sent=1",
+      "/api/health",
+      "/unit.js",
+      "/api/openapi"
+    ]
+  },
+  "changedFiles": [
+    "components/auth-step-transition.tsx",
+    "components/payment-links.tsx"
+  ],
+  "validation": {
+    "typecheck": "passed",
+    "changedFileLint": "passed"
+  },
+  "deployment": {
+    "status": "deployed after explicit approval",
+    "url": "https://flowkey.uz",
+    "release": "20261114T120725-journey-ui",
+    "health": "ok",
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "passed": 50,
+      "failed": 0,
+      "skipped": 15
+    },
+    "patchConfirmed": true,
+    "liveChecks": [
+      "Login reduced-motion hydration clean",
+      "1440/768/390 without overflow"
+    ],
+    "limitations": [
+      "No authenticated production writes or real payment performed",
+      "Google One Tap accounts lookup returns 403 in signed-out automated browser; OAuth not tested"
+    ]
+  },
+  "limitations": [
+    "Real bank settlement not connected or tested",
+    "Webhook receiver is an injected test transport; real external delivery not exercised",
+    "Verification email uses local file transport; real Gmail delivery not tested",
+    "No authenticated production writes performed",
+    "Local favicon.ico request returned 404; metadata uses app/icon.png"
+  ]
+}

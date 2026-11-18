@@ -1,4 +1,5 @@
 import { db } from "@/server/db";
+import {aiConfigured} from "@/server/telegram/ai-config";
 import { requireUser } from "@/server/auth";
 import { handle, limit, sameOrigin } from "@/server/http";
 import { createLink, unlinkAccount } from "@/server/telegram/link";
@@ -14,7 +15,7 @@ export async function GET() {
       linkedAt: connection?.linkedAt || null,
       botUsername: process.env.TELEGRAM_BOT_USERNAME?.replace(/^@/, "") || null,
       botConfigured: !!process.env.TELEGRAM_BOT_TOKEN,
-      aiConfigured: !!process.env.SUPPORT_AI_API_KEY,
+      aiConfigured: aiConfigured(),
       adminConfigured: !!process.env.TELEGRAM_ADMIN_CHAT_ID,
     };
   });

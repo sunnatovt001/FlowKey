@@ -1,18 +1,15 @@
 "use client";
+import { T, useTranslation } from "./i18n/language-provider";
 import { authError } from "@/shared/locale";
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowRight, LoaderCircle } from "lucide-react";
-import { RecoveryForm } from "./recovery-form";
+import { useRef, useState } from "react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-export function AuthForm({
-  signup,
-  localMail = false,
-}: {
-  signup: boolean;
-  localMail?: boolean;
-}) {
+export function AuthForm({ signup }: { signup: boolean }) {
   const router = useRouter();
+  const pending = useRef(false);
+  const [verificationRequired, setVerificationRequired] = useState(false);
+  const t = useTranslation();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -20,10 +17,16 @@ export function AuthForm({
   return (
     <>
       <form
+        method="post"
+        aria-busy={loading}
         onSubmit={async (e) => {
           e.preventDefault();
+          if (pending.current) return;
+          pending.current = true;
           setLoading(true);
           setError("");
+          setMessage("");
+          setVerificationRequired(false);
           const form = new FormData(e.currentTarget);
           try {
             const values = Object.fromEntries(form);
@@ -41,7 +44,10 @@ export function AuthForm({
               },
             );
             const data = await res.json().catch(() => null);
-            if (!res.ok) throw new Error(authError(data?.code, res.status));
+            if (!res.ok) {
+              setVerificationRequired(data?.code === "EMAIL_NOT_VERIFIED");
+              throw new Error(authError(data?.code, res.status));
+            }
             if (!data)
               throw new Error(
                 "Kirish xizmati javobi to‘liq kelmadi. Qayta urinib ko‘ring.",
@@ -50,7 +56,7 @@ export function AuthForm({
               setMessage(
                 "Davom etishdan oldin elektron pochtangizni tasdiqlang.",
               );
-              setLoading(false);
+              router.push("/verify-email?sent=1");
             } else {
               router.push("/onboarding");
               router.refresh();
@@ -61,64 +67,85 @@ export function AuthForm({
                 ? err.message
                 : "Ulanib bo‘lmadi. Qayta urinib ko‘ring.",
             );
+          } finally {
+            pending.current = false;
             setLoading(false);
           }
         }}
       >
         <label>
-          Elektron pochta manzili
+          <T>Elektron pochta manzili</T>
           <input
             required
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="siz@kompaniya.uz"
+            placeholder="email@example.com"
             maxLength={254}
           />
         </label>
         <label>
-          Parol
-          <input
-            required
-            name="password"
-            type={visible ? "text" : "password"}
-            minLength={12}
-            maxLength={128}
-            autoComplete={signup ? "new-password" : "current-password"}
-            placeholder={signup ? "Kamida 12 ta belgi" : "Parolingiz"}
-          />
+          <T>Parol</T>
+          <span className="auth-password-field">
+            <input
+              required
+              name="password"
+              aria-label={t("Parol")}
+              type={visible ? "text" : "password"}
+              minLength={12}
+              maxLength={128}
+              autoComplete={signup ? "new-password" : "current-password"}
+              placeholder={t(signup ? "Kamida 12 ta belgi" : "Parolingiz")}
+            />
+            <button
+              type="button"
+              className="auth-password-toggle"
+              aria-label={t(
+                visible ? "Parolni yashirish" : "Parolni ko‘rsatish",
+              )}
+              aria-pressed={visible}
+              onClick={() => setVisible(!visible)}
+            >
+              {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </span>
         </label>
-        <button
-          type="button"
-          className="button secondary small"
-          onClick={() => setVisible(!visible)}
-        >
-          {visible ? "Yashirish" : "Ko‘rsatish"} — parol
-        </button>
         {message && (
           <p className="notice" role="status">
-            {message}
+            {t(message)}
           </p>
         )}
-        {signup && <p className="form-hint">Kamida 12 ta belgi.</p>}
+        {signup && (
+          <p className="form-hint">
+            <T>Kamida 12 ta belgi.</T>
+          </p>
+        )}
         {error && (
           <p className="error" role="alert">
-            {error}
+            {t(error)}
+            {verificationRequired && (
+              <Link className="auth-verification-link" href="/verify-email">
+                {t("Tasdiqlash xatini qayta so‘rash")}
+              </Link>
+            )}
           </p>
         )}
         <button className="button primary full" disabled={loading}>
           {loading ? <LoaderCircle className="spin" size={18} /> : null}
-          {loading ? "Kuting…" : signup ? "Hisob yaratish" : "Kirish"}
-          {!loading && <ArrowRight size={16} />}
+          {t(loading ? "Kuting…" : signup ? "Hisob yaratish" : "Kirish")}
         </button>
+      </form>
+      <div className="auth-access-links">
+        <Link className="auth-forgot-link" href="/forgot-password">
+          {t("Parolni unutdingizmi?")}
+        </Link>
         <p className="form-bottom">
-          {signup ? "Hisobingiz bormi?" : "FlowKey’da yangimisiz?"}{" "}
+          {t(signup ? "Hisobingiz bormi?" : "FlowKey’da yangimisiz?")}{" "}
           <Link href={signup ? "/login" : "/signup"}>
-            {signup ? "Kirish" : "Hisob yarating"}
+            {t(signup ? "Kirish" : "Hisob yarating")}
           </Link>
         </p>
-      </form>
-      <RecoveryForm localMail={localMail} />
+      </div>
     </>
   );
 }

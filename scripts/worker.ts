@@ -1,5 +1,6 @@
 import { existsSync } from "node:fs";
 import { PgBoss } from "pg-boss";
+import { deliverReplyNotifications } from "../server/support-replies";
 import { dispatchDue } from "../server/webhooks";
 import { db } from "../server/db";
 if (existsSync(".env")) process.loadEnvFile(".env");
@@ -12,6 +13,7 @@ await boss.start();
 await boss.createQueue("webhook-dispatch");
 await boss.work("webhook-dispatch", async () => {
   const count = await dispatchDue();
+  await deliverReplyNotifications();
   console.info(
     JSON.stringify({
       event: "worker.heartbeat",

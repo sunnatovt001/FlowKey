@@ -1,0 +1,136 @@
+.settings-hub {
+  max-width: 960px;
+}
+.settings-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e9dff6;
+}
+.settings-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 12px 18px;
+  min-height: 46px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #665575;
+  font-weight: 600;
+  cursor: pointer;
+}
+.settings-tabs button:hover {
+  background: #f0e8fb;
+}
+.settings-tabs button[aria-selected="true"] {
+  background: #ede2fc;
+  color: #6320d9;
+}
+.settings-hub [hidden] {
+  display: none !important;
+}
+.settings-hub [role="tabpanel"] {
+  min-width: 0;
+}
+.settings-hub .settings-panel {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 24px;
+  padding: 28px;
+}
+.settings-hub h2 {
+  margin: 0 0 24px;
+  font-size: 19px;
+}
+.settings-hub form {
+  display: grid;
+  gap: 24px;
+  max-width: 680px;
+}
+.settings-hub form label {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+.settings-hub form .button {
+  justify-self: start;
+}
+.settings-hub .settings-profile .avatar-settings {
+  padding: 0 0 24px;
+  margin: 0 0 24px;
+  border: 0;
+  border-bottom: 1px solid #eee7f6;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.settings-profile .avatar-settings h2 {
+  display: none;
+}
+.settings-hub .avatar-editor {
+  gap: 24px;
+}
+.settings-hub .avatar-editor p {
+  margin: 0 0 12px;
+}
+.settings-hub input:disabled {
+  color: #665575;
+  background: #f7f4fb;
+  opacity: 1;
+}
+.settings-account-details {
+  padding: 20px 28px;
+}
+.settings-account-details summary {
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 28px;
+}
+.settings-account-details dl {
+  margin-top: 24px;
+}
+.settings-hub .settings-panel > .button {
+  margin: 12px 12px 0 0;
+}
+.settings-hub code,
+.settings-hub dd {
+  overflow-wrap: anywhere;
+}
+.settings-hub [role="tabpanel"]:focus-visible {
+  outline: 2px solid #6320d9;
+  outline-offset: 6px;
+}
+@media (max-width: 600px) {
+  .settings-tabs {
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .settings-tabs button {
+    flex: 1 1 auto;
+    padding: 10px 12px;
+    font-size: 13px;
+    gap: 6px;
+  }
+  .settings-hub .settings-panel {
+    padding: 20px;
+  }
+  .settings-hub .avatar-editor {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .settings-hub .avatar-actions {
+    flex-wrap: wrap;
+  }
+  .settings-hub form .button {
+    justify-self: stretch;
+  }
+  .settings-account-details {
+    padding: 20px;
+  }
+}
+
+.settings-hub { padding-bottom: 90px; }

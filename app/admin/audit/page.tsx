@@ -25,7 +25,11 @@ export default async function Audit({
               </thead>
               <tbody>
                 {data.rows.map((row) => {
-                  const details = row.details as { from?: string; to?: string };
+                  const details = row.details as {
+                    from?: string;
+                    to?: string;
+                    source?: string;
+                  };
                   const label = (value?: string) =>
                     ticketStates[value as keyof typeof ticketStates] ||
                     value ||
@@ -36,15 +40,28 @@ export default async function Audit({
                         <AdminTime date={row.createdAt} />
                       </td>
                       <td>
-                        Holat o‘zgartirildi: {label(details.from)} →{" "}
-                        {label(details.to)}
+                        {row.action === "telegram.admin.enabled" ? (
+                          "Telegram boshqaruvi yoqildi"
+                        ) : row.action === "telegram.admin.disabled" ? (
+                          "Telegram boshqaruvi yopildi"
+                        ) : (
+                          <>
+                            Holat o‘zgartirildi: {label(details.from)} →{" "}
+                            {label(details.to)}
+                            {details.source === "telegram" ? " · Telegram" : ""}
+                          </>
+                        )}
                       </td>
                       <td>
-                        <Link
-                          href={`/admin/tickets/${encodeURIComponent(row.targetId)}`}
-                        >
-                          {row.targetId}
-                        </Link>
+                        {row.action === "support.status_changed" ? (
+                          <Link
+                            href={`/admin/tickets/${encodeURIComponent(row.targetId)}`}
+                          >
+                            {row.targetId}
+                          </Link>
+                        ) : (
+                          "—"
+                        )}
                       </td>
                       <td>
                         <code>{row.actorId}</code>

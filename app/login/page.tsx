@@ -1,36 +1,12 @@
-import { Logo } from "@/components/ui";
-import { AuthForm } from "@/components/auth-form";
-import { SocialSignIn } from "@/components/social-sign-in";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { AuthScreen } from "@/components/auth-screen";
 import { socialAuthAvailability } from "@/server/social-auth";
 export const metadata = { title: "Kirish" };
-export default function Login() {
-  return (
-    <main className="auth-page">
-      <div className="auth-brand">
-        <Logo />
-        <div>
-          <h2>
-            Yangi mahsulotingiz
-            <br />
-            sodda jarayondan boshlanadi.
-          </h2>
-        </div>
-        <p>Faqat sinov. Haqiqiy pul ishlatilmaydi.</p>
-      </div>
-      <div className="auth-content">
-        <div>
-          <h1>Kirish</h1>
-          <SocialSignIn available={socialAuthAvailability()} />
-
-          <AuthForm
-            signup={false}
-            localMail={
-              process.env.NODE_ENV === "development" &&
-              process.env.MAIL_TRANSPORT === "file"
-            }
-          />
-        </div>
-      </div>
-    </main>
-  );
+export default async function Page({ searchParams }: { searchParams: Promise<{ token?: string; mode?: string }> }) {
+  const query = await searchParams;
+  if (query.token) redirect(`/reset-password?token=${encodeURIComponent(query.token)}`);
+  if (query.mode === "verify") redirect("/verify-email");
+  const available = socialAuthAvailability();
+  return <AuthScreen signup={false} localMail={process.env.NODE_ENV === "development" && process.env.MAIL_TRANSPORT === "file"} available={available} googleClientId={available.google ? process.env.GOOGLE_CLIENT_ID : undefined} nonce={(await headers()).get("x-nonce") || undefined} />;
 }

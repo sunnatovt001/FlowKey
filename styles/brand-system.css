@@ -1,0 +1,288 @@
+/* Shared visual language from the approved FlowKey landing reference. */
+:root {
+  --brand-purple: #6320d9;
+  --brand-orange: #ff890a;
+  --ink: #2a1048;
+  --navy: #2a1048;
+  --muted: #685675;
+  --blue: #6320d9;
+  --line: #e8dcf2;
+  --surface: #faf6fd;
+  --radius: 22px;
+  --flowkey-canvas:
+    radial-gradient(ellipse 650px 430px at 0 0, #ffead7a8, transparent 75%),
+    radial-gradient(ellipse 820px 480px at 100% 0, #ead9fba3, transparent 75%),
+    #faf7fd;
+}
+body {
+  color: var(--ink);
+}
+body :is(h1, h2, h3) {
+  letter-spacing: -0.03em;
+}
+body
+  :is(
+    .app-shell,
+    .app-main,
+    .admin-workspace,
+    .admin-main,
+    .project-setup,
+    .onboarding-page,
+    .admin-login-page
+  ) {
+  background: var(--flowkey-canvas);
+}
+body :is(.app-header, .admin-topbar, .project-setup-header) {
+  background: #fffdfef5;
+  border-bottom-color: #e8dcf2;
+}
+body :is(.sidebar, .admin-sidebar) {
+  background: linear-gradient(180deg, #fff 65%, #fcf8ff);
+  border-right-color: #e8dcf2;
+}
+body :is(.sidebar nav a.active, .admin-nav a[aria-current="page"]) {
+  background: linear-gradient(105deg, #ede0ff, #f7eefa);
+  color: #5716bf;
+  box-shadow: none;
+  border-radius: 14px;
+}
+body :is(.sidebar nav a, .admin-nav a) {
+  min-height: 46px;
+}
+body :is(.sidebar nav a:hover, .admin-nav a:hover) {
+  color: #5716bf;
+  background: #f6edff;
+}
+body :is(.workspace-content, .admin-content) :is(.panel, .stat-card) {
+  border-color: #e7d9f2;
+  border-radius: 22px;
+  background-color: #fff;
+}
+body :is(.workspace-content, .admin-content) :is(h1) {
+  color: #2b0c4a;
+  font-weight: 780;
+}
+body :is(.workspace-content, .admin-content) :is(h2) {
+  color: #30124d;
+  font-weight: 700;
+}
+body :is(.workspace-content, .admin-content) :is(th) {
+  background: #faf5ff;
+  color: #614573;
+}
+body :is(.workspace-content, .admin-content) :is(td, th) {
+  border-bottom-color: #eee4f6;
+}
+body .button {
+  border-radius: 14px;
+  font-weight: 650;
+  min-height: 46px;
+}
+body .button.primary {
+  color: #39104c;
+  background: linear-gradient(120deg, #ffab26, #ff8208);
+  border: 1px solid #ff940c;
+  box-shadow: 0 5px 14px #8f3d0012;
+}
+body .button.primary:hover {
+  color: #2c0c3d;
+  background: linear-gradient(120deg, #ffa415, #f57800);
+  transform: none;
+}
+body .button.secondary {
+  color: #5920aa;
+  background: #fff;
+  border-color: #dfcbf5;
+  box-shadow: none;
+}
+body .button.secondary:hover {
+  background: #f7efff;
+  border-color: #b58ade;
+  color: #46117d;
+}
+body
+  :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+    select,
+    textarea
+  ) {
+  border-radius: 14px;
+  border-color: #deceed;
+  caret-color: #6320d9;
+}
+body :is(input, select, textarea):focus-visible {
+  outline: 2px solid #8249d1;
+  outline-offset: 3px;
+}
+body :is(button, a, summary):focus-visible {
+  outline: 2px solid #8249d1;
+  outline-offset: 3px;
+}
+body :is(input:disabled, textarea:disabled) {
+  color: #685675;
+  background: #f7f1fc;
+}
+body :is(.notice, .sandbox-banner) {
+  border-color: #e5d3fa;
+  color: #623f83;
+  background: #f1e5ff;
+  border-radius: 14px;
+}
+body .sandbox-label {
+  background: #f0e4fc;
+  color: #5e259d;
+  border-radius: 8px;
+}
+body :is(.avatar, .admin-avatar, .project-setup-avatar) {
+  background: #efe1ff;
+  color: #6222bc;
+}
+body .project-icon {
+  background: linear-gradient(145deg, #8e3cec, #5620b4);
+  border-radius: 12px;
+}
+body .settings-tabs button[aria-selected="true"],
+body .tabs [aria-selected="true"] {
+  background: #ede0ff;
+  color: #5a1cb8;
+}
+body .settings-hub .settings-profile .avatar-settings {
+  border-radius: 0;
+  background: transparent;
+  border-width: 0 0 1px;
+}
+body .auth-page {
+  background: var(--flowkey-canvas);
+}
+body .auth-brand {
+  background:
+    radial-gradient(ellipse at 15% 20%, #ffdfae 0, transparent 55%),
+    radial-gradient(ellipse at 95% 85%, #cea7f2 0, transparent 62%), #f4dfed;
+}
+body .auth-brand h2 {
+  color: #391052;
+  letter-spacing: -0.03em;
+}
+body .auth-brand p {
+  color: #654571;
+}
+body .auth-content {
+  background: #fffdfef5;
+}
+body .auth-content > div {
+  background: #fff;
+  padding: 32px;
+  border: 1px solid #e8d9f2;
+  border-radius: 24px;
+  max-width: 490px;
+  width: 100%;
+}
+body :is(.project-setup-card, .onboarding-card, .admin-login-card) {
+  border-radius: 24px;
+  border-color: #e4d3f2;
+  background: #fff;
+  box-shadow: 0 14px 38px #49205609;
+}
+body .project-setup-main h1 {
+  color: #35104e;
+}
+body :is(.privacy-page, .invitations-page) {
+  background: #fff;
+  padding: 32px;
+  border: 1px solid #e7d9f2;
+  border-radius: 24px;
+}
+body:has(> .privacy-page),
+body:has(> .invitations-page),
+body:has(> .brand-payment-page) {
+  background: var(--flowkey-canvas);
+  min-height: 100dvh;
+}
+.brand-payment-page {
+  width: min(640px, calc(100% - 32px));
+  margin: 48px auto;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #e7d9f2;
+  border-radius: 26px;
+  box-shadow: 0 16px 48px #4a18540c;
+}
+.brand-payment-page > .logo {
+  margin-bottom: 24px;
+}
+.brand-payment-page > .sandbox-label {
+  display: inline-flex;
+  margin: 0 0 24px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.brand-payment-page h1 {
+  font-size: 28px;
+  line-height: 1.25;
+  color: #32104c;
+  overflow-wrap: anywhere;
+}
+.brand-payment-page h2 {
+  font-size: 34px;
+  font-variant-numeric: tabular-nums;
+  margin: 24px 0;
+}
+.brand-payment-page .checkout-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.brand-payment-page .checkout-actions .button {
+  flex: 1 1 auto;
+  border-radius: 14px;
+}
+.brand-payment-page .muted {
+  color: #685675;
+  font-size: 13px;
+  line-height: 1.7;
+}
+body .help-chat-toggle {
+  background: linear-gradient(120deg, #7830e4, #5616c6);
+}
+body .workspace-footer {
+  background: #fdfaff;
+  color: #685675;
+  border-top-color: #eadff4;
+}
+@media (max-width: 760px) {
+  body .auth-content > div {
+    padding: 24px;
+  }
+  body :is(.privacy-page, .invitations-page) {
+    margin: 24px 16px;
+    padding: 24px;
+  }
+  .brand-payment-page {
+    margin: 24px auto;
+    padding: 24px;
+  }
+  .brand-payment-page h1 {
+    font-size: 25px;
+  }
+  .brand-payment-page h2 {
+    font-size: 29px;
+  }
+  body :is(.workspace-content, .admin-content) :is(.panel, .stat-card) {
+    border-radius: 18px;
+  }
+  body .settings-hub .settings-profile .avatar-settings {
+    border-radius: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body .button {
+    transition: none;
+    transform: none;
+  }
+}
+@font-face { font-family:Nunito; src:url('/fonts/nunito-latin-400-normal.woff2') format('woff2'); font-style:normal; font-weight:400; font-display:swap; }
+@font-face { font-family:Nunito; src:url('/fonts/nunito-latin-600-normal.woff2') format('woff2'); font-style:normal; font-weight:600; font-display:swap; }
+@font-face { font-family:Nunito; src:url('/fonts/nunito-latin-800-normal.woff2') format('woff2'); font-style:normal; font-weight:800; font-display:swap; }
+body { font-family:Nunito,ui-sans-serif,system-ui,sans-serif; }
+body :is(h1,h2,h3) { font-family:Nunito,ui-rounded,system-ui,sans-serif; font-weight:800; }
+.brand-payment-page > .logo { display:flex; width:fit-content; }

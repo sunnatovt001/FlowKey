@@ -282,11 +282,38 @@
   }
 }
 .admin-login-page {
+  position: relative;
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 88px 24px 32px;
   background: var(--surface);
+}
+.admin-login-exit {
+  position: absolute;
+  top: max(24px, env(safe-area-inset-top));
+  right: max(24px, env(safe-area-inset-right));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #e1d1ef;
+  border-radius: 12px;
+  background: #fff;
+  color: #6320d9;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.admin-login-exit:hover {
+  background: #f5edff;
+  border-color: #bda1de;
+}
+.admin-login-exit:focus-visible {
+  outline: 3px solid #9a67dd;
+  outline-offset: 3px;
 }
 .admin-login-card {
   width: min(100%, 440px);
@@ -304,3 +331,4 @@
 .admin-login-card form {
   gap: 24px;
 }
+.admin-actions {display:flex;flex-wrap:wrap;gap:12px;margin:24px 0;}

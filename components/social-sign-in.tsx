@@ -1,20 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { ChatGPTSignIn } from "./chatgpt-sign-in";
+import { TelegramSignIn } from "./telegram-sign-in";
+import { T } from "./i18n/language-provider";
 import { LoaderCircle } from "lucide-react";
 
 function GitHubIcon() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
-    </svg>
-  );
+  return <img src="/brands/github.svg" width="22" height="22" alt="" aria-hidden="true" className="provider-brand-icon" />;
 }
 
 function GoogleIcon() {
@@ -41,10 +34,20 @@ function GoogleIcon() {
 }
 
 export function SocialSignIn({
-  available,
+  available, compact = false, iconOnly = false,
 }: {
-  available: { google: boolean; github: boolean };
+  available?: { google: boolean; github: boolean };
+  compact?: boolean;
+  iconOnly?: boolean;
 }) {
+  const [providers, setProviders] = useState({ google: available?.google ?? false, github: available?.github ?? false, telegram: false });
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/auth/providers", { signal: controller.signal }).then(r => r.ok ? r.json() : null).then(data => {
+      if (data) setProviders({ google: data.google === true, github: data.github === true, telegram: data.telegram === true });
+    }).catch(() => {});
+    return () => controller.abort();
+  }, []);
   const [pending, setPending] = useState<"google" | "github" | null>(null);
   const [error, setError] = useState("");
   const query = useSearchParams();
@@ -85,7 +88,7 @@ export function SocialSignIn({
   }
 
   return (
-    <div className="social-sign-in">
+    <div className={iconOnly ? "social-sign-in social-sign-in-icons" : "social-sign-in"}>
       {(["google", "github"] as const).map((provider) => {
         const name = provider === "google" ? "Google" : "GitHub";
         return (
@@ -93,9 +96,10 @@ export function SocialSignIn({
             key={provider}
             type="button"
             className="button secondary social-sign-in-button"
-            disabled={!available[provider] || pending !== null}
+            aria-label={iconOnly ? (provider === "google" ? "Google" : "GitHub") : undefined}
+            disabled={!providers[provider] || pending !== null}
             title={
-              !available[provider]
+              !providers[provider]
                 ? name + " orqali kirish hali sozlanmagan"
                 : undefined
             }
@@ -108,19 +112,21 @@ export function SocialSignIn({
             ) : (
               <GitHubIcon />
             )}
-            <span>{name} orqali kirish</span>
-            {!available[provider] && <small>Sozlanmagan</small>}
+            <span className={iconOnly ? "sr-only" : undefined}><T>{name + " orqali kirish"}</T></span>
+            {!providers[provider] && <small><T>Sozlanmagan</T></small>}
           </button>
         );
       })}
+      <TelegramSignIn available={providers.telegram} iconOnly={iconOnly} />
+      {iconOnly && <ChatGPTSignIn />}
       {(error || callbackError) && (
         <p className="error" role="alert">
-          {error || callbackError}
+          <T>{error || callbackError}</T>
         </p>
       )}
-      <div className="auth-divider">
+      {!compact && <div className="auth-divider">
         <span>yoki</span>
-      </div>
+      </div>}
     </div>
   );
 }

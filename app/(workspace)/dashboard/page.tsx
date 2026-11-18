@@ -1,295 +1,315 @@
 import Link from "next/link";
 import {
-  ArrowUpRight,
-  Check,
+  CircleCheck,
+  Clock3,
+  CircleX,
+  Coins,
+  Info,
   ArrowRight,
-  ArrowDownLeft,
-  Activity,
   KeyRound,
-  Code2,
+  Settings,
+  Webhook,
+  ReceiptText,
+  BookOpen,
+  FlaskConical,
 } from "lucide-react";
-import { db } from "@/server/db";
-import { workspace, Search } from "@/server/workspace";
-
-import { Empty, money, Status } from "@/components/ui";
-export const metadata = { title: "Umumiy ko‘rinish" };
+import { dashboardData } from "@/server/dashboard";
+import type { Search } from "@/server/workspace";
+import { roleAllows } from "@/shared/project-role";
+import { money, Status } from "@/components/ui";
+import { DashboardControls } from "@/components/dashboard-controls";
+import { DashboardChart } from "@/components/dashboard-chart";
+import { dashboardVolumeLabel } from "@/shared/dashboard";
+import "@/styles/dashboard.css";
+export const metadata = { title: "Dashboard" };
+const compact = (value: bigint) =>
+  new Intl.NumberFormat("uz-UZ", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
 export default async function Dashboard({
   searchParams,
 }: {
   searchParams: Promise<Search>;
 }) {
-  const { project, role } = await workspace(await searchParams);
-  const [groups, recent, keyCount, endpointCount, activity] = await Promise.all(
-    [
-      db.transaction.groupBy({
-        by: ["status"],
-        where: { projectId: project.id },
-        _count: true,
-        _sum: { amountMinor: true },
-      }),
-      db.transaction.findMany({
-        where: { projectId: project.id },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      }),
-      db.apiKey.count({ where: { projectId: project.id, revokedAt: null } }),
-      db.webhookEndpoint.count({
-        where: { projectId: project.id, disabledAt: null },
-      }),
-      db.transaction.findMany({
-        where: {
-          projectId: project.id,
-          createdAt: { gte: new Date(new Date().getTime() - 7 * 86400000) },
-        },
-        select: { createdAt: true, amountMinor: true, status: true },
-      }),
-    ],
-  );
-  const total = groups.reduce((s, g) => s + g._count, 0);
-  const successful = groups.find((g) => g.status === "successful");
-  const failed = groups.find((g) => g.status === "failed");
-  const days = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setUTCDate(date.getUTCDate() - 6 + i);
-    const iso = date.toLocaleDateString("en-CA", { timeZone: "Asia/Tashkent" });
-    return {
-      date: date.toLocaleDateString("uz-UZ", {
-        weekday: "short",
-        timeZone: "Asia/Tashkent",
-      }),
-      volume: activity
-        .filter(
-          (t) =>
-            t.createdAt.toLocaleDateString("en-CA", {
-              timeZone: "Asia/Tashkent",
-            }) === iso && t.status === "successful",
-        )
-        .reduce((s, t) => s + t.amountMinor, BigInt(0)),
-    };
+  const data = await dashboardData(await searchParams);
+  const { project, role, period } = data;
+  const technical = roleAllows(role, "technical");
+  const developers = `/developers?project=${encodeURIComponent(project.id)}`;
+  const transactionQuery = new URLSearchParams({
+    project: project.id,
+    from: period.dates[0],
+    to: period.dates.at(-1)!,
   });
-  const max = days.reduce(
-    (maximum, day) => (day.volume > maximum ? day.volume : maximum),
-    BigInt(1),
-  );
+  const transactions = `/transactions?${transactionQuery}`;
+  const maxVolume = data.days.reduce(
+      (max, day) => (day.volume > max ? day.volume : max),
+      0n,
+    ),
+    maxCount = data.days.reduce(
+      (max, day) => (day.count > max ? day.count : max),
+      0n,
+    );
+  const points = data.days.map((day) => ({
+    date: day.date,
+    label: new Intl.DateTimeFormat(
+      "uz-UZ",
+      period.days === 7
+        ? { weekday: "short", timeZone: "Asia/Tashkent" }
+        : { day: "numeric", month: "numeric", timeZone: "Asia/Tashkent" },
+    ).format(new Date(`${day.date}T12:00:00+05:00`)),
+    volume: money(day.volume),
+    count: String(day.count),
+    volumeHeight: maxVolume
+      ? Number((day.volume * 10000n) / maxVolume) / 100
+      : 0,
+    countHeight: maxCount ? Number((day.count * 10000n) / maxCount) / 100 : 0,
+  }));
+  const metrics = [
+    {
+      title: "Jami to‘lov hajmi",
+      value: money(data.volume),
+      unit: "UZS",
+      icon: Coins,
+      status: "successful",
+    },
+    {
+      title: "Muvaffaqiyatli",
+      value: String(data.successful),
+      icon: CircleCheck,
+      status: "successful",
+    },
+    {
+      title: "Kutilmoqda",
+      value: String(data.pending),
+      icon: Clock3,
+      status: "pending",
+    },
+    {
+      title: "Muvaffaqiyatsiz",
+      value: String(data.failed),
+      icon: CircleX,
+      status: "failed",
+    },
+  ];
+  const actions = technical
+    ? [
+        {
+          label: "API kaliti yaratish",
+          href: `${developers}&tab=keys#api-keys`,
+          icon: KeyRound,
+        },
+        ...(role === "owner"
+          ? [
+              {
+                label: "Loyiha sozlamalari",
+                href: `/settings?project=${project.id}`,
+                icon: Settings,
+              },
+            ]
+          : []),
+        {
+          label: "Webhook qo‘shish",
+          href: `${developers}&tab=webhooks#webhooks`,
+          icon: Webhook,
+        },
+      ]
+    : [
+        { label: "Tranzaksiyalar", href: transactions, icon: ReceiptText },
+        {
+          label: "Moliya",
+          href: `/finance?project=${project.id}`,
+          icon: Coins,
+        },
+        {
+          label: "Qo‘llanma",
+          href: `/guide?project=${project.id}`,
+          icon: BookOpen,
+        },
+      ];
+  actions.push({
+    label: "Sinov markazi",
+    href: `/testing?project=${project.id}`,
+    icon: FlaskConical,
+  });
   return (
-    <>
-      <div className="page-heading">
-        <div>
-          <h1>Umumiy ko‘rinish</h1>
-        </div>
-        {role !== "accountant" && (
+    <div className="dashboard-page">
+      <header className="dashboard-heading">
+        <h1>Dashboard</h1>
+        <DashboardControls days={period.days} />
+      </header>
+      <div className="dashboard-environment" role="note">
+        <Info size={19} aria-hidden="true" />
+        <span>Pul protsessingi ulanmagan</span>
+        <span className="dashboard-environment-detail">Unit muhiti</span>
+      </div>
+      <div className="dashboard-metrics">
+        {metrics.map(({ title, value, unit, icon: Icon, status }) => (
           <Link
-            className="button primary"
-            href={`/developers?project=${project.id}&tab=sandbox`}
+            key={title}
+            className="dashboard-card dashboard-metric"
+            href={`${transactions}&status=${status}`}
           >
-            Sinov to‘lovi yaratish <ArrowUpRight size={16} />
-          </Link>
-        )}
-      </div>
-      <div className="notice">
-        <Activity size={17} />
-        <span>Unit muhiti · Haqiqiy pul ishlatilmaydi.</span>
-        <Link href={`/guide?project=${project.id}`}>
-          Batafsil <ArrowRight size={14} />
-        </Link>
-      </div>
-      <div className="stats-grid">
-        {[
-          [
-            "Jami to‘lov hajmi",
-            money(successful?._sum.amountMinor || 0),
-            "UZS · muvaffaqiyatli sinov to‘lovlari",
-            ArrowDownLeft,
-          ],
-          [
-            "Muvaffaqiyatli to‘lovlar",
-            String(successful?._count || 0),
-            "Muvaffaqiyatli sinov",
-            Check,
-          ],
-          [
-            "Muvaffaqiyatsiz to‘lovlar",
-            String(failed?._count || 0),
-            "Muvaffaqiyatsiz sinov",
-            Activity,
-          ],
-          [
-            "Jami tranzaksiyalar",
-            String(total),
-            "Barcha sinov natijalari",
-            Code2,
-          ],
-        ].map(([title, value, caption, Icon]) => {
-          const MetricIcon = Icon as typeof Check;
-          return (
-            <div className="stat-card" key={String(title)}>
-              <div>
-                <p>{String(title)}</p>
-                <MetricIcon size={17} />
-              </div>
-              <strong>{String(value)}</strong>
-              <span>{String(caption)}</span>
-            </div>
-          );
-        })}
-      </div>
-      <div className="overview-grid">
-        <section className="panel activity-panel">
-          <div className="panel-heading">
+            <Icon size={23} aria-hidden="true" />
             <div>
-              <h2>To‘lovlar faolligi</h2>
+              <h2>{title}</h2>
+              <strong>{value}</strong>
+              {unit && <span className="dashboard-metric-unit">{unit}</span>}
             </div>
-            <span className="subtle-label">Oxirgi 7 kun · Toshkent vaqti</span>
-          </div>
-          <div
-            className="chart"
-            role="img"
-            aria-label={`Muvaffaqiyatli sinov to‘lovlari hajmi: ${days.map((d) => `${d.date} ${money(d.volume)} UZS`).join(", ")}`}
-          >
-            <div className="chart-bars">
-              {days.map((d, i) => (
-                <div key={i}>
-                  <span
-                    title={`${money(d.volume)} UZS`}
-                    style={{
-                      height: d.volume
-                        ? `${Math.max(3, Number((d.volume * BigInt(10000)) / max) / 100)}%`
-                        : "2px",
-                    }}
-                  />
-                  <small>{d.date}</small>
-                </div>
-              ))}
+          </Link>
+        ))}
+      </div>
+      <div className="dashboard-main-grid">
+        <DashboardChart
+          key={project.id}
+          points={points}
+          volumeAxis={[
+            dashboardVolumeLabel(maxVolume),
+            dashboardVolumeLabel(maxVolume / 2n),
+            "0",
+          ]}
+          countAxis={[compact(maxCount), compact(maxCount / 2n), "0"]}
+          hasData={data.total > 0}
+        />
+        <section className="dashboard-card dashboard-integration">
+          <header className="dashboard-card-heading">
+            <h2>API va ulanish</h2>
+          </header>
+          <dl className="dashboard-connection-list">
+            <div>
+              <dt>
+                <i
+                  className={`dashboard-dot ${data.keyCount ? "success" : "neutral"}`}
+                  aria-hidden="true"
+                />
+                API kaliti
+              </dt>
+              <dd>
+                {data.keyCount ? `${data.keyCount} ta faol` : "Yaratilmagan"}
+              </dd>
             </div>
-            {!activity.length && (
-              <div className="chart-empty">
-                <strong>Birinchi to‘lovga tayyormisiz?</strong>
-                <span>Sinov amallaringiz shu yerda ko‘rinadi.</span>
-              </div>
+            <div>
+              <dt>
+                <i
+                  className={`dashboard-dot ${data.webhook.tone}`}
+                  aria-hidden="true"
+                />
+                Webhook
+              </dt>
+              <dd>{data.webhook.text}</dd>
+            </div>
+            <div>
+              <dt>
+                <i
+                  className={`dashboard-dot ${data.lastUsedAt ? "success" : "neutral"}`}
+                  aria-hidden="true"
+                />
+                Oxirgi so‘rov
+              </dt>
+              <dd title="Faol API kaliti oxirgi ishlatilgan vaqt">
+                {data.lastUsedAt
+                  ? new Intl.DateTimeFormat("uz-UZ", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: "Asia/Tashkent",
+                    }).format(data.lastUsedAt)
+                  : "—"}
+              </dd>
+            </div>
+          </dl>
+          <div className="dashboard-integration-actions">
+            {technical ? (
+              <Link className="button primary" href={developers}>
+                Ulashni sozlash
+              </Link>
+            ) : (
+              <span className="dashboard-readonly">Faqat ko‘rish ruxsati</span>
             )}
-          </div>
-        </section>
-        <section className="panel checklist">
-          <div className="panel-heading">
-            <div>
-              <h2>Kabinetga xush kelibsiz.</h2>
-            </div>
-          </div>
-          {[
-            [true, "Loyihangizni yarating", "Kabinet tayyor.", "/onboarding"],
-            [
-              keyCount > 0,
-              "API kalit yarating",
-              "Unit muhitiga kirish kalitingiz.",
-              `/developers?project=${project.id}`,
-            ],
-            [
-              total > 0,
-              "Sinov to‘lovi yuboring",
-              "To‘liq jarayonni amalda ko‘ring.",
-              `/developers?project=${project.id}&tab=sandbox`,
-            ],
-            [
-              endpointCount > 0,
-              "Webhook ulang",
-              "Ilovangizni yangiliklardan xabardor qiling.",
-              `/developers?project=${project.id}&tab=webhooks`,
-            ],
-          ].map(([done, title, , href]) => (
             <Link
-              className="checklist-item"
-              href={String(href)}
-              key={String(title)}
+              className="dashboard-text-link"
+              href={`/guide?project=${project.id}`}
             >
-              <span className={done ? "checked" : "unchecked"}>
-                {done ? <Check size={13} /> : null}
-              </span>
-              <div>
-                <strong>{String(title)}</strong>
-              </div>
-              <ArrowUpRight size={15} />
+              Qo‘llanma
             </Link>
-          ))}
-        </section>
-      </div>
-      <section className="panel recent">
-        <div className="panel-heading">
-          <div>
-            <h2>So‘nggi tranzaksiyalar</h2>
           </div>
-          <Link href={`/transactions?project=${project.id}`}>
-            Barchasini ko‘rish <ArrowRight size={15} />
-          </Link>
-        </div>
-        {recent.length ? (
-          <div className="table-scroll">
+        </section>
+        <section className="dashboard-card dashboard-transactions">
+          <header className="dashboard-card-heading">
+            <h2>Oxirgi tranzaksiyalar</h2>
+            <Link className="dashboard-text-link" href={transactions}>
+              Barchasini ko‘rish <ArrowRight size={15} aria-hidden="true" />
+            </Link>
+          </header>
+          <div className="dashboard-table-scroll">
             <table>
               <thead>
                 <tr>
-                  <th>Tranzaksiya</th>
+                  <th>ID</th>
                   <th>Summa</th>
                   <th>Holat</th>
                   <th>Sana</th>
                 </tr>
               </thead>
               <tbody>
-                {recent.map((t) => (
-                  <tr key={t.id}>
+                {data.recent.map((row) => (
+                  <tr key={row.id}>
                     <td>
                       <Link
-                        href={`/transactions?project=${project.id}&q=${t.id}`}
+                        className="dashboard-transaction-id"
+                        href={`${transactions}&q=${encodeURIComponent(row.id)}`}
+                        title={row.id}
                       >
-                        {t.id}
+                        {row.id}
                       </Link>
-                      <small>Sinov to‘lovi</small>
+                    </td>
+                    <td className="dashboard-amount">
+                      {money(row.amountMinor)} <span>UZS</span>
                     </td>
                     <td>
-                      {money(t.amountMinor)} <span className="muted">UZS</span>
+                      <Status status={row.status} />
                     </td>
-                    <td>
-                      <Status status={t.status} />
-                    </td>
-                    <td>
-                      {t.createdAt.toLocaleString("uz-UZ", {
+                    <td className="dashboard-time">
+                      {new Intl.DateTimeFormat("uz-UZ", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
                         timeZone: "Asia/Tashkent",
-                      })}{" "}
-                      UZT
+                      }).format(row.createdAt)}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        ) : (
-          <Empty title="Boshlash uchun qulay joy.">
-            Birinchi tranzaksiyani ko‘rish uchun sinov to‘lovi yarating.{" "}
-            <Link href={`/developers?project=${project.id}&tab=sandbox`}>
-              Unit muhitini ochish <ArrowRight size={14} />
-            </Link>
-          </Empty>
-        )}
-      </section>
-      <div className="integration-strip">
-        <KeyRound size={20} />
-        <div>
-          <h3>
-            {keyCount
-              ? "API ulanishga tayyor."
-              : "API kalitingiz sizni kutmoqda."}
-          </h3>
-          <p>
-            {keyCount
-              ? `Loyihada ${keyCount} ta faol sinov kaliti bor.`
-              : "Sinov kalitini yarating va birinchi API so‘rovini yuboring."}
-          </p>
-        </div>
-        <Link
-          href={`/developers?project=${project.id}`}
-          className="button secondary"
-        >
-          Dasturchi vositalari <ArrowRight size={15} />
-        </Link>
+          {!data.recent.length && (
+            <div className="dashboard-table-empty">
+              <ReceiptText size={31} aria-hidden="true" />
+              <p>Hozircha tranzaksiyalar yo‘q</p>
+            </div>
+          )}
+        </section>
+        <section className="dashboard-card dashboard-quick-actions">
+          <header className="dashboard-card-heading">
+            <h2>Tezkor amallar</h2>
+          </header>
+          <div>
+            {actions.map(({ label, href, icon: Icon }) => (
+              <Link href={href} key={label}>
+                <Icon size={19} aria-hidden="true" />
+                {label}
+                <ArrowRight
+                  size={15}
+                  className="dashboard-action-arrow"
+                  aria-hidden="true"
+                />
+              </Link>
+            ))}
+          </div>
+        </section>
       </div>
-    </>
+    </div>
   );
 }

@@ -4,11 +4,11 @@ const config: NextConfig = {
     process.env.FLOWZA_BUILD_DIR ||
     (process.env.FLOWZA_TEST_INSTANCE === "1" ? ".next-test" : ".next"),
   poweredByHeader: false,
-  logging: { incomingRequests: { ignore: [/\/api\/auth\//, /\/login\?/] } },
+  logging: { incomingRequests: { ignore: [/\/api\/auth\//, /\/login\?/, /\/reset-password\?/] } },
   async headers() {
     return [
       {
-        source: "/((?!pay/|checkout/).*)",
+        source: "/((?!pay/|checkout/|miniapp$).*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },

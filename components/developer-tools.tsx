@@ -22,6 +22,7 @@ type Key = {
   prefix: string;
   createdAt: string;
   revokedAt: string | null;
+  lastUsedAt?: string | null;
 };
 type Endpoint = {
   id: string;
@@ -44,18 +45,30 @@ type Delivery = {
   createdAt: string;
   endpoint: { url: string };
 };
+export type DeveloperToolsData = {
+  projectId: string;
+  keys: Key[];
+  endpoints: Endpoint[];
+  deliveries: Delivery[];
+};
 export function DeveloperTools({
   projectId,
   tab,
   keys,
   endpoints,
   deliveries,
+  guided = false,
+  hideDeliveries = false,
+  hideEndpointSetup = false,
 }: {
   projectId: string;
   tab: string;
   keys: Key[];
   endpoints: Endpoint[];
   deliveries: Delivery[];
+  guided?: boolean;
+  hideDeliveries?: boolean;
+  hideEndpointSetup?: boolean;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -97,23 +110,27 @@ export function DeveloperTools({
     }
   }
   return (
-    <>
-      <nav className="tabs" aria-label="Dasturchi vositalari">
-        {[
-          ["keys", "API kalitlari"],
-          ["sandbox", "Unit"],
-          ["webhooks", "Webhooklar"],
-        ].map(([id, title]) => (
-          <Link
-            aria-current={tab === id ? "page" : undefined}
-            className={tab === id ? "active" : ""}
-            href={`/developers?project=${projectId}&tab=${id}`}
-            key={id}
-          >
-            {title}
-          </Link>
-        ))}
-      </nav>
+    <div
+      className={guided ? "developer-tools guided-tools" : "developer-tools"}
+    >
+      {!guided && (
+        <nav className="tabs" aria-label="Dasturchi vositalari">
+          {[
+            ["keys", "API kalitlari"],
+            ["sandbox", "Unit"],
+            ["webhooks", "Webhooklar"],
+          ].map(([id, title]) => (
+            <Link
+              aria-current={tab === id ? "page" : undefined}
+              className={tab === id ? "active" : ""}
+              href={`/developers?project=${projectId}&tab=${id}`}
+              key={id}
+            >
+              {title}
+            </Link>
+          ))}
+        </nav>
+      )}
       {error && (
         <p role="alert" className="error">
           {error}
@@ -132,7 +149,7 @@ export function DeveloperTools({
             <code>{newSecret.value}</code>
             <CopyButton value={newSecret.value} />
           </div>
-          {newSecret.kind === "API kalit" && (
+          {!guided && newSecret.kind === "API kalit" && (
             <IntegrationPrompts projectId={projectId} method="API kaliti" />
           )}
           <button className="text-link" onClick={() => setNewSecret(null)}>
@@ -141,11 +158,15 @@ export function DeveloperTools({
         </div>
       )}
       {tab === "keys" && (
-        <section className="panel">
-          <IntegrationPrompts projectId={projectId} method="API kaliti" />
+        <section className="panel" id="api-keys">
+          {!guided && (
+            <IntegrationPrompts projectId={projectId} method="API kaliti" />
+          )}
           <div className="panel-heading">
             <div>
-              <h2>Unit API kalitlari</h2>
+              <h2>
+                {guided ? "API kalitini tayyorlang" : "Unit API kalitlari"}
+              </h2>
               <p>
                 So‘rovlarni serveringizdan tasdiqlang. Maxfiy kalitlarni
                 brauzerga yubormang.
@@ -156,7 +177,7 @@ export function DeveloperTools({
               disabled={busy}
               onClick={() => setShowKeyForm(!showKeyForm)}
             >
-              <Plus size={16} /> Kalit yaratish
+              <Plus size={16} /> Yangi kalit yaratish
             </button>
           </div>
           {showKeyForm && (
@@ -288,7 +309,7 @@ export function DeveloperTools({
                     name="amount"
                     type="text"
                     inputMode="decimal"
-                    defaultValue="125000"
+                    placeholder="Summani kiriting"
                     required
                   />
                   <span>UZS</span>
@@ -352,187 +373,193 @@ export function DeveloperTools({
       )}
       {tab === "webhooks" && (
         <>
-          <section className="panel">
-            <div className="panel-heading">
-              <div>
-                <h2>Webhook endpointlari</h2>
-                <p>
-                  Imzolangan sinov hodisalari ochiq HTTPS endpointingizga
-                  yetkaziladi.
-                </p>
+          {!hideEndpointSetup && (
+            <section className="panel" id="webhooks">
+              <div className="panel-heading">
+                <div>
+                  <h2>Webhook endpointlari</h2>
+                  <p>
+                    Imzolangan sinov hodisalari ochiq HTTPS endpointingizga
+                    yetkaziladi.
+                  </p>
+                </div>
+                <Webhook size={22} />
               </div>
-              <Webhook size={22} />
-            </div>
-            <form
-              className="panel-form webhook-form"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const element = e.currentTarget;
-                const form = new FormData(element);
-                const r = await request("webhooks", {
-                  url: form.get("url"),
-                  events: form.getAll("events"),
-                });
-                if (r) {
-                  setNewSecret({
-                    kind: "webhook imzolash kaliti",
-                    value: r.secret,
+              <form
+                className="panel-form webhook-form"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const element = e.currentTarget;
+                  const form = new FormData(element);
+                  const r = await request("webhooks", {
+                    url: form.get("url"),
+                    events: form.getAll("events"),
                   });
-                  element.reset();
-                }
-              }}
-            >
-              <label>
-                Endpoint URL’i
-                <input
-                  required
-                  type="url"
-                  name="url"
-                  placeholder="https://api.your-product.uz/webhooks/flowza"
-                />
-              </label>
-              <fieldset>
-                <legend>Sinov hodisalari</legend>
-                {["successful", "failed", "pending"].map((s) => (
-                  <label className="checkbox" key={s}>
-                    <input
-                      type="checkbox"
-                      name="events"
-                      value={`payment.${s}`}
-                      defaultChecked
-                    />
-                    payment.{s}
-                  </label>
-                ))}
-              </fieldset>
-              <button className="button primary" disabled={busy}>
-                <Plus size={16} />
-                {busy ? "Qo‘shilmoqda…" : "Endpoint qo‘shish"}
-              </button>
-            </form>
-            {endpoints.length > 0 && (
-              <div className="endpoint-list">
-                {endpoints.map((e) => (
-                  <div key={e.id}>
-                    <div>
-                      <strong>{e.url}</strong>
-                      <p>{e.events.join(" · ")}</p>
-                      <EndpointEditor
-                        projectId={projectId}
-                        endpoint={e}
-                        onSecret={(value) =>
-                          setNewSecret({
-                            kind: "webhook imzolash kaliti",
-                            value,
-                          })
-                        }
+                  if (r) {
+                    setNewSecret({
+                      kind: "webhook imzolash kaliti",
+                      value: r.secret,
+                    });
+                    element.reset();
+                  }
+                }}
+              >
+                <label>
+                  Endpoint URL’i
+                  <input
+                    required
+                    type="url"
+                    name="url"
+                    placeholder="https://api.your-product.uz/webhooks/flowza"
+                  />
+                </label>
+                <fieldset>
+                  <legend>Sinov hodisalari</legend>
+                  {["successful", "failed", "pending"].map((s) => (
+                    <label className="checkbox" key={s}>
+                      <input
+                        type="checkbox"
+                        name="events"
+                        value={`payment.${s}`}
+                        defaultChecked
                       />
+                      payment.{s}
+                    </label>
+                  ))}
+                </fieldset>
+                <button className="button primary" disabled={busy}>
+                  <Plus size={16} />
+                  {busy ? "Qo‘shilmoqda…" : "Endpoint qo‘shish"}
+                </button>
+              </form>
+              {endpoints.length > 0 && (
+                <div className="endpoint-list">
+                  {endpoints.map((e) => (
+                    <div key={e.id}>
+                      <div>
+                        <strong>{e.url}</strong>
+                        <p>{e.events.join(" · ")}</p>
+                        <EndpointEditor
+                          projectId={projectId}
+                          endpoint={e}
+                          onSecret={(value) =>
+                            setNewSecret({
+                              kind: "webhook imzolash kaliti",
+                              value,
+                            })
+                          }
+                        />
+                      </div>
+                      <Status status={e.disabledAt ? "disabled" : "active"} />
+                      {!e.disabledAt && (
+                        <button
+                          className="icon-button danger-link"
+                          aria-label={`${e.url} endpointini o‘chirish`}
+                          disabled={busy}
+                          onClick={() =>
+                            request("webhooks", { id: e.id }, "DELETE")
+                          }
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
-                    <Status status={e.disabledAt ? "disabled" : "active"} />
-                    {!e.disabledAt && (
-                      <button
-                        className="icon-button danger-link"
-                        aria-label={`${e.url} endpointini o‘chirish`}
-                        disabled={busy}
-                        onClick={() =>
-                          request("webhooks", { id: e.id }, "DELETE")
-                        }
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
+              )}
+              <div className="panel-note">
+                Faqat HTTPS 443-porti. Xususiy manzillar, IP qiymatlar, xavfli
+                DNS va yo‘naltirishlar bloklanadi.{" "}
+                <Link href={`/guide?project=${projectId}#webhooks`}>
+                  Imzolash va tekshirish qo‘llanmasi
+                </Link>
               </div>
-            )}
-            <div className="panel-note">
-              Faqat HTTPS 443-porti. Xususiy manzillar, IP qiymatlar, xavfli DNS
-              va yo‘naltirishlar bloklanadi.{" "}
-              <Link href={`/guide?project=${projectId}#webhooks`}>
-                Imzolash va tekshirish qo‘llanmasi
-              </Link>
-            </div>
-          </section>
-          <section className="panel delivery-panel">
-            <div className="panel-heading">
-              <div>
-                <h2>Yetkazish urinishlari</h2>
-                <p>
-                  Fon ishchisi navbatdagi hodisalarni avtomatik yuboradi.
-                  Cheklangan takrorlash bilan jami besh urinish.
-                </p>
+            </section>
+          )}
+          {!hideDeliveries && (
+            <section className="panel delivery-panel">
+              <div className="panel-heading">
+                <div>
+                  <h2>Yetkazish urinishlari</h2>
+                  <p>
+                    Fon ishchisi navbatdagi hodisalarni avtomatik yuboradi.
+                    Cheklangan takrorlash bilan jami besh urinish.
+                  </p>
+                </div>
               </div>
-            </div>
-            {deliveries.length ? (
-              <div className="table-scroll">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Hodisa</th>
-                      <th>Endpoint</th>
-                      <th>Holat</th>
-                      <th>Javob</th>
-                      <th>Urinishlar</th>
-                      <th>Amal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {deliveries.map((d) => (
-                      <tr key={d.id}>
-                        <td>
-                          {d.event}
-                          <small>{d.id}</small>
-                        </td>
-                        <td className="url-cell">
-                          {d.endpoint.url}
-                          {d.error && <small className="red">{d.error}</small>}
-                        </td>
-                        <td>
-                          <Status status={d.status} />
-                        </td>
-                        <td>{d.responseCode ?? "—"}</td>
-                        <td>
-                          {d.attempts} / 5
-                          <details>
-                            <summary>Tarix</summary>
-                            {d.history?.map((attempt) => (
-                              <p key={attempt.attemptNumber}>
-                                #{attempt.attemptNumber}:{" "}
-                                {attempt.responseCode ?? "Javob yo‘q"}{" "}
-                                {attempt.error}
-                              </p>
-                            ))}
-                          </details>
-                        </td>
-                        <td>
-                          {["failed", "queued"].includes(d.status) &&
-                            d.attempts < 5 && (
-                              <button
-                                disabled={busy}
-                                className="button secondary small"
-                                onClick={() =>
-                                  request("deliveries", { id: d.id })
-                                }
-                              >
-                                <RotateCcw size={14} />
-                                {d.attempts ? "Qayta urinish" : "Yuborish"}
-                              </button>
-                            )}
-                        </td>
+              {deliveries.length ? (
+                <div className="table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Hodisa</th>
+                        <th>Endpoint</th>
+                        <th>Holat</th>
+                        <th>Javob</th>
+                        <th>Urinishlar</th>
+                        <th>Amal</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <Empty title="Hali yetkazish urinishi yo‘q.">
-                Endpoint qo‘shing, so‘ng tanlangan natijali to‘lov yarating.
-                Hodisa shu yerda navbatga qo‘shiladi.
-              </Empty>
-            )}
-          </section>
+                    </thead>
+                    <tbody>
+                      {deliveries.map((d) => (
+                        <tr key={d.id}>
+                          <td>
+                            {d.event}
+                            <small>{d.id}</small>
+                          </td>
+                          <td className="url-cell">
+                            {d.endpoint.url}
+                            {d.error && (
+                              <small className="red">{d.error}</small>
+                            )}
+                          </td>
+                          <td>
+                            <Status status={d.status} />
+                          </td>
+                          <td>{d.responseCode ?? "—"}</td>
+                          <td>
+                            {d.attempts} / 5
+                            <details>
+                              <summary>Tarix</summary>
+                              {d.history?.map((attempt) => (
+                                <p key={attempt.attemptNumber}>
+                                  #{attempt.attemptNumber}:{" "}
+                                  {attempt.responseCode ?? "Javob yo‘q"}{" "}
+                                  {attempt.error}
+                                </p>
+                              ))}
+                            </details>
+                          </td>
+                          <td>
+                            {["failed", "queued"].includes(d.status) &&
+                              d.attempts < 5 && (
+                                <button
+                                  disabled={busy}
+                                  className="button secondary small"
+                                  onClick={() =>
+                                    request("deliveries", { id: d.id })
+                                  }
+                                >
+                                  <RotateCcw size={14} />
+                                  {d.attempts ? "Qayta urinish" : "Yuborish"}
+                                </button>
+                              )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <Empty title="Hali yetkazish urinishi yo‘q.">
+                  Endpoint qo‘shing, so‘ng tanlangan natijali to‘lov yarating.
+                  Hodisa shu yerda navbatga qo‘shiladi.
+                </Empty>
+              )}
+            </section>
+          )}
         </>
       )}
-    </>
+    </div>
   );
 }

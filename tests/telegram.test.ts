@@ -1,4 +1,7 @@
-import test from "node:test";
+import test, {beforeEach,afterEach} from "node:test";
+let savedGemini:string|undefined;
+beforeEach(()=>{savedGemini=process.env.GEMINI_API_KEY;delete process.env.GEMINI_API_KEY;});
+afterEach(()=>{if(savedGemini===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=savedGemini;});
 import assert from "node:assert/strict";
 import {
   redact,
