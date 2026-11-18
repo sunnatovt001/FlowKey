@@ -1,4 +1,17 @@
 export const messages: Record<string, {ru: string; en: string}> = {
+  "Yangi kod so‘rash": {ru: "Запросить новый код", en: "Request a new code"},
+  "Xatdagi 6 xonali kodni kiriting.": {"ru": "Введите шестизначный код из письма.", "en": "Enter the six-digit code from your email."},
+  "Kod 10 daqiqa amal qiladi.": {"ru": "Код действителен 10 минут.", "en": "The code expires in 10 minutes."},
+  "Tasdiqlash kodi": {"ru": "Код подтверждения", "en": "Verification code"},
+  "Kod yuborish": {"ru": "Отправить код", "en": "Send code"},
+  "Kodni qayta yuborish": {"ru": "Отправить код ещё раз", "en": "Resend code"},
+  "Pochtani o‘zgartirish": {"ru": "Изменить почту", "en": "Change email"},
+  "Parolni yangilash": {"ru": "Обновить пароль", "en": "Update password"},
+  "Agar hisob mavjud bo‘lsa, 6 xonali kod yuborildi. Spam papkasini ham tekshiring.": {"ru": "Если аккаунт существует, код отправлен. Проверьте также папку «Спам».", "en": "If an account exists, a six-digit code has been sent. Check your spam folder too."},
+  "Kod noto‘g‘ri. Xatdagi 6 xonali kodni kiriting.": {"ru": "Неверный код. Введите шесть цифр из письма.", "en": "Invalid code. Enter the six digits from the email."},
+  "Kodning muddati tugagan. Yangi kod so‘rang.": {"ru": "Срок действия кода истёк. Запросите новый код.", "en": "This code has expired. Request a new code."},
+  "Urinishlar tugadi. Yangi kod so‘rang.": {"ru": "Попытки закончились. Запросите новый код.", "en": "Too many attempts. Request a new code."},
+
   "Narxlar": {
     "ru": "Тарифы",
     "en": "Pricing"

@@ -1,26 +1,33 @@
-# FlowKey background and support chat QA
+# Email verification and password recovery QA
 
-Result: local checks passed; live Meta request intentionally omitted at user's request.
+Result: local functional and browser checks passed.
 
-The auth background is an original glossy purple/orange cartoon illustration matching
-FlowKey's logo. No opacity, dark tint or blur layer was added. Existing auth card,
-language flags and transitions remain in place.
+Sign-up now opens the dedicated email-code screen. Unverified sign-in offers the
+same screen. Email confirmation and password recovery use six-digit codes expiring
+in ten minutes, with hashed storage, five failed attempts, per-account throttling,
+resend cooldown, purpose separation and single-use consumption. Previous password
+reset links remain usable until expiry. Repeated sign-up resends verification
+rather than silently returning success without mail.
 
-Visual evidence inspected: output/support-chat/desktop-empty.png (1440×1000),
-output/support-chat/desktop-reply.png and output/support-chat/mobile-reply.png (390×844).
-Generated source: /workspace/generated_images/exec-83d0ad51-7784-4026-8766-7245602bdfce.png.
+Screenshots inspected: output/email-codes/desktop.png (1440×1000) and
+output/email-codes/mobile.png (390×844). Existing right-side auth layout, original
+language flags, cartoon background and transitions are preserved. Input supports
+numeric keyboards, one-time-code autofill and pasted codes. UZ/RU/EN labels and
+errors are localized; no mobile horizontal overflow.
 
-Support launcher is 56×56 on auth and other pages. Panel uses a short opacity/scale
-transition, with reduced-motion support. Empty state has only the bot graphic;
-it disappears after the first message. Removed intro, suggested questions and footer.
-Composer has one rounded border, a borderless expanding textarea and circular send.
+Isolated loopback PostgreSQL integration checks passed: signup, repeated signup,
+rotation, invalid/expired/purpose-mismatched codes, hashed storage, session response
+redaction, single use, password update, old-session revocation and five-attempt lock.
+Existing legacy password-link lifecycle also passed. No production accounts were
+created or changed by these tests.
 
-Browser checks: desktop/mobile sizing, no horizontal overflow, mocked message/reply,
-empty graphic removal, Escape dismissal and focus return passed. API responses were
-mocked; these checks do not establish real Meta service availability.
+Browser checks passed with mocked API responses: signup-to-code navigation,
+localized invalid code, resend and mobile code-based password recovery.
+Typecheck passed. Unit suite: 52 passed, 15 integration-dependent tests skipped.
+Lint: no errors, 13 existing warnings.
 
-Meta adapter follows the official meta-llama/llama-api-python schemas: native
-completion_message response, max_completion_tokens, bounded owner-scoped read tools.
-Tests cover native text/object output, tool continuation, redaction and safe failures.
-Typecheck passed; 52 tests passed, 14 integration tests skipped; lint has 13 existing
-warnings and no errors. GPT sign-in request remains prepared and unsubmitted.
+Delivery diagnostics: production SMTP connection/authentication verified without
+sending a test message. Existing mail log confirms Gmail accepted a message for
+the user-supplied recipient (DSN 2.0.0). SMTP acceptance does not establish inbox
+placement; spam filtering remains possible. New mail logs record only sanitized
+failure codes or SMTP acceptance, never recipient addresses or OTPs.

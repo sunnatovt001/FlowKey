@@ -53,6 +53,9 @@ export function authError(code: unknown, status?: number): string {
         TOKEN_EXPIRED: "Havolaning muddati tugagan. Yangi havola so‘rang.",
         TOO_MANY_REQUESTS:
           "Urinishlar ko‘payib ketdi. Biroz kutib qayta urinib ko‘ring.",
+        INVALID_OTP: "Kod noto‘g‘ri. Xatdagi 6 xonali kodni kiriting.",
+        OTP_EXPIRED: "Kodning muddati tugagan. Yangi kod so‘rang.",
+        TOO_MANY_ATTEMPTS: "Urinishlar tugadi. Yangi kod so‘rang.",
         INVALID_EMAIL: "Elektron pochta manzilini tekshiring.",
       } as Record<string, string>
     )[String(code)] ||

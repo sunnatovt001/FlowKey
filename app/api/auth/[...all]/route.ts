@@ -41,6 +41,13 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   if (
     [
+      "email-otp/send-verification-otp",
+      "email-otp/verify-email",
+      "email-otp/check-verification-otp",
+      "email-otp/request-password-reset",
+      "email-otp/reset-password",
+      "sign-in/email-otp",
+      "forget-password/email-otp",
       "sign-in/email",
       "sign-up/email",
       "request-password-reset",

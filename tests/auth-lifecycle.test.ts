@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { verificationUrl } from "./helpers";
+import { verificationUrl, verificationCode } from "./helpers";
 const base = process.env.FLOWZA_TEST_URL;
 test(
   "verification, reset single use, password update, and session response redaction",
@@ -29,10 +29,8 @@ test(
       (await post("sign-in/email", { email, password })).status,
       403,
     );
-    const verified = await fetch(await verificationUrl(email), {
-      redirect: "manual",
-    });
-    assert.ok([302, 303].includes(verified.status));
+    const verified = await post("email-otp/verify-email", { email, otp: await verificationCode(email) });
+    assert.equal(verified.status, 200, await verified.clone().text());
     const login = await post("sign-in/email", { email, password });
     assert.equal(login.status, 200, await login.clone().text());
     const cookie = login.headers

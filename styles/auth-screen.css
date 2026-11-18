@@ -133,3 +133,10 @@ body:has(.auth-scene) .help-chat-launcher > span { display: none; }
 .telegram-auth-spinner { color: #26a5e4; }
 .telegram-auth-screen .button { width: 100%; }
 @media(max-width:760px) { .auth-step-shell { margin: 0; max-width: 420px; } }
+.auth-code-destination { margin: 0 0 22px; color: #796b86; font-size: 14px; line-height: 1.6; text-align: center; }
+.auth-code-destination strong { display: block; color: #30243f; overflow-wrap: anywhere; }
+.auth-code-destination span { display: block; font-size: 12px; margin-top: 6px; }
+.auth-card .auth-code-input { text-align: center; font-size: 28px; letter-spacing: .35em; font-variant-numeric: tabular-nums; padding-left: calc(13px + .35em); }
+.auth-code-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.auth-code-actions button { padding: 4px 0; min-height: 44px; border: 0; background: transparent; color: #7024df; font: inherit; font-size: 13px; cursor: pointer; }
+.auth-code-actions button:disabled { opacity: .5; cursor: default; }

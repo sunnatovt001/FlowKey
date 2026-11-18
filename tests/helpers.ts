@@ -1,4 +1,4 @@
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 if (
   process.env.FLOWZA_TEST_URL &&
   !["localhost", "127.0.0.1"].includes(
@@ -29,4 +29,14 @@ export async function verificationUrl(email: string, subject = "tasdiqlash") {
   throw new Error(
     "Verification email not found in the local development inbox.",
   );
+}
+
+export async function verificationCode(email: string, type = "email-verification") {
+  const directory = "local-data/mail";
+  const files = await Promise.all((await readdir(directory)).map(async name => ({ name, mtime: (await stat(`${directory}/${name}`)).mtimeMs })));
+  for (const { name } of files.sort((a, b) => b.mtime - a.mtime)) {
+    const mail = JSON.parse(await readFile(`${directory}/${name}`, "utf8"));
+    if (mail.to === email && mail.type === type && /^\d{6}$/.test(mail.otp)) return mail.otp as string;
+  }
+  throw new Error("Verification code not found in the isolated local inbox.");
 }

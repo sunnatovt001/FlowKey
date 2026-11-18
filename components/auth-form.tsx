@@ -14,7 +14,6 @@ export function AuthForm({
   const t = useTranslation();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const [visible, setVisible] = useState(false);
   return (
     <>
@@ -40,15 +39,24 @@ export function AuthForm({
               },
             );
             const data = await res.json().catch(() => null);
-            if (!res.ok) throw new Error(authError(data?.code, res.status));
+            if (!res.ok) {
+              if (data?.code === "EMAIL_NOT_VERIFIED" || (signup && (res.status >= 500 || String(data?.code).startsWith("USER_ALREADY_EXISTS")))) {
+                try { sessionStorage.setItem("flowkey-verify-email", String(values.email).trim().toLowerCase()); sessionStorage.removeItem("flowkey-verify-sent"); } catch { /* Email can be entered on next screen. */ }
+                router.push("/verify-email");
+                return;
+              }
+              throw new Error(authError(data?.code, res.status));
+            }
             if (!data)
               throw new Error(
                 "Kirish xizmati javobi to‘liq kelmadi. Qayta urinib ko‘ring.",
               );
             if (signup) {
-              setMessage(
-                "Davom etishdan oldin elektron pochtangizni tasdiqlang.",
-              );
+              try {
+                sessionStorage.setItem("flowkey-verify-email", String(values.email).trim().toLowerCase());
+                sessionStorage.setItem("flowkey-verify-sent", "1");
+              } catch { /* The verification page also accepts manual email entry. */ }
+              router.push("/verify-email");
               setLoading(false);
             } else {
               router.push("/onboarding");
@@ -88,11 +96,6 @@ export function AuthForm({
           />
           <button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={20}/> : <Eye size={20}/>}</button></span>
         </label>
-        {message && (
-          <p className="notice" role="status">
-            {t(message)}
-          </p>
-        )}
         {signup && <p className="form-hint"><T>Kamida 12 ta belgi.</T></p>}
         {error && (
           <p className="error" role="alert">
