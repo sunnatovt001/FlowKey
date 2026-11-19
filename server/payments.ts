@@ -28,6 +28,7 @@ export async function createPayment(
   input: unknown,
   idempotencyKey: string | null,
   transaction?: Prisma.TransactionClient,
+  checkoutSessionId?: string,
 ) {
   if (input && typeof input === "object" && "simulated_result" in input) {
     const value = input as Record<string, unknown>;
@@ -41,6 +42,9 @@ export async function createPayment(
       400,
       "Idempotency-Key 8–128 ta harf, raqam, pastki chiziq yoki chiziqchadan iborat bo‘lsin.",
     );
+  if (!checkoutSessionId && /^checkout_[a-f0-9]{64}$/.test(idempotencyKey)) {
+    throw new ApiError(400, "Bu idempotency kaliti checkout uchun ajratilgan.");
+  }
   const requestHash = hash(JSON.stringify(data));
   const existing = await (transaction || db).transaction.findUnique({
     where: { projectId_idempotencyKey: { projectId, idempotencyKey } },
@@ -91,7 +95,7 @@ export async function createPayment(
       const payload = JSON.stringify({
         id: eventId,
         type: `payment.${data.result}`,
-        data: serializePayment(t),
+        data: { ...serializePayment(t), ...(checkoutSessionId && { checkout_session_id: checkoutSessionId }) },
       });
       await tx.paymentEvent.create({
         data: {

@@ -21,7 +21,7 @@ test("HTML integration is an ordinary link without secret credentials", () => {
 });
 test("checkout locks outcome, prevents duplicate payment, and rejects altered replay and expiry", { skip: !process.env.CHECKOUT_DB_TEST }, async () => {
   const { db } = await import("../server/db");
-  const { newSession, completeSession } = await import("../server/checkout");
+  const { newSession, completeSession, refreshCheckout } = await import("../server/checkout");
   const { randomUUID } = await import("node:crypto");
   const suffix = randomUUID();
   const user = await db.user.create({ data: { email: `checkout-${suffix}@example.com`, emailVerified: true } });
@@ -32,10 +32,21 @@ test("checkout locks outcome, prevents duplicate payment, and rejects altered re
     const [a, b] = await Promise.all([newSession(project.id, input, suffix), newSession(project.id, input, suffix)]);
     assert.equal(a.id, b.id);
     await assert.rejects(newSession(project.id, { ...input, amount_minor: 1 }, suffix), /Idempotency/);
+    await db.webhookEndpoint.create({ data: {
+      projectId: project.id,
+      url: "https://example.com/checkout-hook",
+      secretEncrypted: "unused-test-secret",
+      events: ["payment.successful", "payment.failed"],
+    } });
     const results = await Promise.all([completeSession(a.id, "successful"), completeSession(a.id, "failed")]);
     assert.equal(results[0].id, results[1].id);
     assert.equal(results[0].status, results[1].status);
     assert.equal(await db.transaction.count({ where: { projectId: project.id } }), 1);
+    const delivery = await db.webhookDelivery.findFirstOrThrow({ where: { transactionId: results[0].id } });
+    assert.ok(delivery.payload);
+    assert.equal(JSON.parse(delivery.payload).data.checkout_session_id, a.id);
+    await refreshCheckout(a.id);
+    assert.equal((await db.checkoutSession.findUniqueOrThrow({ where: { id: a.id } })).expiresAt.toISOString(), a.expires_at);
     if (process.env.FLOWZA_TEST_URL) {
       const { hash } = await import("../server/security");
       const token = `fz_test_${randomUUID()}`;
@@ -57,6 +68,11 @@ test("checkout locks outcome, prevents duplicate payment, and rejects altered re
     const expired = await newSession(project.id, input, randomUUID());
     await db.checkoutSession.update({ where: { id: expired.id }, data: { expiresAt: new Date(0) } });
     await assert.rejects(completeSession(expired.id, "successful"), /muddati tugagan/);
+    await Promise.all([refreshCheckout(expired.id), refreshCheckout(expired.id)]);
+    const refreshed = await db.checkoutSession.findUniqueOrThrow({ where: { id: expired.id } });
+    assert.ok(refreshed.expiresAt > new Date());
+    await assert.rejects(completeSession(expired.id, "successful", new Date(0)), /muddati tugagan/);
+    assert.equal((await completeSession(expired.id, "successful", refreshed.expiresAt)).status, "successful");
     await db.project.update({ where: { id: project.id }, data: { archivedAt: new Date() } });
     await assert.rejects(completeSession(a.id, "successful"), /mavjud emas/);
   } finally { await db.$disconnect(); }

@@ -3,6 +3,7 @@ import { body, handle } from "@/server/http";
 import { ApiError } from "@/server/security";
 import { equalTelegramSecret, privateTelegramSender } from "@/server/telegram-login-proof";
 import { bindTelegramLogin, confirmTelegramLogin, telegramLoginBot, sendTelegramLoginWelcome } from "@/server/telegram-login";
+import { openTelegramCheckout } from "@/server/telegram-checkout";
 const person = z.object({ id: z.number().int().positive().max(Number.MAX_SAFE_INTEGER), is_bot: z.boolean().optional(), language_code: z.string().max(16).optional(), first_name: z.string().max(256).optional(), last_name: z.string().max(256).optional() });
 const chat = z.object({ id: z.number().int(), type: z.string() });
 const updateSchema = z.object({
@@ -19,7 +20,10 @@ export async function POST(req: Request) {
     if (message?.from && privateTelegramSender(message.chat, message.from)) {
       const match = message.text?.match(/^\/start(?:@[A-Za-z0-9_]+)? fk_([a-f0-9]{32})_([A-Za-z0-9_-]{22})$/);
       const language = message.from.language_code?.startsWith("uz") ? "uz" : message.from.language_code?.startsWith("en") ? "en" : "ru";
-      if (match) {
+      const checkout = message.text?.match(/^\/start(?:@[A-Za-z0-9_]+)? p_([A-Za-z0-9_-]{43})([A-Za-z0-9_-]{18})$/);
+      if (checkout) {
+        await openTelegramCheckout(checkout[1], checkout[2], message.from.id);
+      } else if (match) {
         const accepted = await bindTelegramLogin(match[1], match[2], String(message.from.id), [message.from.first_name, message.from.last_name].filter(Boolean).join(" "));
         if (!accepted) await sendTelegramLoginWelcome(String(message.from.id), language, true);
       } else if (/^\/(start|help)(?:@[A-Za-z0-9_]+)?(?:\s|$)/.test(message.text || "")) await sendTelegramLoginWelcome(String(message.from.id), language);

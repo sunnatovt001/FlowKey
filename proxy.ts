@@ -17,7 +17,7 @@ export function proxy(request: NextRequest) {
   response.headers.set("Content-Security-Policy", policy);
   response.headers.set("X-Request-ID", crypto.randomUUID());
   if (
-    /^\/(miniapp|dashboard|transactions|developers|testing|finance|subscriptions|team|activity|invitations|settings|onboarding|login|signup|forgot-password|reset-password|verify-email|telegram-login|api)/.test(
+    /^\/(checkout|miniapp|dashboard|transactions|developers|testing|finance|subscriptions|team|activity|invitations|settings|onboarding|login|signup|forgot-password|reset-password|verify-email|telegram-login|api)/.test(
       request.nextUrl.pathname,
     )
   )

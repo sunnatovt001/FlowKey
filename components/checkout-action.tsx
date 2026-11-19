@@ -1,15 +1,21 @@
 "use client";
 import { statusLabel } from "@/shared/locale";
-import { useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
+import Script from "next/script";
 import { useRouter } from "next/navigation";
 export function CheckoutAction({
   id,
   start = false,
+  telegram,
+  nonce,
 }: {
   id: string;
   start?: boolean;
+  telegram?: string;
+  nonce?: string;
 }) {
   const router = useRouter();
+  const [telegramReady, setTelegramReady] = useState(false);
   const pending = useRef(false);
   const [requestKey] = useState(() => crypto.randomUUID());
   const [busy, setBusy] = useState(false);
@@ -18,21 +24,25 @@ export function CheckoutAction({
   const [retry, setRetry] = useState<string | null>(null);
   const [terminal, setTerminal] = useState(false);
   async function handleSubmit(result: string) {
-    if (pending.current || done || terminal) return;
+    if (pending.current || done || terminal || (telegram && !telegramReady)) return;
+    const checkout = `/api/checkout/${id}${telegram ? `?telegram=${encodeURIComponent(telegram)}` : ""}`;
     pending.current = true;
     setBusy(true);
     setMessage("");
     const outcome = retry || result;
     try {
       const response = await fetch(
-        start ? `/api/payment-links/${id}` : `/api/checkout/${id}`,
+        start ? `/api/payment-links/${id}` : checkout,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Idempotency-Key": requestKey,
           },
-          body: JSON.stringify(start ? {} : { result: outcome }),
+          body: JSON.stringify(start ? {} : {
+            result: outcome,
+            ...(telegram && { initData: window.Telegram?.WebApp?.initData }),
+          }),
           signal: AbortSignal.timeout(15000),
         },
       );
@@ -64,6 +74,7 @@ export function CheckoutAction({
       }
       setDone(true);
       setRetry(null);
+      router.refresh();
       setMessage(
         `Sinov to‘lovi: ${statusLabel(data.status)}. Tranzaksiya: ${data.id}. Pul o‘tkazilmadi.${data.status === "pending" ? " Natija kutilmoqda; qayta to‘lov boshlamang." : ""}`,
       );
@@ -82,6 +93,20 @@ export function CheckoutAction({
   }
   return (
     <div aria-busy={busy}>
+      {telegram && (
+        <>
+          <Script
+            src="https://telegram.org/js/telegram-web-app.js"
+            nonce={nonce}
+            onReady={() => {
+              const app = window.Telegram?.WebApp;
+              app?.ready();
+              setTelegramReady(!!app?.initData);
+            }}
+          />
+          {!telegramReady && <p role="status">To‘lovni tasdiqlash uchun buyurtmani Telegram botidan oching.</p>}
+        </>
+      )}
       {!start && !done && !retry && (
         <p className="muted">
           Sinov natijasini tanlang. Karta ma’lumotlari kerak emas.
@@ -91,7 +116,7 @@ export function CheckoutAction({
         {retry && !terminal ? (
           <button
             className="button primary"
-            disabled={busy || done}
+            disabled={busy || done || (!!telegram && !telegramReady)}
             value={retry}
             onClick={onResultClick}
           >
@@ -106,7 +131,7 @@ export function CheckoutAction({
             <button
               key={result}
               className="button primary"
-              disabled={busy || done}
+              disabled={busy || done || (!!telegram && !telegramReady)}
               value={result}
               onClick={onResultClick}
             >
@@ -118,6 +143,68 @@ export function CheckoutAction({
       <p role="status" aria-live="polite" style={{ overflowWrap: "anywhere" }}>
         {message}
       </p>
+    </div>
+  );
+}
+
+export function CheckoutWatch({ id }: { id: string }) {
+  const router = useRouter();
+  useEffect(() => {
+    const controller = new AbortController();
+    let checking = false;
+    const refresh = async () => {
+      if (checking || document.visibilityState !== "visible") return;
+      checking = true;
+      try {
+        const response = await fetch(`/api/checkout/${id}`, { signal: controller.signal, cache: "no-store" });
+        if (response.status === 404 || (response.ok && (await response.json()).changed)) {
+          router.refresh();
+        }
+      } catch {
+        // A temporary network failure is retried on the next check.
+      } finally {
+        checking = false;
+      }
+    };
+    const timer = window.setInterval(refresh, 5000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      controller.abort();
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [id, router]);
+  return null;
+}
+
+export function RenewCheckout({ id }: { id: string }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  async function renew() {
+    setBusy(true);
+    setError("");
+    try {
+      const response = await fetch(`/api/checkout/${id}?refresh=1`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}",
+      });
+      if (!response.ok) throw new Error();
+      router.refresh();
+    } catch {
+      setError("To‘lov havolasini yangilab bo‘lmadi. Qayta urinib ko‘ring.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div>
+      <button className="button primary" disabled={busy} onClick={renew}>
+        {busy ? "Yangilanmoqda…" : "To‘lov havolasini yangilash"}
+      </button>
+      {error && <p role="alert">{error}</p>}
     </div>
   );
 }
