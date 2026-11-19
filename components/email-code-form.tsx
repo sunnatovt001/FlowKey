@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
+import { useId, useRef, useEffect, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, CircleAlert, Clock3, Eye, EyeOff, KeyRound, LoaderCircle, Mail, MailCheck, MailPen, RotateCw, Send, ShieldCheck } from "lucide-react";
 import { useTranslation } from "./i18n/language-provider";
 import { authError } from "@/shared/locale";
 
@@ -26,6 +26,8 @@ export function EmailCodeForm({ mode, localMail = false }: { mode: "verify" | "f
   const [enteredEmail, setEmail] = useState<string | null>(null);
   const email = enteredEmail ?? savedEmail ?? "";
   const [code, setCode] = useState("");
+  const [selection, setSelection] = useState<[number, number]>([0, 0]);
+  const codeId = useId();
   const [password, setPassword] = useState("");
   const [sentOverride, setSent] = useState<boolean | null>(null);
   const sent = sentOverride ?? Boolean(savedEmail && savedSent === "1");
@@ -58,7 +60,7 @@ export function EmailCodeForm({ mode, localMail = false }: { mode: "verify" | "f
     const address = email.trim().toLowerCase();
     try {
       await request(mode === "verify" ? "email-otp/send-verification-otp" : "email-otp/request-password-reset", mode === "verify" ? { email: address, type: "email-verification" } : { email: address });
-      setEmail(address); setCode(""); setSent(true); setWait(60);
+      setEmail(address); setCode(""); setSelection([0, 0]); setSent(true); setWait(60);
       setNotice("Agar hisob mavjud bo‘lsa, 6 xonali kod yuborildi. Spam papkasini ham tekshiring.");
       try { sessionStorage.setItem(`${key}-email`, address); sessionStorage.setItem(`${key}-sent`, "1"); } catch { /* Current page state still works. */ }
       field.current?.focus();
@@ -78,24 +80,137 @@ export function EmailCodeForm({ mode, localMail = false }: { mode: "verify" | "f
     finally { setBusy(false); }
   }
   function changeEmail() {
-    setSent(false); setCode(""); setPassword(""); setError(""); setNotice("");
+    setSent(false); setCode(""); setSelection([0, 0]); setPassword(""); setError(""); setNotice("");
     try { sessionStorage.removeItem(`${key}-sent`); } catch { /* Ignore disabled storage. */ }
   }
-  return <div className="auth-email-code">
-    {done ? <p role="status" className="notice">{t("Parol yangilandi. Endi kirishingiz mumkin.")}</p> : <>
-      <form onSubmit={event => { event.preventDefault(); void (sent ? confirm() : send()); }}>
-        {sent ? <>
-          <p className="auth-code-destination">{t("Xatdagi 6 xonali kodni kiriting.")}<strong>{email}</strong><span>{t("Kod 10 daqiqa amal qiladi.")}</span></p>
-          <label>{t("Tasdiqlash kodi")}<input ref={field} className="auth-code-input" required name="otp" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" minLength={6} maxLength={6} placeholder="000000" value={code} onChange={event => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))} /></label>
-          {mode === "forgot" && <label>{t("Yangi parol")}<span className="auth-password-field"><input required name="newPassword" type={visible ? "text" : "password"} autoComplete="new-password" minLength={12} maxLength={128} placeholder={t("Kamida 12 ta belgi")} value={password} onChange={event => setPassword(event.target.value)} /><button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(value => !value)}>{visible ? <EyeOff size={20} /> : <Eye size={20} />}</button></span></label>}
-        </> : <label>{t("Hisob elektron pochtasi")}<input required name="email" type="email" autoComplete="email" maxLength={254} placeholder="email@example.com" value={email} onChange={event => setEmail(event.target.value)} /></label>}
-        {error && <p className="error" role="alert">{t(error)}</p>}
-        {notice && <p className="notice" role="status">{t(notice)}</p>}
-        <button type="submit" className="button primary full" disabled={!ready || busy || (sent && code.length !== 6) || (!sent && wait > 0)}>{busy && <LoaderCircle className="spin" size={18} />}{t(busy ? "Kuting…" : sent ? mode === "verify" ? "Pochtani tasdiqlash" : "Parolni yangilash" : "Kod yuborish")}</button>
-      </form>
-      {sent && <div className="auth-code-actions"><button type="button" disabled={busy || wait > 0} onClick={() => void send()}>{t("Kodni qayta yuborish")}{wait > 0 ? ` (${wait})` : ""}</button><button type="button" disabled={busy} onClick={changeEmail}>{t("Pochtani o‘zgartirish")}</button></div>}
-      {localMail && sent && <p className="form-hint">{t("Local rejim: xat local-data/mail papkasiga saqlanadi.")}</p>}
-    </>}
-    <div className="auth-recovery-links"><Link href="/login">{t("Kirishga qaytish")}</Link></div>
-  </div>;
+  const SubmitIcon = sent ? (mode === "verify" ? ShieldCheck : KeyRound) : Send;
+  const submitLabel = busy
+    ? "Kuting…"
+    : sent
+      ? mode === "verify" ? "Pochtani tasdiqlash" : "Parolni yangilash"
+      : "Kod yuborish";
+
+  return (
+    <div className="auth-email-code">
+      {done ? (
+        <p role="status" className="auth-code-feedback notice">
+          <CheckCircle2 size={18} aria-hidden="true" />
+          {t("Parol yangilandi. Endi kirishingiz mumkin.")}
+        </p>
+      ) : (
+        <>
+          <form onSubmit={event => { event.preventDefault(); void (sent ? confirm() : send()); }}>
+            {sent ? (
+              <>
+                <div className="auth-code-destination">
+                  <div className="auth-code-mail-icon"><MailCheck size={23} aria-hidden="true" /></div>
+                  <p>{t("Xatdagi 6 xonali kodni kiriting.")}</p>
+                  <strong>{email}</strong>
+                  <span id={`${codeId}-expiry`} className="auth-code-expiry">
+                    <Clock3 size={13} aria-hidden="true" />
+                    {t("Kod 10 daqiqa amal qiladi.")}
+                  </span>
+                </div>
+                <label htmlFor={codeId}>
+                  {t("Tasdiqlash kodi")}
+                  <span className="auth-code-field" data-invalid={Boolean(error)}>
+                    <span className="auth-code-digits" aria-hidden="true">
+                      {Array.from({ length: 6 }, (_, index) => (
+                        <span
+                          key={index}
+                          data-filled={Boolean(code[index])}
+                          data-active={index === Math.min(selection[0], 5)}
+                          data-selected={index >= selection[0] && index < selection[1]}
+                        >
+                          {code[index] || "·"}
+                        </span>
+                      ))}
+                    </span>
+                    <input
+                      ref={field}
+                      id={codeId}
+                      className="auth-code-input"
+                      name="otp"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      pattern="[0-9]{6}"
+                      minLength={6}
+                      maxLength={6}
+                      required
+                      aria-invalid={Boolean(error)}
+                      aria-describedby={`${codeId}-expiry${error ? ` ${codeId}-error` : ""}`}
+                      value={code}
+                      onSelect={event => {
+                        const input = event.currentTarget;
+                        setSelection([input.selectionStart ?? code.length, input.selectionEnd ?? code.length]);
+                      }}
+                      onChange={event => {
+                        const next = event.target.value.replace(/\D/g, "").slice(0, 6);
+                        const cursor = Math.min(event.target.selectionStart ?? next.length, next.length);
+                        setSelection([cursor, cursor]);
+                        setCode(next);
+                        setError("");
+                      }}
+                      onPaste={event => {
+                        const digits = event.clipboardData.getData("text").replace(/\D/g, "");
+                        if (digits.length !== 6) return;
+                        event.preventDefault();
+                        setCode(digits);
+                        setSelection([6, 6]);
+                        setError("");
+                        const input = event.currentTarget;
+                        requestAnimationFrame(() => input.setSelectionRange(6, 6));
+                      }}
+                    />
+                  </span>
+                </label>
+                {mode === "forgot" && (
+                  <label>
+                    {t("Yangi parol")}
+                    <span className="auth-password-field">
+                      <input required name="newPassword" type={visible ? "text" : "password"} autoComplete="new-password" minLength={12} maxLength={128} placeholder={t("Kamida 12 ta belgi")} value={password} onChange={event => setPassword(event.target.value)} />
+                      <button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(value => !value)}>
+                        {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
+                    </span>
+                  </label>
+                )}
+              </>
+            ) : (
+              <label>
+                {t("Hisob elektron pochtasi")}
+                <span className="auth-code-address">
+                  <Mail size={17} aria-hidden="true" />
+                  <input required name="email" type="email" autoComplete="email" maxLength={254} placeholder="email@example.com" value={email} onChange={event => setEmail(event.target.value)} />
+                </span>
+              </label>
+            )}
+            {error && <p id={`${codeId}-error`} className="auth-code-feedback error" role="alert"><CircleAlert size={18} aria-hidden="true" />{t(error)}</p>}
+            {notice && <p className="auth-code-feedback notice" role="status"><CheckCircle2 size={18} aria-hidden="true" />{t(notice)}</p>}
+            <button type="submit" className="button primary full auth-code-submit" disabled={!ready || busy || (sent && code.length !== 6) || (!sent && wait > 0)}>
+              {busy ? <LoaderCircle className="spin" size={18} aria-hidden="true" /> : <SubmitIcon size={18} aria-hidden="true" />}
+              {t(submitLabel)}
+            </button>
+          </form>
+          {sent && (
+            <div className="auth-code-actions">
+              <button type="button" disabled={busy || wait > 0} onClick={() => void send()}>
+                <RotateCw size={16} aria-hidden="true" />
+                <span>{t("Kodni qayta yuborish")}{wait > 0 ? ` (${wait})` : ""}</span>
+              </button>
+              <button type="button" disabled={busy} onClick={changeEmail}>
+                <MailPen size={16} aria-hidden="true" />
+                <span>{t("Pochtani o‘zgartirish")}</span>
+              </button>
+            </div>
+          )}
+          {localMail && sent && <p className="form-hint auth-code-local">{t("Local rejim: xat local-data/mail papkasiga saqlanadi.")}</p>}
+        </>
+      )}
+      <div className="auth-code-back">
+        <Link href="/login"><ArrowLeft size={16} aria-hidden="true" />{t("Kirishga qaytish")}</Link>
+      </div>
+    </div>
+  );
 }

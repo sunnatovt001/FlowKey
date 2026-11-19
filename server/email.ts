@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
 import { mkdir, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
+import { join } from "node:path";
+
+const logoCid = "flowkey-logo@flowkey.uz";
 
 type AuthMail = { to: string; subject: string; text: string; html?: string; url?: string; otp?: string; type?: string };
 async function deliver(mail: AuthMail) {
@@ -26,7 +29,22 @@ async function deliver(mail: AuthMail) {
     debug: false,
   });
   try {
-    const result = await transport.sendMail({ from: process.env.MAIL_FROM, to: mail.to, subject: mail.subject, text: mail.text, html: mail.html });
+    const result = await transport.sendMail({
+      from: process.env.MAIL_FROM,
+      to: mail.to,
+      subject: mail.subject,
+      text: mail.text,
+      html: mail.html,
+      ...(mail.otp && {
+        attachments: [{
+          filename: "flowkey-logo.png",
+          path: join(process.cwd(), "public", "brand-email.png"),
+          cid: logoCid,
+          contentType: "image/png",
+          contentDisposition: "inline",
+        }],
+      }),
+    });
     if (!result.accepted?.length || result.rejected?.length) throw Object.assign(new Error("Mail rejected"), { code: "REJECTED" });
     console.info(JSON.stringify({ event: "mail.accepted", kind: mail.type || "link" }));
   } catch (error) {
@@ -48,6 +66,6 @@ export async function sendAuthCode(to: string, otp: string, type: string) {
     to, otp, type,
     subject: `FlowKey — ${reset ? "Parolni tiklash kodi / Код сброса пароля" : "Tasdiqlash kodi / Код подтверждения"}`,
     text: `${heading}\n\n${otp}\n\nUshbu 6 xonali kodni FlowKey sahifasiga kiriting. Kod 10 daqiqa amal qiladi.\nВведите этот код на странице FlowKey. Он действителен 10 минут.\nEnter this code on FlowKey. It expires in 10 minutes.\n\nKodni hech kimga bermang. / Никому не сообщайте код. / Do not share this code.\nAgar buni siz so‘ramagan bo‘lsangiz, xatga e’tibor bermang.`,
-    html: `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:32px;color:#30243f"><h2 style="color:#7024df">FlowKey</h2><p>${heading}</p><div style="font-size:36px;letter-spacing:8px;font-weight:bold;padding:24px;background:#f4edfc;border-radius:16px;text-align:center">${otp}</div><p>Введите код на странице FlowKey. Он действителен 10 минут.</p><p>Ushbu kodni FlowKey sahifasiga kiriting. Kod 10 daqiqa amal qiladi.</p><p>Enter this code on FlowKey. It expires in 10 minutes.</p><p style="font-size:13px;color:#796b86">Никому не сообщайте код. Если вы не запрашивали его, проигнорируйте письмо.</p></div>`,
+    html: `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:32px;color:#30243f"><img src="cid:${logoCid}" alt="FlowKey" width="188" height="48" style="display:block;margin:0 0 24px;border:0;color:#7024df;font-size:24px;font-weight:bold"><p>${heading}</p><div style="font-size:36px;letter-spacing:8px;font-weight:bold;padding:24px;background:#f4edfc;border-radius:16px;text-align:center">${otp}</div><p>Введите код на странице FlowKey. Он действителен 10 минут.</p><p>Ushbu kodni FlowKey sahifasiga kiriting. Kod 10 daqiqa amal qiladi.</p><p>Enter this code on FlowKey. It expires in 10 minutes.</p><p style="font-size:13px;color:#796b86">Никому не сообщайте код. Если вы не запрашивали его, проигнорируйте письмо.</p></div>`,
   });
 }
