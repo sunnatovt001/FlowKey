@@ -2,67 +2,48 @@
   max-width: 1400px;
   padding-bottom: 80px;
 }
-.integration-intro {
-  color: #685675;
-  margin: -12px 0 24px;
-  font-size: 14px;
-}
 .integration-methods {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding: 4px;
+  border: 1px solid #fff9;
+  border-radius: 18px;
+  background: linear-gradient(140deg, #fff3ffd9, #ead9f7bf);
+  box-shadow: inset 0 1px 0 #fff;
 }
 .integration-methods > button {
-  position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
-  text-align: left;
-  padding: 24px;
-  min-height: 116px;
-  border: 1px solid #dfcbf5;
-  border-radius: 20px;
-  background: #fff;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
   color: #32104c;
 }
-.integration-methods > button > svg {
+.integration-methods svg {
   flex-shrink: 0;
 }
-.integration-methods > button > span {
-  display: grid;
-  gap: 8px;
-}
 .integration-methods strong {
-  font-size: 19px;
-  font-weight: 800;
-}
-.integration-methods button > span > span {
-  font-size: 13px;
-  color: #685675;
+  font-size: 15px;
+  font-weight: 700;
 }
 .integration-methods > button[aria-pressed="true"] {
-  border: 2px solid #6320d9;
-  padding: 23px;
-  background: linear-gradient(135deg, #fff, #f3eaff);
+  border-color: #fff8;
+  background: linear-gradient(120deg, #ecd8ff, #caa3f7);
+  box-shadow: inset 0 1px 0 #fff8;
 }
-.integration-methods > button:hover {
-  background: #f7efff;
-}
-.integration-choice-check {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: #6320d9;
-  color: #fff;
-  border-radius: 50%;
-  padding: 3px;
-  width: 22px;
-  height: 22px;
+.integration-methods > button:hover:not([aria-pressed="true"]) {
+  background: #fff5;
 }
 .integration-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.52fr);
   gap: 24px;
   align-items: start;
 }
@@ -94,17 +75,21 @@
 .integration-progress li {
   min-width: 0;
 }
+.integration-progress li + li {
+  border-left: 1px solid #d7bfec;
+}
 .integration-progress button {
   border: 0;
   background: transparent;
   color: #685675;
   width: 100%;
-  display: grid;
-  justify-items: center;
-  gap: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   font-size: 13px;
   padding: 4px;
-  min-height: 66px;
+  min-height: 44px;
 }
 .integration-progress button > span {
   display: grid;
@@ -212,7 +197,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 20px 0;
+  padding: 13px 0;
   border-bottom: 1px solid #eee3f7;
   font-size: 13px;
 }
@@ -237,16 +222,35 @@
 .connection-dot.active {
   background: #6320d9;
 }
-.integration-connection .text-link {
-  display: flex;
+.integration-connection-actions {
+  display: grid;
   gap: 8px;
+}
+.integration-connection-actions :is(.text-link, .button) {
+  display: flex;
   align-items: center;
-  border: 0;
-  background: transparent;
-  padding: 8px 0;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid #fff9;
+  border-radius: 12px;
+  background: #fff5;
+  color: #522299;
+  text-align: left;
   font-size: 13px;
-  color: #6320d9;
+  font-weight: 650;
+}
+.integration-connection-actions :is(.text-link, .button):hover {
+  background: #fff9;
+}
+.integration-workflow .guided-tools #api-keys .table-scroll {
+  scrollbar-color: #9867bd transparent;
+  scrollbar-width: thin;
+  border: 1px solid #fff9;
+  border-radius: 13px;
+  background: #fff4;
 }
 .integration-unit-note {
   display: flex;
@@ -269,15 +273,7 @@
   font-size: 13px;
   color: #685675;
 }
-.integration-guide-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #6320d9;
-  font-size: 13px;
-  margin-top: 20px;
-  padding: 8px;
-}
+
 .integration-assist > p {
   font-size: 13px;
   color: #685675;
@@ -370,37 +366,21 @@
     gap: 20px;
   }
   .integration-sidebar .integration-connection {
-    grid-row: span 2;
     margin: 0;
   }
   .integration-sidebar .integration-unit-note {
     align-self: start;
   }
-  .integration-guide-link {
-    margin: 0;
-  }
-  .integration-methods > button {
-    padding: 20px 16px;
-    gap: 12px;
-  }
-  .integration-methods > button[aria-pressed="true"] {
-    padding: 19px 15px;
-  }
-  .integration-methods strong {
-    font-size: 17px;
-  }
 }
 @media (max-width: 650px) {
-  .integration-methods {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
   .integration-methods > button {
-    min-height: 90px;
-    padding: 18px;
+    flex-direction: column;
+    gap: 4px;
+    padding-inline: 4px;
   }
-  .integration-methods > button[aria-pressed="true"] {
-    padding: 17px;
+  .integration-methods strong {
+    font-size: 12px;
+    overflow-wrap: anywhere;
   }
   .integration-workflow,
   .integration-ai-panel,
@@ -413,10 +393,8 @@
   .integration-sidebar .integration-connection {
     margin-bottom: 20px;
   }
-  .integration-guide-link {
-    margin-top: 12px;
-  }
-  .integration-assist-actions {
+  .integration-assist-actions,
+  .integration-workflow .payment-link-form {
     grid-template-columns: 1fr;
   }
   .integration-progress button {
@@ -431,9 +409,6 @@
   .integration-step-footer .button {
     font-size: 12px;
     padding: 12px;
-  }
-  .integration-workflow .payment-link-form {
-    grid-template-columns: 1fr;
   }
   .integration-workflow .payment-link-form > button {
     justify-self: stretch;
