@@ -23,7 +23,7 @@ export default async function Developers({
         <h1>Integratsiya</h1>
         <Link className="text-link" href={`/guide?project=${project.id}`}>
           <BookOpen size={17} />
-          Qo‘llanmani ochish
+          Qo‘llanma
         </Link>
       </div>
       <IntegrationChooser
