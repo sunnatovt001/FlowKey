@@ -43,7 +43,7 @@
 }
 .integration-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, .52fr);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.52fr);
   gap: 24px;
   align-items: start;
 }
@@ -246,6 +246,8 @@
   background: #fff9;
 }
 .integration-workflow .guided-tools #api-keys .table-scroll {
+  scrollbar-color: #9867bd transparent;
+  scrollbar-width: thin;
   border: 1px solid #fff9;
   border-radius: 13px;
   background: #fff4;
@@ -369,7 +371,7 @@
   .integration-sidebar .integration-unit-note {
     align-self: start;
   }
-  
+}
 @media (max-width: 650px) {
   .integration-methods > button {
     flex-direction: column;
@@ -391,7 +393,27 @@
   .integration-sidebar .integration-connection {
     margin-bottom: 20px;
   }
-  
+  .integration-assist-actions,
+  .integration-workflow .payment-link-form {
+    grid-template-columns: 1fr;
+  }
+  .integration-progress button {
+    font-size: 12px;
+  }
+  .integration-step-footer {
+    align-items: start;
+  }
+  .integration-step-footer > div {
+    flex-direction: column;
+  }
+  .integration-step-footer .button {
+    font-size: 12px;
+    padding: 12px;
+  }
+  .integration-workflow .payment-link-form > button {
+    justify-self: stretch;
+  }
+}
 /* Keep the key step concise and the assistant clear of small-screen actions. */
 .integration-workflow .guided-tools #api-keys > .panel-note {
   display: none;
