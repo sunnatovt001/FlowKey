@@ -1,9 +1,10 @@
 "use client";
+import { AuthPasswordIcon } from "./auth-password-icon";
 import { EmailCodeForm } from "./email-code-form";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { authError } from "@/shared/locale";
 import { useTranslation } from "./i18n/language-provider";
 export type RecoveryMode = "forgot" | "reset" | "verify";
@@ -32,7 +33,7 @@ function LegacyPasswordReset({ token }: { token: string }) {
         history.replaceState(history.state, "", "/reset-password");
       } catch (error) { setMessage(error instanceof Error ? error.message : "Ulanib bo‘lmadi."); } finally { setBusy(false); }
     }}>
-      <label>{t("Yangi parol")}<span className="auth-password-field"><input name="newPassword" required value={password} onChange={e => setPassword(e.target.value)} type={visible ? "text" : "password"} minLength={12} maxLength={128} autoComplete="new-password" placeholder={t("Kamida 12 ta belgi")} /><button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={20}/> : <Eye size={20}/>}</button></span></label>
+      <label>{t("Yangi parol")}<span className="auth-password-field"><input name="newPassword" required value={password} onChange={e => setPassword(e.target.value)} type={visible ? "text" : "password"} data-visible={visible} minLength={12} maxLength={128} autoComplete="new-password" placeholder={t("Kamida 12 ta belgi")} /><button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(!visible)}><AuthPasswordIcon visible={visible} /></button></span></label>
       <button type="submit" className="button primary full" disabled={busy}>{busy && <LoaderCircle size={18} className="spin"/>}{t(busy ? "Kuting…" : "Davom etish")}</button>
     </form>}
     {message && <p role="status" className="notice">{t(message)}</p>}

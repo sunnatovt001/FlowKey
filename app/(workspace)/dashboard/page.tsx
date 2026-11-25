@@ -18,9 +18,11 @@ import type { Search } from "@/server/workspace";
 import { roleAllows } from "@/shared/project-role";
 import { money, Status } from "@/components/ui";
 import { DashboardControls } from "@/components/dashboard-controls";
+import { DashboardIntegrationPanel } from "@/components/dashboard-integration-panel";
 import { DashboardChart } from "@/components/dashboard-chart";
 import { dashboardVolumeLabel } from "@/shared/dashboard";
 import "@/styles/dashboard.css";
+import "@/styles/dashboard-review.css";
 export const metadata = { title: "Dashboard" };
 const compact = (value: bigint) =>
   new Intl.NumberFormat("uz-UZ", {
@@ -143,22 +145,6 @@ export default async function Dashboard({
         <span>Pul protsessingi ulanmagan</span>
         <span className="dashboard-environment-detail">Unit muhiti</span>
       </div>
-      <div className="dashboard-metrics">
-        {metrics.map(({ title, value, unit, icon: Icon, status }) => (
-          <Link
-            key={title}
-            className="dashboard-card dashboard-metric"
-            href={`${transactions}&status=${status}`}
-          >
-            <Icon size={23} aria-hidden="true" />
-            <div>
-              <h2>{title}</h2>
-              <strong>{value}</strong>
-              {unit && <span className="dashboard-metric-unit">{unit}</span>}
-            </div>
-          </Link>
-        ))}
-      </div>
       <div className="dashboard-main-grid">
         <DashboardChart
           key={project.id}
@@ -170,11 +156,22 @@ export default async function Dashboard({
           ]}
           countAxis={[compact(maxCount), compact(maxCount / 2n), "0"]}
           hasData={data.total > 0}
-        />
-        <section className="dashboard-card dashboard-integration">
-          <header className="dashboard-card-heading">
-            <h2>API va ulanish</h2>
-          </header>
+        >
+          <div className="dashboard-metrics">
+            {metrics.map(({ title, value, unit, icon: Icon, status }) => (
+              <Link
+                key={title}
+                className={unit ? "dashboard-metric dashboard-metric-total" : "dashboard-metric"}
+                data-status={status}
+                href={unit ? transactions : `${transactions}&status=${status}`}
+              >
+                <strong>{value}{unit && <> <span>{unit}</span></>}</strong>
+                <span>{!unit && <Icon aria-hidden="true" />}{title}</span>
+              </Link>
+            ))}
+          </div>
+        </DashboardChart>
+        <DashboardIntegrationPanel>
           <dl className="dashboard-connection-list">
             <div>
               <dt>
@@ -206,16 +203,12 @@ export default async function Dashboard({
                 />
                 Oxirgi so‘rov
               </dt>
-              <dd title="Faol API kaliti oxirgi ishlatilgan vaqt">
-                {data.lastUsedAt
-                  ? new Intl.DateTimeFormat("uz-UZ", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      timeZone: "Asia/Tashkent",
-                    }).format(data.lastUsedAt)
-                  : "—"}
+              <dd className="dashboard-last-request">
+                <span>{data.lastUsedAt ? "Qayd etilgan" : "Hali so‘rov yo‘q"}</span>
+                {data.lastUsedAt && <small>{new Intl.DateTimeFormat("uz-UZ", {
+                  day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit",
+                  timeZone: "Asia/Tashkent",
+                }).format(data.lastUsedAt)}</small>}
               </dd>
             </div>
           </dl>
@@ -234,7 +227,7 @@ export default async function Dashboard({
               Qo‘llanma
             </Link>
           </div>
-        </section>
+        </DashboardIntegrationPanel>
         <section className="dashboard-card dashboard-transactions">
           <header className="dashboard-card-heading">
             <h2>Oxirgi tranzaksiyalar</h2>

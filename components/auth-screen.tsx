@@ -1,4 +1,5 @@
 "use client";
+import "@/styles/auth-review.css";
 import Link from "next/link";
 import { AuthForm } from "./auth-form";
 import { SocialSignIn } from "./social-sign-in";

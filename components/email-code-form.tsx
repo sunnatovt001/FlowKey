@@ -1,4 +1,5 @@
 "use client";
+import { AuthPasswordIcon } from "./auth-password-icon";
 import Link from "next/link";
 import { useId, useRef, useEffect, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
@@ -169,9 +170,9 @@ export function EmailCodeForm({ mode, localMail = false }: { mode: "verify" | "f
                   <label>
                     {t("Yangi parol")}
                     <span className="auth-password-field">
-                      <input required name="newPassword" type={visible ? "text" : "password"} autoComplete="new-password" minLength={12} maxLength={128} placeholder={t("Kamida 12 ta belgi")} value={password} onChange={event => setPassword(event.target.value)} />
+                      <input required name="newPassword" type={visible ? "text" : "password"} data-visible={visible} autoComplete="new-password" minLength={12} maxLength={128} placeholder={t("Kamida 12 ta belgi")} value={password} onChange={event => setPassword(event.target.value)} />
                       <button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(value => !value)}>
-                        {visible ? <EyeOff size={20} /> : <Eye size={20} />}
+                        <AuthPasswordIcon visible={visible} />
                       </button>
                     </span>
                   </label>

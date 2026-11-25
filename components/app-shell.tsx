@@ -104,7 +104,7 @@ export function AppShell({
   }, [path, selected]);
   const role = projects.find((p) => p.id === selected)?.role || "owner";
   return (
-    <div className="app-shell">
+    <div className="app-shell flowkey-glass">
       <aside className="sidebar" data-open={menuOpen}>
         <Logo />
         <button
@@ -209,7 +209,6 @@ export function AppShell({
               ))}
               <option value="__new_project__">+ Yangi loyiha</option>
             </select>
-            <span className="sandbox-label">Unit</span>
           </div>
           <details ref={profileMenu} className="profile-menu">
             <summary aria-label="Profil menyusi">

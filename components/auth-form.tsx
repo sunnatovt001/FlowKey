@@ -1,9 +1,10 @@
 "use client";
+import { AuthPasswordIcon } from "./auth-password-icon";
 import { T, useTranslation } from "./i18n/language-provider";
 import { authError } from "@/shared/locale";
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 export function AuthForm({
   signup,
@@ -88,13 +89,13 @@ export function AuthForm({
           <span className="auth-password-field"><input
             required
             name="password"
-            type={visible ? "text" : "password"}
+            type={visible ? "text" : "password"} data-visible={visible}
             minLength={12}
             maxLength={128}
             autoComplete={signup ? "new-password" : "current-password"}
             placeholder={t(signup ? "Kamida 12 ta belgi" : "Parolingiz")}
           />
-          <button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={20}/> : <Eye size={20}/>}</button></span>
+          <button type="button" className="auth-password-toggle" aria-label={t(visible ? "Parolni yashirish" : "Parolni ko‘rsatish")} aria-pressed={visible} onClick={() => setVisible(!visible)}><AuthPasswordIcon visible={visible} /></button></span>
         </label>
         {signup && <p className="form-hint"><T>Kamida 12 ta belgi.</T></p>}
         {error && (

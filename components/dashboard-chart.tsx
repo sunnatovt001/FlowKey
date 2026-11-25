@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ChartNoAxesColumn } from "lucide-react";
 export type DashboardPoint = {
   date: string;
@@ -14,11 +14,13 @@ export function DashboardChart({
   volumeAxis,
   countAxis,
   hasData,
+  children,
 }: {
   points: DashboardPoint[];
   volumeAxis: string[];
   countAxis: string[];
   hasData: boolean;
+  children: ReactNode;
 }) {
   const [mode, setMode] = useState<"volume" | "count">("volume");
   const axis = mode === "volume" ? volumeAxis : countAxis;
@@ -31,6 +33,7 @@ export function DashboardChart({
         <h2>To‘lovlar faolligi</h2>
         <div
           className="dashboard-chart-switch"
+          data-mode={mode}
           role="group"
           aria-label="Grafik ko‘rsatkichi"
         >
@@ -50,6 +53,7 @@ export function DashboardChart({
           </button>
         </div>
       </header>
+      {children}
       <div
         className="dashboard-plot"
         role="group"
@@ -118,12 +122,6 @@ export function DashboardChart({
           )}
         </div>
       </div>
-      <p className="dashboard-chart-caption">
-        {mode === "volume"
-          ? "Muvaffaqiyatli to‘lovlar · UZS"
-          : "Barcha holatlar · tranzaksiyalar soni"}{" "}
-        · Toshkent vaqti
-      </p>
     </section>
   );
 }
