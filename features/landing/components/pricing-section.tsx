@@ -22,9 +22,6 @@ export function PricingSection(){return (<section id="pricing" className="sectio
             </ul>
             <Link className="button primary" href="/signup"><T>Boshlash</T><ArrowUpRight size={16} />
             </Link>
-            <div className="planned">
-              <strong><T>Rejalashtirilgan narx: har bir tranzaksiya uchun 3%</T></strong>
-              <p><T>Rejalashtirilgan narx — tasdiqlanishi kerak. Haqiqiy to‘lovlar litsenziyalangan hamkor tasdig‘idan keyin qo‘shiladi.</T></p>
-            </div>
+
           </div>
         </section>);}

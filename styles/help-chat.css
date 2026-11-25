@@ -32,3 +32,24 @@ body .help-chat .help-chat-compose button { display: grid; place-items: center; 
   .help-chat-panel { width: 100%; height: min(520px, calc(100dvh - 100px)); }
 }
 @media (prefers-reduced-motion: reduce) { .help-chat-launcher, .help-chat-compose > div { transition: none !important; } }
+
+.help-chat-panel {
+  opacity: 0;
+  transform: translateY(12px) scale(.97);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .24s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .24s;
+}
+.help-chat-panel[data-open="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+@starting-style {
+  .help-chat-panel[data-open="true"] { opacity: 0; transform: translateY(18px) scale(.96); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .help-chat-panel { transition: none; }
+}

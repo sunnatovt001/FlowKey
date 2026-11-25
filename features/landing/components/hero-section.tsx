@@ -4,7 +4,6 @@ import { PaymentSculpture } from "./payment-sculpture";
 import { T } from "@/components/i18n/language-provider";
 import Link from "next/link";
 import {
-  ArrowRight,
   ArrowUpRight,
   Link2,
   Activity,
@@ -20,7 +19,7 @@ export function HeroSection() {
           <em><HeroTagline /></em>
         </h1>
         <div className="hero-actions">
-          <Link href="/signup" className="button primary"><T>Ishni boshlash</T><ArrowRight size={18} />
+          <Link href="/signup" className="button primary"><T>Ishni boshlash</T><ArrowUpRight size={16} aria-hidden="true" />
           </Link>
           <Link href="/docs" className="text-link"><T>Qo‘llanma</T><ArrowUpRight size={16} />
           </Link>
@@ -33,7 +32,6 @@ export function HeroSection() {
           <span>
             <ShieldCheck /><T>Xavfsiz sinov</T></span>
         </div>
-        <p className="hero-disclaimer"><T>Unit muhiti · Haqiqiy pul ishlatilmaydi</T></p>
       </div>
       <div className="hero-stage hero-stage-sculpture">
         <PaymentSculpture />
