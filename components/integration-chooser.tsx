@@ -6,11 +6,9 @@ import {
   Server,
   Link2,
   Code2,
-  Check,
   ArrowRight,
   ArrowLeft,
   ShieldCheck,
-  BookOpen,
   Webhook,
 } from "lucide-react";
 import { PaymentLinks } from "./payment-links";
@@ -22,19 +20,16 @@ const choices = [
   {
     id: "api",
     name: "API orqali",
-    description: "Server orqali to‘lov yarating.",
     Icon: Server,
   },
   {
     id: "hosted",
     name: "Tayyor sahifa",
-    description: "To‘lov havolasini ulashing.",
     Icon: Link2,
   },
   {
     id: "embed",
     name: "Saytga joylash",
-    description: "Tugma yoki script qo‘shing.",
     Icon: Code2,
   },
 ] as const;
@@ -62,33 +57,20 @@ export function IntegrationChooser({
   const tab = step === 2 && webhooks ? "webhooks" : "keys";
   return (
     <section className="integration-hub" data-tour="integration">
-      <p className="integration-intro">
-        Saytingizga mos ulash usulini tanlang.
-      </p>
       <div
         className="integration-methods"
         role="group"
         aria-label="Ulash usuli"
       >
-        {choices.map(({ id, name, description, Icon }) => (
+        {choices.map(({ id, name, Icon }) => (
           <button
             type="button"
             key={id}
             aria-pressed={method === id}
             onClick={() => setMethod(id)}
           >
-            <Icon size={28} aria-hidden="true" />
-            <span>
-              <strong>{name}</strong>
-              <span>{description}</span>
-            </span>
-            {method === id && (
-              <Check
-                size={17}
-                className="integration-choice-check"
-                aria-hidden="true"
-              />
-            )}
+            <Icon size={23} aria-hidden="true" />
+            <strong>{name}</strong>
           </button>
         ))}
       </div>
@@ -277,13 +259,6 @@ export function IntegrationChooser({
           )}
         </div>
         <aside className="integration-sidebar">
-          <Link
-            className="button secondary"
-            href={`/testing?project=${projectId}&area=${method === "api" ? "payments" : "checkout"}`}
-          >
-            Sinov markazi
-            <ArrowRight size={16} />
-          </Link>
           <section className="panel integration-connection">
             <h2>Ulanish holati</h2>
             <dl>
@@ -325,18 +300,27 @@ export function IntegrationChooser({
                 <dd>{used ? "Qayd etilgan" : "Kutilmoqda"}</dd>
               </div>
             </dl>
-            <button
-              type="button"
-              className="text-link"
-              onClick={() => {
-                setMethod("api");
-                setStep(2);
-                setWebhooks(true);
-              }}
-            >
-              Webhookni sozlash
-              <ArrowRight size={16} />
-            </button>
+            <div className="integration-connection-actions">
+              <button
+                type="button"
+                className="text-link"
+                onClick={() => {
+                  setMethod("api");
+                  setStep(2);
+                  setWebhooks(true);
+                }}
+              >
+                Webhookni sozlash
+                <ArrowRight size={16} />
+              </button>
+              <Link
+                className="button secondary"
+                href={`/testing?project=${projectId}&area=${method === "api" ? "payments" : "checkout"}`}
+              >
+                Sinov markazi
+                <ArrowRight size={16} />
+              </Link>
+            </div>
           </section>
           <section className="integration-unit-note">
             <ShieldCheck size={23} />
@@ -345,13 +329,6 @@ export function IntegrationChooser({
               <p>Haqiqiy pul o‘tkazilmaydi.</p>
             </div>
           </section>
-          <Link
-            className="integration-guide-link"
-            href={`/guide?project=${projectId}`}
-          >
-            <BookOpen size={17} />
-            Qo‘llanmani ochish
-          </Link>
         </aside>
       </div>
     </section>

@@ -165,7 +165,7 @@ export function DeveloperTools({
           <div className="panel-heading">
             <div>
               <h2>
-                {guided ? "API kalitini tayyorlang" : "Unit API kalitlari"}
+                {guided ? "API kalitlari" : "Unit API kalitlari"}
               </h2>
               <p>
                 So‘rovlarni serveringizdan tasdiqlang. Maxfiy kalitlarni
